@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href={{ asset('css/posts.css') }}>
+    <link rel="stylesheet" href={{ asset('css/header-footer.css') }}>
+    <title>Confiserie Violette</title>
+</head>
+<body>
+<header>
+    <a href="#post"><img src={{ asset('medias/logo.png') }} id="header-logo"></a>
+    <ul>
+        <a href="#post"><li><img src={{ asset('medias/home-white.png') }}></li></a>
+        <a href="catalogue.html"><li><img src={{ asset('medias/catalogue-white.png') }}></li></a>
+        <a href="#"><li><img src={{ asset('medias/add-post-white.png') }}></li></a>
+        <a href="#"><li><img src={{ asset('medias/favorite-white.png') }}></li></a>
+        <a href="account-connected.html"><li><img src={{ asset('medias/user-white.png') }}></li></a>
+    </ul>
+    <img src={{ asset('medias/search-white.png') }}>
+</header>
+
+<h1>Base html du projet</h1>
+<h2 class="nav-item active"><a href="{{ path('app_homepage') }}" class="nav-link">Post</a></h2>
+
+
+<footer>
+    <section id="footer-mobile">
+        <ul>
+            <a href="#post"><li><img src={{ asset('medias/home-white.png') }}></li></a>
+            <a href="catalogue.html"><li><img src={{ asset('medias/catalogue-white.png') }}></li></a>
+            <a href="#"><li><img src={{ asset('medias/add-post-white.png') }}></li></a>
+            <a href="#"><li><img src={{ asset('medias/favorite-white.png') }}></li></a>
+            <a href="account-connected.html"><li><img src={{ asset('medias/user-white.png') }}></li></a>
+        </ul>
+    </section>
+    <section id="footer-computer">
+        <div><img src="medias/logo.png"></div>
+        <div>
+            <h3>Plan du site</h3>
+            <ul>
+                <a href="#post"><li>Accueil</li></a>
+                <a href="catalogue.html"><li>Catalogue</li></a>
+                <a href="#"><li>Créer une ressource</li></a>
+                <a href="#"><li>Favorite</li></a>
+                <a href="account-connected.html"><li>Mon compte</li></a>
+            </ul>
+        </div>
+        <p>Cette plateforme facilite la connexion entre les citoyens en mettant à leur disposition une bibliothèque de ressources liées à la culture, aux jeux et aux événements. Le projet vise à renforcer le tissu social, promouvoir l'inclusion, mettre en avant la culture locale, et contribuer au bien-être mental des citoyens. </p>
+    </section>
+
+</footer>
+
+</body>
+</html>
