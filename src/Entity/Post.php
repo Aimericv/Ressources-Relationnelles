@@ -13,31 +13,38 @@ class Post
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $post_id = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $content_post = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $img = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $content = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $type = null;
+
+    #[ORM\ManyToOne]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne]
+    private ?PostStatus $status = null;
+
+    #[ORM\ManyToOne]
+    private ?Address $address = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPostId(): ?int
+    public function setId(?int $id): static
     {
-        return $this->post_id;
-    }
-
-    public function setPostId(int $post_id): static
-    {
-        $this->post_id = $post_id;
+        $this->id = $id;
 
         return $this;
     }
@@ -47,21 +54,39 @@ class Post
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function getContentPost(): ?string
+    /**
+     * @return string|null
+     */
+    public function getImg(): ?string
     {
-        return $this->content_post;
+        return $this->img;
     }
 
-    public function setContentPost(string $content_post): static
+    /**
+     * @param string|null $img
+     */
+    public function setImg(?string $img): void
     {
-        $this->content_post = $content_post;
+        $this->img = $img;
+    }
+
+
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(?string $content): static
+    {
+        $this->content = $content;
 
         return $this;
     }
@@ -71,9 +96,57 @@ class Post
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getStatus(): ?PostStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?PostStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

@@ -6,7 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href={{ asset('css/posts.css') }}>
     <link rel="stylesheet" href={{ asset('css/header-footer.css') }}>
+    <link rel="stylesheet" href={{ asset('css/account.css') }}>
+    <link rel="stylesheet" href={{ asset('css/create-account.css') }}>
+    <link rel="stylesheet" href={{ asset('css/user.css') }}>
+    <link rel="stylesheet" href={{ asset('css/user-account.css') }}>
+    <link rel="stylesheet" href={{ asset('css/single-ressource.css') }}>
     <title>Confiserie Violette</title>
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-top: 90px;
+            padding-bottom: 100px;
+        }
+        @media (min-width: 768px){
+            .footer{
+                position: end;
+            }
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -21,11 +46,8 @@
     <img src={{ asset('medias/search-white.png') }}>
 </header>
 
-<h1>Base html du projet</h1>
-<h2 class="nav-item active"><a href="{{ path('app_homepage') }}" class="nav-link">Post</a></h2>
-
-
-<footer>
+{% block body %}{% endblock %}
+<footer class="footer">
     <section id="footer-mobile">
         <ul>
             <a href="#post"><li><img src={{ asset('medias/home-white.png') }}></li></a>
@@ -51,6 +73,8 @@
     </section>
 
 </footer>
+
+
 
 </body>
 </html>
