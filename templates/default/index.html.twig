@@ -1,139 +1,78 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/posts.css') }}>
+    {%  endblock %}
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-top: 90px;
+            padding-bottom: 100px;
+        }
+        @media (min-width: 768px){
+            .footer{
+                position: static;
+            }
+        }
+    </style>
     <body>
     <main class="container">
         <section id="filter-section">
             <img src={{ asset('medias/filter-green.png') }}>
         </section>
         <section class="posts">
+
+            {% for post in posts %}
             <div class="post">
-
-
-                {% if app.user %}
-                <a href="{{ path('app_user') }}" class="icon-wrap d-flex align-items-center mt-4 justify-content-center">
-                    <div class="icon d-flex align-items-center justify-content-center">
-                        <span class="ion-ios-play"></span>
-                    </div>
-                    <h1 class="mb-4">Bonjour {{ utilisateur.fullname }}</h1>
+                <div class="autor">
+                    {% if post.getUser().getAvatarImg() is not null %}
+                        <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
                     {% else %}
-                    <a href="{{ path('app_login') }}" class="icon-wrap d-flex align-items-center mt-4 justify-content-center">
-                        <div class="icon d-flex align-items-center justify-content-center">
-                            <span class="ion-ios-play"></span>
-                        </div>
-                        <span><a href="{{ path('app_login') }}" class="nav-link">M'inscrire pour continuer</a></span>
-                        {% endif %}
+                        <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                    {% endif %}
 
-                {% for post in posts %}
-                                <div class="autor">
-
-                                    <img src={{ asset("medias/user-green.png") }}>
-                                    <p>Auteur 1</p>
-                                </div>
-                                <div class="img-ressource"><img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post"></div>
-                                <p class="category">Category 1</p>
-                                <h2 class="title-ressource">{{ post.title }}</h2>
-                                <p class="description-ressource">{{ post.description }}</p>
-                <button class="button-more-ressource" type="button"> <a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>
-
-
+                    <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
+                </div>
+                <div class="img-ressource"><img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post"></div>
+                <p class="category">Catégorie : {{ post.getType() }}</p>
+                <h2 class="title-ressource">{{ post.title }}</h2>
+                <p class="description-ressource">{{ post.description }}</p>
+                <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
             </div>
             {% endfor %}
-{#            <div class="post">#}
-{#                <div class="autor">#}
-{#                    <img src={{ asset("medias/user-green.png") }}>#}
-{#                    <p>Auteur 1</p>#}
-{#                </div>#}
-{#                <div class="img-ressource"></div>#}
-{#                <p class="category">Category 1</p>#}
-{#                <h2 class="title-ressource">Ressource 1</h2>#}
-{#                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>#}
-{#                <button class="button-more-ressource" type="button">En savoir plus</button>#}
-{#            </div>#}
-{#            <div class="post">#}
-{#                <div class="autor">#}
-{#                    <img src={{ asset("medias/user-green.png") }}>#}
-{#                    <p>Auteur 2</p>#}
-{#                </div>#}
-{#                <div class="img-ressource"></div>#}
-{#                <p class="category">Category 2</p>#}
-{#                <h2 class="title-ressource">Ressource 2</h2>#}
-{#                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>#}
-{#                <button class="button-more-ressource" type="button">En savoir plus</button>#}
-{#            </div>#}
-{#            <div class="post">#}
-{#                <div class="autor">#}
-{#                    <img src={{ asset("medias/user-green.png") }}>#}
-{#                    <p>Auteur 3</p>#}
-{#                </div>#}
-{#                <div class="img-ressource"></div>#}
-{#                <p class="category">Category 3</p>#}
-{#                <h2 class="title-ressource">Ressource 3</h2>#}
-{#                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>#}
-{#                <button class="button-more-ressource" type="button">En savoir plus</button>#}
-{#            </div>#}
-{#            <div class="post">#}
-{#                <div class="autor">#}
-{#                    <img src={{ asset("medias/user-green.png") }}>#}
-{#                    <p>Auteur 4</p>#}
-{#                </div>#}
-{#                <div class="img-ressource"></div>#}
-{#                <p class="category">Category 4</p>#}
-{#                <h2 class="title-ressource">Ressource 4</h2>#}
-{#                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>#}
-{#                <button class="button-more-ressource" type="button">En savoir plus</button>#}
-{#            </div>#}
+
         </section>
+
         <section class="spacer">
             <div class="line-spacer"></div>
             <p>SUGGESTION</p>
             <div class="line-spacer"></div>
         </section>
+
         <section class="posts">
-            <div class="post">
-                <div class="autor">
-                    <img src="medias/user-green.png">
-                    <p>Auteur 1</p>
+
+            {% for post in posts %}
+                <div class="post">
+                    <div class="autor">
+                        <img src="{{ asset("medias/user-green.png") }}">
+                        <p>Auteur 1</p>
+                    </div>
+                    <div class="img-ressource"><img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post"></div>
+                    <p class="category">Category 1</p>
+                    <h2 class="title-ressource">{{ post.title }}</h2>
+                    <p class="description-ressource">{{ post.description }}</p>
+                    <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
                 </div>
-                <div class="img-ressource"></div>
-                <p class="category">Category 1</p>
-                <h2 class="title-ressource">Ressource 1</h2>
-                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>
-                <button class="button-more-ressource" type="button">En savoir plus</button>
-            </div>
-            <div class="post">
-                <div class="autor">
-                    <img src="medias/user-green.png">
-                    <p>Auteur 2</p>
-                </div>
-                <div class="img-ressource"></div>
-                <p class="category">Category 2</p>
-                <h2 class="title-ressource">Ressource 2</h2>
-                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>
-                <button class="button-more-ressource" type="button">En savoir plus</button>
-            </div>
-            <div class="post">
-                <div class="autor">
-                    <img src="medias/user-green.png">
-                    <p>Auteur 3</p>
-                </div>
-                <div class="img-ressource"></div>
-                <p class="category">Category 3</p>
-                <h2 class="title-ressource">Ressource 3</h2>
-                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>
-                <button class="button-more-ressource" type="button">En savoir plus</button>
-            </div>
-            <div class="post">
-                <div class="autor">
-                    <img src="medias/user-green.png">
-                    <p>Auteur 4</p>
-                </div>
-                <div class="img-ressource"></div>
-                <p class="category">Category 4</p>
-                <h2 class="title-ressource">Ressource 4</h2>
-                <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>
-                <button class="button-more-ressource" type="button">En savoir plus</button>
-            </div>
+            {% endfor %}
+
         </section>
 
     </main>

@@ -3,21 +3,25 @@
 {% block title %}Post{% endblock %}
 
 {% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/single-ressource.css') }}>
+    {% endblock %}
     <main class="container">
         <section class="ressources">
             <h1>{{ post.title }}</h1>
-            <img src="https://informelle.org/wp-content/uploads/2022/02/cafe-1024x682.jpg" alt="Rencontre">
-            <h2>Sous-titre 1</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at tellus vehicula, rhoncus sem non, varius libero. Praesent accumsan dapibus purus, pretium suscipit felis aliquet in. Aliquam auctor tincidunt lorem eget ornare. Proin varius ligula id massa vulputate, eu dapibus tortor ultricies. Donec vel sollicitudin nisl, et sagittis ligula. Quisque fermentum sapien vel ante vulputate ultrices. Mauris ornare dui sit amet maximus cursus. Quisque ornare ornare risus, id fringilla nibh tempor id. Pellentesque eu urna nec tellus porta rutrum. Proin iaculis, nisl in convallis finibus, ipsum diam vehicula lorem, ac accumsan augue turpis eu lorem. Donec volutpat condimentum efficitur. Sed vulputate elit vehicula erat imperdiet vulputate.<br><br>Aenean in rhoncus ligula. Nullam eu mattis libero. Phasellus augue eros, dapibus molestie felis ut, aliquet vulputate tellus. Mauris finibus interdum risus, sed consectetur risus facilisis nec. Praesent eleifend tellus vel felis scelerisque, ac gravida purus tincidunt. Nam lacus lorem, maximus nec neque et, vulputate bibendum enim. Praesent lacinia orci magna. Nulla in odio velit. Curabitur aliquet mi sem, sed convallis odio consectetur eu. In lorem lacus, blandit ac ex convallis, pharetra dignissim mauris. Pellentesque sed semper diam, nec consectetur risus.</p>
+            <img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post">
+            <h2>Contenu</h2>
+            <p>{{ post.content }}</p>
             <article>
                 <img src="https://www.movetia.ch/fileadmin/user_upload/Bilder/PB_Jugend/movetia-B2-Jugendbegegnungen-02.jpg" alt="Rencontre">
+                <img src="{{ asset('medias/carte.png') }}" style="width: 20%" alt="Lieu d'activité">
             </article>
             <article>
-                <h2>Sous-titre 2</h2>
-                <p>Curabitur mi dui, mattis ut vulputate ut, gravida et est. Aliquam vitae sagittis dolor, a posuere erat. Curabitur ultrices augue ut luctus ultricies. Maecenas gravida pharetra rutrum. In cursus, massa mattis molestie gravida, nulla mi dignissim risus, quis aliquet odio odio id dolor. Fusce fringilla, lectus blandit lobortis varius, nulla orci maximus quam, vehicula tristique neque justo vitae ante. Quisque sed consequat tortor. Donec ut turpis enim. Pellentesque finibus libero purus, non dignissim diam ornare eget. Fusce id placerat dui. Nulla sit amet purus elementum tortor egestas egestas vitae ut massa. Vivamus sit amet libero vel ligula vestibulum venenatis quis id sem. Quisque sed turpis vestibulum, euismod urna vel, gravida dolor. Nulla faucibus libero augue, ac rutrum ex dignissim nec. Nunc quis ipsum egestas, vehicula metus nec, mollis felis.</p>
+                <h2>Lieu d'activité : </h2>
+                <p>{{ post.getAddress().toString() }}</p>
             </article>
-            <h2>Sous-titre 3</h2>
-            <p>Vivamus nec tellus sed nulla pulvinar sollicitudin sit amet sit amet ligula. Aliquam volutpat et nulla mollis imperdiet. Quisque et gravida libero. Aliquam enim lectus, dictum eget odio id, pellentesque volutpat lorem. Praesent sit amet malesuada augue, commodo fringilla massa. Morbi maximus ex in ante ultrices rutrum. Sed ullamcorper est quis tellus pharetra, quis vehicula ligula volutpat. Aenean porttitor leo sed erat tempus, nec suscipit mauris iaculis. Phasellus pharetra, felis vitae commodo porttitor, nibh turpis volutpat justo, tempus laoreet urna sapien ut ligula.<br><br>Aenean dapibus consectetur urna eget hendrerit. Nulla fringilla, dolor vitae consectetur sodales, nulla quam tristique mauris, vel tempor quam nisl blandit magna. Aliquam eget eros vel justo tincidunt viverra sit amet nec quam. Integer id risus ultrices, pretium nibh sit amet, rutrum diam. Integer vitae lacus non nulla posuere commodo in ac neque. In tempus magna lacus, eu accumsan dolor tincidunt vel. Donec sollicitudin massa enim, finibus mollis ex pretium nec. Integer nec justo sed nisi commodo aliquam.</p>
+            <h2>Type :</h2>
+            <p> {{ post.getType() }}</p>
         </section>
         <section class="actions-section">
             <article class="actions">

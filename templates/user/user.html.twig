@@ -1,36 +1,117 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
+
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-top: 90px;
+            padding-bottom: 100px;
+        }
+        #help {
+            width: 20%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+        }
+        @media (min-width: 768px){
+            .footer{
+                position: static;
+            }
+        }
+    </style>
     <body>
-    <!-- END nav -->
+    <main class="container">
 
-    <section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('images/bg_3.jpg');" data-stellar-background-ratio="0.5">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-start">
-                <div class="col-md-9 ftco-animate pb-5">
-                    <p class="breadcrumbs"><span class="mr-2"><a href="{{ path('app_homepage') }}">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Utilisateur <i class="ion-ios-arrow-forward"></i></span></p>
-                    <h1 class="mb-3 bread">Mon compte</h1>
-                </div>
-            </div>
-        </div>
+        {% if app.user %}
+    <!--Connnected-->
+        {% block stylesheetsConnected %}
+            <link rel="stylesheet" href={{ asset('css/user.css') }}>
+
+    <section id="avatar-section">
+        <div class="autor"> <img src="{{ asset('profiles/user1_avatar.j&pg') }}"></div>
+        <h1>{{ utilisateur.firstName }} {{ utilisateur.lastName }}</h1>
+        <p>Rôle 1</p>
     </section>
-
-
-    <div class="container">
-        <h1>Mon Compte</h1>
-
-        <div class="card">
-            <div class="card-body">
-                <p class="card-text">Nom : {{ utilisateur.fullname }}</p>
-                <p class="card-text">Email : {{ utilisateur.email }}</p>
-                <p class="card-text">Adresse : {{ utilisateur.adress }}</p>
-                <p class="card-text">Code postal : {{ utilisateur.zipcode }}</p>
-                <p class="card-text">Ville : {{ utilisateur.city }}</p>
+    <section class="container" id="stats-section">
+        <article class="stats-section">
+            <div>
+                <p class="data-user">7</p>
+                <p>Ressources</p>
             </div>
-        </div>
+            <div>
+                <p class="data-user">75</p>
+                <p>Abonnements</p>
+            </div>
+            <div>
+                <p class="data-user">52</p>
+                <p>Abonnés</p>
+            </div>
+        </article>
 
-        <a href="{{ path('app_logout') }}" class="btn btn-primary mt-3">Se déconnecter</a>
-    </div>
+        <article id="stats">
+            <div class="line"></div>
+            <p>STATISTIQUES</p>
+            <div class="line"></div>
+        </article>
+
+        <article class="stats-section">
+            <div>
+                <p class="data-user">30</p>
+                <p>Vues</p>
+            </div>
+            <div>
+                <p class="data-user">12</p>
+                <p>Likes</p>
+            </div>
+            <div>
+                <p class="data-user">21</p>
+                <p>Exploités</p>
+            </div>
+        </article>
+    </section>
+    <section class="container" id="adaptation-user">
+        <input type="range" id="police" name="police" min="10" max="26" step="2" value="16"/>
+        <p>Police :<output id="value"></output></p>
+        <script>
+            const value = document.querySelector("#value");
+            const input = document.querySelector("#police");
+            value.textContent = input.value;
+            input.addEventListener("input", (event) => {
+                value.textContent = event.target.value;
+            });
+        </script>
+    </section>
+    <section id="reglementation-user">
+        <a href="#">MENTIONS LÉGALES</a>
+        <a href='{{ path('app_logout') }}'>SE DÉCONNECTER</a>
+        <a href="#">SUPPRESSION DU COMPTE</a>
+        <a href="#"><img id="help" src={{ asset('medias/help.jpg') }}>AIDE</a>
+    </section>
+        {%  endblock %}
+        {% else %}
+        <!--Non connnected-->
+        {% block stylesheetsNonConnected %}
+            <link rel="stylesheet" href={{ asset('css/account.css') }}>
+
+            <section>Cette plateforme facilite la connexion entre les citoyens en mettant à leur disposition une bibliothèque de ressources liées à la culture, aux jeux et aux événements. Le projet vise à renforcer le tissu social, promouvoir l'inclusion, mettre en avant la culture locale, et contribuer au bien-être mental des citoyens. En vous connectant vous pourrez suivre vos acteurs préférés, sauvegarder des ressources et bien d'autres fonctionnalités.</section>
+            <section>
+                <button onclick="window.location.href = '{{ path('app_login') }}';">Connectez-vous</button>
+            </section>
+            <section>
+                <button onclick="window.location.href = '{{ path('app_register') }}';">Créer un compte</button>
+            </section>
+            <a href="#"><img id="help" src={{ asset('medias/help.jpg') }}>AIDE</a>
+        {%  endblock %}
+        {% endif %}
+</main>
+
     </body>
 {% endblock %}

@@ -31,6 +31,13 @@ class DefaultController extends AbstractController
 //        ]*/);
 //    }
 
+    #[Route("/base", name:"app_base")]
+    public function base(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
+    {
+        $posts = $postRepository->findAll();
+        $utilisateur = $this->getUser();
+        return $this->render('base.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur]);
+    }
 
     #[Route("/", name:"app_homepage")]
     public function post(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
@@ -38,6 +45,14 @@ class DefaultController extends AbstractController
         $posts = $postRepository->findAll();
         $utilisateur = $this->getUser();
         return $this->render('default/index.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur]);
+    }
+
+    #[Route("/catalogue", name:"app_catalogue")]
+    public function catalogue(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
+    {
+        $posts = $postRepository->findAll();
+        $utilisateur = $this->getUser();
+        return $this->render('default/catalogue.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur]);
     }
 
     #[Route("/post{id}", name: "app_post_detail")]
@@ -52,6 +67,8 @@ class DefaultController extends AbstractController
 
         return $this->render('default/postDetail.html.twig', ['post' => $post]);
     }
+
+    /* Route /user dans userController */
 
 
 }

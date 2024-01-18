@@ -4,14 +4,15 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href={{ asset('css/posts.css') }}>
     <link rel="stylesheet" href={{ asset('css/header-footer.css') }}>
+    <!---
+    <link rel="stylesheet" href={{ asset('css/posts.css') }}>
     <link rel="stylesheet" href={{ asset('css/account.css') }}>
-    <link rel="stylesheet" href={{ asset('css/create-account.css') }}>
     <link rel="stylesheet" href={{ asset('css/user.css') }}>
+    <link rel="stylesheet" href={{ asset('css/create-account.css') }}>
     <link rel="stylesheet" href={{ asset('css/user-account.css') }}>
-    <link rel="stylesheet" href={{ asset('css/single-ressource.css') }}>
-    <title>Confiserie Violette</title>
+    --->
+    <title>Ressources Relationnelles</title>
     <style>
         .footer{
             position: fixed;
@@ -28,20 +29,20 @@
         }
         @media (min-width: 768px){
             .footer{
-                position: end;
+                position: static;
             }
         }
     </style>
 </head>
 <body>
 <header>
-    <a href="#post"><img src={{ asset('medias/logo.png') }} id="header-logo"></a>
+    <a href="#post"><img src="{{ asset('medias/logo.png') }}" id="header-logo"></a>
     <ul>
-        <a href="#post"><li><img src={{ asset('medias/home-white.png') }}></li></a>
-        <a href="catalogue.html"><li><img src={{ asset('medias/catalogue-white.png') }}></li></a>
-        <a href="#"><li><img src={{ asset('medias/add-post-white.png') }}></li></a>
-        <a href="#"><li><img src={{ asset('medias/favorite-white.png') }}></li></a>
-        <a href="account-connected.html"><li><img src={{ asset('medias/user-white.png') }}></li></a>
+        <a href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
+        <a href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
+        <a href="{{ path('app_post_new') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
+        <a href="#"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
+        <a href="{{ path('app_user') }}"><li><img src="{{ asset('medias/user-white.png') }}"></li></a>
     </ul>
     <img src={{ asset('medias/search-white.png') }}>
 </header>
@@ -50,11 +51,11 @@
 <footer class="footer">
     <section id="footer-mobile">
         <ul>
-            <a href="#post"><li><img src={{ asset('medias/home-white.png') }}></li></a>
-            <a href="catalogue.html"><li><img src={{ asset('medias/catalogue-white.png') }}></li></a>
-            <a href="#"><li><img src={{ asset('medias/add-post-white.png') }}></li></a>
-            <a href="#"><li><img src={{ asset('medias/favorite-white.png') }}></li></a>
-            <a href="account-connected.html"><li><img src={{ asset('medias/user-white.png') }}></li></a>
+            <a href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
+            <a href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
+            <a href="#"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
+            <a href="#"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
+            <a href="{{ path('app_user') }}"><li><img src="{{ asset('medias/user-white.png') }}"></li></a>
         </ul>
     </section>
     <section id="footer-computer">

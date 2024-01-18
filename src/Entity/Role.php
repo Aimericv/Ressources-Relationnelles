@@ -28,12 +28,12 @@ class Role
         return $this;
     }
 
-    public function getName(): ?string
+    public function getRole(): ?Role
     {
         return $this->name;
     }
 
-    public function setName(?string $name): static
+    public function setRole(?string $name): static
     {
         $this->name = $name;
 

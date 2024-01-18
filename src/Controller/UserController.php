@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use http\Client\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -66,6 +67,19 @@ class UserController extends AbstractCrudController
         return $this->render('user/user.html.twig', [
             'utilisateur' => $utilisateur,
         ]);
+    }
+
+    public function register(Request $request): Response
+    {
+        // Handle user registration form submission
+
+        // Create a new User entity
+        $user = new User();
+        $user->setRoles(['ROLE_USER']);
+
+        // ... other code to handle form submission and persist the user
+
+        return $this->redirectToRoute('registration_success');
     }
 
     // Ajoutez d'autres méthodes pour gérer les actions CRUD supplémentaires si nécessaire

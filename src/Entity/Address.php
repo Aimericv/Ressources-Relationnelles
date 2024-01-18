@@ -84,4 +84,11 @@ class Address
 
         return $this;
     }
+
+    public function toString(): string
+    {
+        return "Addresse : " . $this->getRue() . " " . $this->getVille() . " " . $this->getCodePostal() . " " . $this->getPays();
+    }
+
+
 }

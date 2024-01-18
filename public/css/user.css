@@ -24,6 +24,19 @@ h1 {
 #avatar-section p{
     font-style: italic;
 }
+.autor {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.autor img {
+    width: 350px;
+    aspect-ratio: 1/1;
+    background-color: gray;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
 
 #avatar-section {
     display: flex;
