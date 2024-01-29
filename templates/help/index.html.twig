@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/help.css') }}>
+    {%  endblock %}
+<body>
+        <main class="container">
+            <section>
+                <h1>Centre d'aide</h1>
+                <p>Veuillez sélectionnez une fonctionnalitée pour voir les questions déjà posées. Si vous ne trouvez pas de thème correspondant à votre problème, veuillez cliquez sur "Poser une question".</p>
+            </section>
+            <section id="informations">
+                <article>
+                    <div>
+                        <label for="post-creation">Création de post</label>
+                        <input type="radio" name="category" id="post-creation" value="post-creation">
+                    </div>
+                    <div>
+                        <label for="connexion">Connexion à mon compte</label>
+                        <input type="radio" name="category" id="connexion" value="connexion">
+                    </div>
+                    <div>
+                        <label for="account-creation">Création de compte</label>
+                        <input type="radio" name="category" id="account-creation" value="account-creation">
+                    </div>
+                    <div>
+                        <label for="statistique">Statistique</label>
+                        <input type="radio" name="category" id="statistique" value="statistique">
+                    </div>
+                    <div>
+                        <label for="fonction">Fonctionnement du site web</label>
+                        <input type="radio" name="category" id="fonction" value="fonction">
+                    </div>
+                </article>
+                <article class="questions">
+                    <div>
+                        <input type="checkbox" id="question1" class="checkbox">
+                        <label for="question1" class="answer-label">
+                            <p class="question">question1</p>
+                            <span class="deroulant1"></span>
+                            <span class="deroulant2"></span>
+                        </label>
+                        <p class="answer">Réponse 1</p>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="question2" class="checkbox">
+                        <label for="question2" class="answer-label">
+                            <p class="question">question2</p>
+                            <span class="deroulant1"></span>
+                            <span class="deroulant2"></span>
+                        </label>
+                        <p class="answer">Réponse 2</p>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="question3" class="checkbox">
+                        <label for="question3" class="answer-label">
+                            <p class="question">question3</p>
+                            <span class="deroulant1"></span>
+                            <span class="deroulant2"></span>
+                        </label>
+                        <p class="answer">Réponse 3</p>
+                    </div>
+                </article>
+            </section>
+            <section id="ask-question-section">
+                <a id="question-button" class="button">Poser une question</a>
+                <article id="question-form">
+                    <a href="help.html" id="back">Retour</a>
+                    <div>
+                        <label for="email">Adresse mail :</label>
+                        <input id="email" type="email">
+                    </div>
+                    <div>
+                        <label for="subject">Quel est le sujet de votre problème ?</label>
+
+                        <select name="subject" id="subject">
+                          <option value="">Choisissez une catégorie</option>
+                          <option value="post-creation">Création de posts</option>
+                          <option value="connexion">Connexion à mon compte</option>
+                          <option value="account-creation">Création de compte</option>
+                          <option value="statistique">Statistique</option>
+                          <option value="fonctionnalitée">Fonctionnement du site web</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="question">Quel est votre question ?</label>
+                        <textarea id="question"></textarea>
+                    </div>
+                    <a href="#" class="button">Envoyer votre question</a>
+                </article>
+            </section>
+        </main>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const checkboxes = document.querySelectorAll('.checkbox');
+                const questionBoutton = document.getElementById('question-button');
+                const questionForm = document.getElementById('question-form');
+                const body = document.querySelector('body');
+
+
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function () {
+                        // Désactive toutes les autres checkboxes
+                        checkboxes.forEach(otherCheckbox => {
+                            if (otherCheckbox !== checkbox) {
+                                otherCheckbox.checked = false;
+                            }
+                        });
+                    });
+                });
+
+                questionBoutton.addEventListener('click', function() {
+                    questionForm.style.display = "flex";
+                    body.style.overflow = "hidden";
+                });
+
+            });
+        </script>
+    </body>
+{% endblock %}

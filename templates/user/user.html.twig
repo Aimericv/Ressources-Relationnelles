@@ -15,12 +15,6 @@
             padding-top: 90px;
             padding-bottom: 100px;
         }
-        #help {
-            width: 20%;
-            height: auto;
-            display: block;
-            margin: 10px auto;
-        }
         @media (min-width: 768px){
             .footer{
                 position: static;
@@ -93,7 +87,6 @@
         <a href="#">MENTIONS LÉGALES</a>
         <a href='{{ path('app_logout') }}'>SE DÉCONNECTER</a>
         <a href="#">SUPPRESSION DU COMPTE</a>
-        <a href="#"><img id="help" src={{ asset('medias/help.jpg') }}>AIDE</a>
     </section>
         {%  endblock %}
         {% else %}
@@ -108,7 +101,6 @@
             <section>
                 <button onclick="window.location.href = '{{ path('app_register') }}';">Créer un compte</button>
             </section>
-            <a href="#"><img id="help" src={{ asset('medias/help.jpg') }}>AIDE</a>
         {%  endblock %}
         {% endif %}
 </main>

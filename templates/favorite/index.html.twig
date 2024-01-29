@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/posts.css') }}>
+        <link rel="stylesheet" href={{ asset('css/favorite.css') }}>
+    {%  endblock %}
+<body>
+        <main class="container">
+            <h1>Favorite</h1>
+
+            <!-- FIL D'ARIANE -->
+
+            <!-- <section id="ariane">
+                <a href="#">Favorite</a>
+                <p>></p>
+                <a href="#">Nom du dossier</a>
+                <p>></p>
+                <a href="#">Nom du dossier</a>
+            </section> -->
+
+
+            <section class="posts">
+                <article class="post">
+                    <div class="autor">
+                        <img src="medias/user-green.png">
+                        <p>Auteur 1</p>
+                    </div>
+                    <div class="img-ressource"></div>
+                    <p class="category">Category 1</p>
+                    <h2 class="title-ressource">Ressource 1</h2>
+                    <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>
+                    <button class="button-more-ressource" type="button">En savoir plus</button>
+                </article>
+
+                <article class="post">
+                    <div class="autor">
+                        <img src="medias/user-green.png">
+                        <p>Auteur 1</p>
+                    </div>
+                    <div class="img-ressource"></div>
+                    <p class="category">Category 1</p>
+                    <h2 class="title-ressource">Ressource 1</h2>
+                    <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>
+                    <button class="button-more-ressource" type="button">En savoir plus</button>
+                </article>
+
+                <article class="folder-article post">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 841.9 595.3" xml:space="preserve">
+                    <path class="st0" d="M709.2,217.6v224.6c0,33.3-27,60.3-60.3,60.3h-456c-33.3,0-60.3-27-60.3-60.3V153c0-33.3,27-60.3,60.3-60.3h149
+                        c29.3,0,56,16.9,68.4,43.5l0,0c11.2,23.8,35.1,21.1,61.4,21.1h177.1C682.2,157.3,709.2,184.3,709.2,217.6z"/>
+                    </svg>
+                    <h2>Nom du dossier</h2>
+                </article>
+
+                <article class="folder-article post">
+                    <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 841.9 595.3" xml:space="preserve">
+                    <path class="st0" d="M709.2,217.6v224.6c0,33.3-27,60.3-60.3,60.3h-456c-33.3,0-60.3-27-60.3-60.3V153c0-33.3,27-60.3,60.3-60.3h149
+                        c29.3,0,56,16.9,68.4,43.5l0,0c11.2,23.8,35.1,21.1,61.4,21.1h177.1C682.2,157.3,709.2,184.3,709.2,217.6z"/>
+                    </svg>
+                    <h2>Nom du dossier</h2>
+                </article>
+                
+                <article class="post">
+                    <div class="autor">
+                        <img src="medias/user-green.png">
+                        <p>Auteur 1</p>
+                    </div>
+                    <div class="img-ressource"></div>
+                    <p class="category">Category 1</p>
+                    <h2 class="title-ressource">Ressource 1</h2>
+                    <p class="description-ressource">Ceci est une description d'une ressource quelconque qui faudra modifier par la suite car ce texte ne veut absulement rien dire.</p>
+                    <button class="button-more-ressource" type="button">En savoir plus</button>
+                </article>
+            </section>
+        </main>
+</body>
+{% endblock %}
