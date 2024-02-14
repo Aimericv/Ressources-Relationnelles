@@ -5,7 +5,10 @@ function dragMoveListener(event) {
     let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
     let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-    target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    // target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    target.style.position = 'absolute';
+    target.style.top = y + 'px';
+    target.style.left = x + 'px';
 
     target.setAttribute('data-x', x);
     target.setAttribute('data-y', y);
@@ -30,7 +33,10 @@ interact('.resize-drag')
                 x += event.deltaRect.left;
                 y += event.deltaRect.top;
 
-                target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+                // target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+                target.style.position = 'absolute';
+                target.style.top = y + 'px';
+                target.style.left = x + 'px';
 
                 target.setAttribute('data-x', x);
                 target.setAttribute('data-y', y);
