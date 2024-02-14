@@ -29,8 +29,8 @@
             <img src={{ asset('medias/filter-green.png') }}>
         </section>
         <section class="posts">
-
-            {% for post in posts %}
+            {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
+            {% for post in sortedPosts %}
                 <div class="post">
                     <div class="autor">
                         {% if post.getUser().getAvatarImg() is not null %}
@@ -41,8 +41,13 @@
 
                         <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
                     </div>
-                    <div class="img-ressource"><img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post"></div>
-                    <p class="category">Category 1</p>
+                    {% set postImages = images[post.id] %}
+                    {% if postImages is not empty %}
+                        <div class="img-ressource">
+                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                        </div>
+                    {% endif %}
+                    <p class="category">{{ post.type }}</p>
                     <h2 class="title-ressource">{{ post.title }}</h2>
                     <p class="description-ressource">{{ post.description }}</p>
                     <button class="button-more-ressource" type="button"><a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>

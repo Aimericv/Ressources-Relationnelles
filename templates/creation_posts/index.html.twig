@@ -27,17 +27,24 @@
                     <option value="well-being">Bien-être</option>
                 </select>
             </div>
+            <div>
+                <label for="address">Ou se trouve votre ressource ?</label>
+                <input type="text" name="address" id="address">
+            </div>
         </section>
         <section id="create-post">
             <article>
                 <a href="#" id="add-text-btn" class="fonct-btn fonct">Text</a>
                 <a href="#" id="add-image-btn" class="fonct-btn fonct">Image</a>
-                <input type="file" id="image-input" style="display: none;">
                 <div id="inner-dropzone" class="dropzone fonct-btn">Drop</div>
             </article>
         </section>
         <section id="create-btn">
-            <a href="#">Créer la Ressource</a>
+            <form method="post" action="{{ path('app_creation_posts_add') }}" enctype="multipart/form-data">
+                <input type="file" id="image-input" name="image-input">
+                <input type="text" name="json_data" id="data_input">
+                <button type="submit" id="submit_button">Créer votre Ressource</button>
+            </form>
         </section>
     </main>
 

@@ -41,8 +41,13 @@
 
                     <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
                 </div>
-                <div class="img-ressource"><img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post"></div>
-                <p class="category">Catégorie : {{ post.getType() }}</p>
+                {% set postImages = images[post.id] %}
+                    {% if postImages is not empty %}
+                        <div class="img-ressource">
+                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                        </div>
+                    {% endif %}
+                <p class="category">Catégorie : {{ post.type }}</p>
                 <h2 class="title-ressource">{{ post.title }}</h2>
                 <p class="description-ressource">{{ post.description }}</p>
                 <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
@@ -58,19 +63,30 @@
         </section>
 
         <section class="posts">
+            {% set sortedPosts = posts|sort((a, b) => b.id - a.id)|slice(0, 6) %}
 
-            {% for post in posts %}
-                <div class="post">
-                    <div class="autor">
-                        <img src="{{ asset("medias/user-green.png") }}">
-                        <p>Auteur 1</p>
-                    </div>
-                    <div class="img-ressource"><img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post"></div>
-                    <p class="category">Category 1</p>
-                    <h2 class="title-ressource">{{ post.title }}</h2>
-                    <p class="description-ressource">{{ post.description }}</p>
-                    <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
+            {% for post in sortedPosts %}
+            <div class="post">
+                <div class="autor">
+                    {% if post.getUser().getAvatarImg() is not null %}
+                        <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                    {% else %}
+                        <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                    {% endif %}
+
+                    <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
                 </div>
+                {% set postImages = images[post.id] %}
+                    {% if postImages is not empty %}
+                        <div class="img-ressource">
+                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                        </div>
+                    {% endif %}
+                <p class="category">Catégorie : {{ post.type }}</p>
+                <h2 class="title-ressource">{{ post.title }}</h2>
+                <p class="description-ressource">{{ post.description }}</p>
+                <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
+            </div>
             {% endfor %}
 
         </section>

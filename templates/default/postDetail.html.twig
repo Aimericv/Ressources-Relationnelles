@@ -8,27 +8,30 @@
     {% endblock %}
     <main class="container">
         <section class="ressources">
-            <h1>{{ post.title }}</h1>
-            <img class="img-ressource" src="{{ asset('/images/' ~ post.img) }}" alt="Image du Post">
-            <h2>Contenu</h2>
-            <p>{{ post.content }}</p>
-            <article>
-                <img src="https://www.movetia.ch/fileadmin/user_upload/Bilder/PB_Jugend/movetia-B2-Jugendbegegnungen-02.jpg" alt="Rencontre">
-                <img src="{{ asset('medias/carte.png') }}" style="width: 20%" alt="Lieu d'activité">
-            </article>
+            <h1>{{ post.getTitle() }}</h1>
             <article>
                 <h2>Lieu d'activité : </h2>
-                <p>{{ post.getAddress().toString() }}</p>
+                <p>{{ post.getAddress() }}</p>
             </article>
             <h2>Type :</h2>
             <p> {{ post.getType() }}</p>
         </section>
+        <section style="position: relative;min-height: 70vh; margin-top:40px">
+            {% for img in images %}
+                <img src="{{ img.src }}" alt="Rencontre" style="position: absolute; top:{{ img.y }}px; left:{{ img.x }}px; width: {{ img.width }}px; height: {{ img.height }}px; z-index:-1;">
+            {% endfor %}
+            {% for paragraph in paragraphes %}
+                <div style="position: absolute; top:{{ paragraph.y }}px; left:{{ paragraph.x }}px; width: {{ paragraph.width }}px; height: {{ paragraph.height }}px; z-index:-1;">
+                    {{ paragraph.getContent()|raw }}
+                </div>
+            {% endfor %}                 
+        </section>
         <section class="actions-section">
             <article class="actions">
-                <img src="medias/like-green.png" alt="Liker">
-                <img src="medias/favorite-green.png" alt="Enregistrer">
-                <img src="medias/exploited-green.png" alt="Exploiter">
-                <img src="medias/send-green.png" alt="Partager">
+                <img src="{{ asset('medias/like-green.png')}}" alt="Liker">
+                <img src="{{ asset('medias/favorite-green.png')}}" alt="Enregistrer">
+                <img src="{{ asset('medias/exploited-green.png')}}" alt="Exploiter">
+                <img src="{{ asset('medias/send-green.png')}}" alt="Partager">
             </article>
             <article class="space">
                 <div class="line"></div>
@@ -39,40 +42,40 @@
         <section class="comment-section">
             <article class="comment">
                 <div class="comment-user">
-                    <img src="medias/user-green.png" alt="Avatar user">
+                    <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
                     <a href="#">User 1</a>
                 </div>
                 <div>
                     <p>Aenean dapibus consectetur urna eget hendrerit. Nulla fringilla, dolor vitae consectetur sodales, nulla quam tristique mauris, vel tempor quam nisl blandit magna.</p>
                 </div>
                 <div class="comment-actions">
-                    <img src="medias/like-green.png" alt="like">
+                    <img src="{{ asset('medias/like-green.png')}}" alt="like">
                     <a href="#add-comment">Répondre</a>
                 </div>
             </article>
             <article class="answer-comment comment">
                 <div class="comment-user">
-                    <img src="medias/user-green.png" alt="Avatar user">
+                    <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
                     <a href="#">User 2</a>
                 </div>
                 <div>
                     <p><a href="#">@user1</a> Aenean dapibus consectetur urna eget hendrerit. Nulla fringilla, dolor vitae consectetur sodales, nulla quam tristique mauris, vel tempor quam nisl blandit magna.</p>
                 </div>
                 <div class="comment-actions">
-                    <img src="medias/like-green.png" alt="like">
+                    <img src="{{ asset('medias/like-green.png')}}" alt="like">
                     <a href="#add-comment">Répondre</a>
                 </div>
             </article>
             <article class="comment">
                 <div class="comment-user">
-                    <img src="medias/user-green.png" alt="Avatar user">
+                    <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
                     <a href="#">User 3</a>
                 </div>
                 <div>
                     <p>Aenean dapibus consectetur urna eget hendrerit. Nulla fringilla, dolor vitae consectetur sodales, nulla quam tristique mauris, vel tempor quam nisl blandit magna.</p>
                 </div>
                 <div class="comment-actions">
-                    <img src="medias/like-green.png" alt="like">
+                    <img src="{{ asset('medias/like-green.png')}}" alt="like">
                     <a href="#add-comment">Répondre</a>
                 </div>
             </article>

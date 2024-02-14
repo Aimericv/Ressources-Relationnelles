@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -17,12 +18,6 @@ class Post
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $img = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $content = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -34,8 +29,11 @@ class Post
     #[ORM\ManyToOne]
     private ?PostStatus $status = null;
 
-    #[ORM\ManyToOne]
-    private ?Address $address = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created_at = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
 
     public function getId(): ?int
     {
@@ -57,36 +55,6 @@ class Post
     public function setTitle(?string $title): static
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getImg(): ?string
-    {
-        return $this->img;
-    }
-
-    /**
-     * @param string|null $img
-     */
-    public function setImg(?string $img): void
-    {
-        $this->img = $img;
-    }
-
-
-
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-
-    public function setContent(?string $content): static
-    {
-        $this->content = $content;
 
         return $this;
     }
@@ -139,12 +107,24 @@ class Post
         return $this;
     }
 
-    public function getAddress(): ?Address
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): static
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    public function setAddress(?Address $address): static
+    public function setAddress(?string $address): static
     {
         $this->address = $address;
 
