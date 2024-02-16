@@ -110,21 +110,7 @@ class DefaultController extends AbstractController
     }
 
 
-    #[Route("/test", name: "app_post_detail")]
-    public function postDetailtest($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
-    {
-        $post = $postRepository->find($id);
-        $user = $post->getUser();
-        $images = $imagesRepository->findBy(['post_id' => $id]);
-        $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
 
-        return $this->render('default/postDetail.html.twig', [
-            'user' => $user,
-            'post' => $post,
-            'images' => $images,
-            'paragraphes' => $paragraphes
-        ]);
-    }
 
     /* Route /user dans userController */
 

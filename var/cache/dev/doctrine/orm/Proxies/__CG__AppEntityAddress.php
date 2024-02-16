@@ -7,7 +7,7 @@ namespace Proxies\__CG__\App\Entity;
  */
 class Address extends \App\Entity\Address implements \Doctrine\ORM\Proxy\InternalProxy
 {
-    use \Symfony\Component\VarExporter\LazyGhostTrait {
+     use \Symfony\Component\VarExporter\LazyGhostTrait {
         initializeLazyObject as __load;
         setLazyObjectAsInitialized as public __setInitialized;
         isLazyObjectInitialized as private;
@@ -26,7 +26,7 @@ class Address extends \App\Entity\Address implements \Doctrine\ORM\Proxy\Interna
         'pays' => [parent::class, 'pays', null],
         'rue' => [parent::class, 'rue', null],
         'ville' => [parent::class, 'ville', null],
-    ];
+    ];
 
     public function __construct(?\Closure $initializer = null, ?\Closure $cloner = null)
     {
