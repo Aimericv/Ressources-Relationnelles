@@ -324,7 +324,23 @@
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
     </service>
+    <service id="App\Repository\AdminCommentRepository" class="App\Repository\AdminCommentRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\CommentRepository" class="App\Repository\CommentRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\CommentResponseRepository" class="App\Repository\CommentResponseRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
     <service id="App\Repository\FavoriteRepository" class="App\Repository\FavoriteRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\FollowRepository" class="App\Repository\FollowRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
     </service>
@@ -3831,7 +3847,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.cPxMeqf"/>
+      <argument type="service" id=".service_locator.7.DcjNX"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -5811,8 +5827,16 @@
     <service id=".abstract.instanceof.App\Form\RegistrationFormType" class="App\Form\RegistrationFormType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AddressRepository" class="App\Repository\AddressRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\AddressRepository" class="App\Repository\AddressRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AdminCommentRepository" class="App\Repository\AdminCommentRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\AdminCommentRepository" class="App\Repository\AdminCommentRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CommentRepository" class="App\Repository\CommentRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\CommentRepository" class="App\Repository\CommentRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CommentResponseRepository" class="App\Repository\CommentResponseRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\CommentResponseRepository" class="App\Repository\CommentResponseRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\FavoriteRepository" class="App\Repository\FavoriteRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\FavoriteRepository" class="App\Repository\FavoriteRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\FollowRepository" class="App\Repository\FollowRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\FollowRepository" class="App\Repository\FollowRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\HelpEntityRepository" class="App\Repository\HelpEntityRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\HelpEntityRepository" class="App\Repository\HelpEntityRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ImagesRepository" class="App\Repository\ImagesRepository" autowire="true" abstract="true"/>
@@ -6681,11 +6705,15 @@
         <argument key="doctrine.orm.listeners.pdo_session_handler_schema_listener" type="service_closure" id="doctrine.orm.listeners.pdo_session_handler_schema_listener"/>
       </argument>
     </service>
-    <service id=".service_locator.cPxMeqf" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.7.DcjNX" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Repository\AddressRepository" type="service_closure" id="App\Repository\AddressRepository"/>
+        <argument key="App\Repository\AdminCommentRepository" type="service_closure" id="App\Repository\AdminCommentRepository"/>
+        <argument key="App\Repository\CommentRepository" type="service_closure" id="App\Repository\CommentRepository"/>
+        <argument key="App\Repository\CommentResponseRepository" type="service_closure" id="App\Repository\CommentResponseRepository"/>
         <argument key="App\Repository\FavoriteRepository" type="service_closure" id="App\Repository\FavoriteRepository"/>
+        <argument key="App\Repository\FollowRepository" type="service_closure" id="App\Repository\FollowRepository"/>
         <argument key="App\Repository\HelpEntityRepository" type="service_closure" id="App\Repository\HelpEntityRepository"/>
         <argument key="App\Repository\ImagesRepository" type="service_closure" id="App\Repository\ImagesRepository"/>
         <argument key="App\Repository\LikeRepository" type="service_closure" id="App\Repository\LikeRepository"/>

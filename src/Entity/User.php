@@ -50,9 +50,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private Role $role;
 
-    #[ORM\ManyToOne]
-    private ?Address $address = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
@@ -65,6 +62,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'admin', targetEntity: AdminComment::class)]
     private Collection $adminComments;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
+    private Collection $comments;
+
+    #[ORM\OneToMany(mappedBy: 'follower', targetEntity: Follow::class)]
+    private Collection $follows;
+
+    #[ORM\OneToMany(mappedBy: 'following', targetEntity: Follow::class)]
+    private Collection $following;
+
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
 
     public function __construct()
     {
@@ -72,6 +81,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->post = new ArrayCollection();
         $this->userParticipations = new ArrayCollection();
         $this->adminComments = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->follows = new ArrayCollection();
+        $this->following = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,18 +166,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(?Role $role): static
     {
         $this->role = $role;
-
-        return $this;
-    }
-
-    public function getAddress(): ?Address
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?Address $address): static
-    {
-        $this->address = $address;
 
         return $this;
     }
@@ -328,6 +328,108 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $adminComment->setAdmin(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follow>
+     */
+    public function getFollows(): Collection
+    {
+        return $this->follows;
+    }
+
+    public function addFollow(Follow $follow): static
+    {
+        if (!$this->follows->contains($follow)) {
+            $this->follows->add($follow);
+            $follow->setFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollow(Follow $follow): static
+    {
+        if ($this->follows->removeElement($follow)) {
+            // set the owning side to null (unless already changed)
+            if ($follow->getFollower() === $this) {
+                $follow->setFollower(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follow>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    public function addFollowing(Follow $following): static
+    {
+        if (!$this->following->contains($following)) {
+            $this->following->add($following);
+            $following->setFollowing($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(Follow $following): static
+    {
+        if ($this->following->removeElement($following)) {
+            // set the owning side to null (unless already changed)
+            if ($following->getFollowing() === $this) {
+                $following->setFollowing(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }
