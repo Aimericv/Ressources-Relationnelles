@@ -31,6 +31,58 @@ class UserRepository extends ServiceEntityRepository
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
     }
 
+    public function findByStatsForLatestMonth(): int
+    {
+        $dateOneMonthAgo = new \DateTime('-1 month');
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.created_at >= :date_one_month_ago')
+            ->setParameter('date_one_month_ago', $dateOneMonthAgo)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findByStatsForLastThreeMonths(): int
+    {
+        $dateThreeMonthsAgo = new \DateTime('-3 months');
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.created_at >= :date_three_months_ago')
+            ->setParameter('date_three_months_ago', $dateThreeMonthsAgo)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findByStatsForLastSixMonths(): int
+    {
+        $dateSixMonthsAgo = new \DateTime('-6 months');
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.created_at >= :date_six_months_ago')
+            ->setParameter('date_six_months_ago', $dateSixMonthsAgo)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findByStatsForLatestYear(): int
+    {
+        $dateOneYearAgo = new \DateTime('-1 year');
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.created_at >= :date_one_year_ago')
+            ->setParameter('date_one_year_ago', $dateOneYearAgo)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findByAllStats(): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

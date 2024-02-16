@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DefaultController extends AbstractController
 {
@@ -49,8 +50,12 @@ class DefaultController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
+        $visitDate = new \DateTime();
+        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
+
+
         $posts = $postRepository->findAll();
         $images = $imagesRepository->findAll();
         $imagesPosts = [];
@@ -92,10 +97,12 @@ class DefaultController extends AbstractController
     public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
+        $user = $post->getUser();
         $images = $imagesRepository->findBy(['post_id' => $id]);
         $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
     
         return $this->render('default/postDetail.html.twig', [
+            'user' => $user,
             'post' => $post,
             'images' => $images,
             'paragraphes' => $paragraphes

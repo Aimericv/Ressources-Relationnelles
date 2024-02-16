@@ -21,5 +21,14 @@ class ParagraphesRepository extends ServiceEntityRepository
         parent::__construct($registry, Paragraphes::class);
     }
 
+    public function findByPostId(int $postId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.post_id = :postId')
+            ->setParameter('postId', $postId)
+            ->getQuery()
+            ->getResult();
+    }
+
     // Ajoutez ici vos méthodes personnalisées si nécessaire
 }

@@ -23,15 +23,15 @@
             </article>
             <article id="stat-value">
                 <div>
-                    <p>12</p>
+                    <p id="show-visits-stat">{{ visits }}</p>
                     <p>Visites</p>
                 </div>
                 <div>
-                    <p>130</p>
+                    <p id="show-post-stat">{{ postStats }}</p>
                     <p>Création de ressources</p>
                 </div>
                 <div>
-                    <p>74</p>
+                    <p id="show-user-stat">{{ userStats }}</p>
                     <p>Création de comptes</p>
                 </div>
                 <div>
@@ -358,51 +358,7 @@
             </article>
         </section>
     </main> 
-    <script>
-        const users = document.querySelectorAll('#account-value p');
-        const formAccount = document.getElementById('account-form');
-        const body = document.querySelector('body');
-        const valid = document.getElementById('valid-account');
-        const addCat = document.getElementById('add-cat');
-        const btnCatForms = document.querySelectorAll('.back-cat-form');
-        const formCat = document.getElementById('form-cat');
-        const savFormBtns = document.querySelectorAll('.open-sav-form');
-        const savForm = document.getElementById('sav-form');
-        const backSavForms = document.querySelectorAll('.back-sav-form');
-        
-        users.forEach((user) => {
-            user.addEventListener('click', () => {
-                formAccount.style.display = 'flex';
-                body.style.overflow = 'hidden';
-            });
-        });
-        valid.addEventListener('click', ()=> {
-            formAccount.style.display = 'none';
-            body.style.overflow = 'auto';
-        });
-        addCat.addEventListener('click', () => {
-            formCat.style.display = "flex";
-            body.style.overflow = "hidden";
-        });
-        btnCatForms.forEach((btnCatForm) => {
-            btnCatForm.addEventListener('click', () => {
-                formCat.style.display = "none";
-                body.style.overflow = "auto";
-            })
-        });
-        savFormBtns.forEach((savFormBtn) => {
-            savFormBtn.addEventListener('click', () => {
-                savForm.style.display = "flex";
-                body.style.overflow = "hidden";
-            })
-        });
-        backSavForms.forEach((backSavForm) => {
-            backSavForm.addEventListener('click', () => {
-                savForm.style.display = "none";
-                body.style.overflow = "auto";
-            })
-        })
-    </script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
     
 </body>
 {% endblock %}

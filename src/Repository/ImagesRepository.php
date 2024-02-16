@@ -13,12 +13,23 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Images|null findOneBy(array $criteria, array $orderBy = null)
  * @method Images[]    findAll()
  * @method Images[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Images|null findOneBySrc(string $src)
+ * @method Images[]    findBySrc(string $src)
  */
 class ImagesRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Images::class);
+    }
+
+    public function findByPostId(int $postId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.post_id = :postId')
+            ->setParameter('postId', $postId)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

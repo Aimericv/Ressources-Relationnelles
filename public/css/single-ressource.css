@@ -26,7 +26,47 @@ p, h1, h2, h3, h4, h5, h6 {
 .ressources {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 20px;
+}
+
+.post-infos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.post-infos>div {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.ressource-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ressource-section>* {
+    object-fit: contain;
+    margin: auto;
+    width: 80%;
+}
+
+#user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+#user-block {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    margin: 10px 0;
 }
 
 /* ----- ACTIONS ----- */
@@ -119,23 +159,19 @@ a:hover {
     .container {
         width: 720px;
     }
-    .ressources {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-    .ressources>* {
-        flex: 1 1 90%;
-    }
-    .ressources>article {
-        flex: 1 1 40%;
-        margin: 30px 0;
+    .ressources>article:nth-child(1) {
+        margin-top: 30px;
     }
     .ressources article p, .ressources article h2 {
         text-align: start;
+        font-size: 1.2rem;
     }
     .answer-comment {
         margin-left: 100px;
+    }
+    .post-infos {
+        flex-direction: row;
+        justify-content: space-between;
     }
 }
 
@@ -148,5 +184,8 @@ a:hover {
     }
     .answer-comment {
         margin-left: 150px;
+    }
+    .ressource-section>* {
+        position: absolute;
     }
 }

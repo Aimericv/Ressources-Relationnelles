@@ -5,14 +5,17 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Entity\Paragraphes;
 use App\Entity\Images;
-use App\Entity\PostStatus; // Assurez-vous d'importer l'entité PostStatus
-use Doctrine\ORM\EntityManagerInterface; // Importez l'interface EntityManagerInterface
+use App\Entity\PostStatus;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\ImagesRepository;
+
 
 class CreationPostsController extends AbstractController
 {
@@ -39,8 +42,6 @@ class CreationPostsController extends AbstractController
     public function add(Request $request): Response
     {
         $userId = $this->security->getUser()->getId();
-
-        // Récupérer les données JSON depuis la requête
         $jsonData = json_decode($request->request->get('json_data'), true);
 
 
@@ -51,177 +52,205 @@ class CreationPostsController extends AbstractController
         $post->setDescription($jsonData[0]['description']); // Récupérer la description du premier élément du tableau JSON
         $post->setType($jsonData[0]['category']);
         $post->setCreatedAt(new \DateTime());
-
-        $postStatus = $entityManager->getRepository(PostStatus::class)->findOneBy(['name' => 'Pending']);
-        if (!$postStatus) {
-            throw new \Exception('Statut de post non trouvé');
-        }
-        $post->setStatus($postStatus);
-
+        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
         $userRepository = $entityManager->getRepository(User::class);
         $user = $userRepository->find($userId);
-
-        if (!$user) {
-            throw new \Exception('Utilisateur non trouvé');
-        }
-
         $post->setUser($user);
-
+        $post->setAddress($jsonData[0]['address']);
         $entityManager->persist($post);
-
-//////////////////////////////////
-
-$uploadedFile = $request->files->get('image-input');
-var_dump($uploadedFile);
-
-if ($uploadedFile) {
-    $fileName = md5(uniqid()) . '.' . $uploadedFile->getClientOriginalExtension();
-    $directory = $this->getParameter('kernel.project_dir') . '/public/images/post/';
-    $uploadedFile->move($directory, $fileName);
-    $imagePath = '/images/post/' . $fileName;
-
-    var_dump($jsonData);
-
-    foreach ($jsonData as $key => $element) {
-        if ($key === 0) {
-            continue;
-        }
-        if ($element['type'] == 'paragraph') {
-            $paragraph = new Paragraphes();
-            $paragraph->setContent($element['content']);
-            $paragraph->setWidth($element['width']);
-            $paragraph->setHeight($element['height']);
-            $paragraph->setX($element['x']);
-            $paragraph->setY($element['y']);
-            $paragraph->setPostId($post);
-            $entityManager->persist($paragraph);
-            echo("para ok");
-        } elseif ($element['type'] == 'image') {
-            $image = new Images();
-            $image->setSrc($imagePath);
-            $image->setWidth($element['width']);
-            $image->setHeight($element['height']);
-            $image->setX($element['x']);
-            $image->setY($element['y']);
-            $image->setPostId($post);
-            $entityManager->persist($image);
-            echo("image ok");
-        }
-    }
-}
-
         $entityManager->flush();
+
+        foreach ($jsonData as $key => $element) {
+            if ($element['type'] == 'paragraph') {
+                $paragraph = new Paragraphes();
+                $paragraph->setContent($element['content']);
+                $paragraph->setWidth($element['width']);
+                $paragraph->setHeight($element['height']);
+                $paragraph->setX($element['x']);
+                $paragraph->setY($element['y']);
+                $paragraph->setPostId($post);
+                $entityManager->persist($paragraph);
+                $entityManager->flush();
+            } elseif ($element['type'] == 'image') {
+                $image = new Images();
+                $image->setSrc($element['src']);
+                $image->setWidth($element['width']);
+                $image->setHeight($element['height']);
+                $image->setX($element['x']);
+                $image->setY($element['y']);
+                $image->setPostId($post);
+                $entityManager->persist($image);
+                $entityManager->flush();
+            }
+        }
 
         return new Response('Post ajouté avec succès', Response::HTTP_OK);
     }
+
 
     #[Route('/modification-posts/{id}', name: 'app_modification_posts')]
     public function modify(Request $request, $id): Response
     {
         $userId = $this->security->getUser()->getId();
-
         $entityManager = $this->entityManager;
 
-        // Trouver le post à modifier
+        $post = $entityManager->getRepository(Post::class)->find($id);
+        $paragraphs = $entityManager->getRepository(Paragraphes::class)->findByPostId($id);
+        $images = $entityManager->getRepository(Images::class)->findByPostId($id);        
+
+        if (!$post) {
+            throw new \Exception('Post non trouvé');
+        }
+        return $this->render('creation_posts/index.html.twig', [
+            'post' => $post,
+            'images' => $images,
+            'paragraphes' => $paragraphs
+        ]);
+    }
+
+
+    #[Route('/modification-posts/{id}/edit', name: 'app_modification_posts_edit')]
+    public function edit(Request $request, $id): Response
+    {
+        $jsonData = json_decode($request->request->get('json_data'), true);
+        var_dump($jsonData);
+        $entityManager = $this->entityManager;
+
         $post = $entityManager->getRepository(Post::class)->find($id);
 
         if (!$post) {
             throw new \Exception('Post non trouvé');
         }
 
-        // Récupérer les données JSON depuis la requête
-        $jsonData = json_decode($request->request->get('json_data'), true);
-
-        $post->setTitle($jsonData[0]['title']); // Modifier le titre du post
-        $post->setDescription($jsonData[0]['description']); // Modifier la description du post
+        $post->setTitle($jsonData[0]['title']);
+        $post->setDescription($jsonData[0]['description']);
         $post->setType($jsonData[0]['category']);
-
-        // Mettre à jour la date de modification
-        $post->setModifiedAt(new \DateTime());
-
-        // Mettre à jour le statut du post s'il y a lieu
-        if (isset($jsonData[0]['status'])) {
-            $postStatus = $entityManager->getRepository(PostStatus::class)->findOneBy(['name' => $jsonData[0]['status']]);
-            if (!$postStatus) {
-                throw new \Exception('Statut de post non trouvé');
-            }
-            $post->setStatus($postStatus);
-        }
+        $post->setCreatedAt(new \DateTime());
+        $post->setAddress($jsonData[0]['address']);
+        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
 
         $entityManager->persist($post);
+        $entityManager->flush();
 
-        // Gérer les modifications d'image ou de contenu de paragraphe
-        $uploadedFile = $request->files->get('image-input');
-        if ($uploadedFile) {
-            $fileName = md5(uniqid()) . '.' . $uploadedFile->getClientOriginalExtension();
-            $directory = $this->getParameter('kernel.project_dir') . '/public/images/post/';
-            $uploadedFile->move($directory, $fileName);
-            $imagePath = '/images/post/' . $fileName;
-
-            foreach ($jsonData as $key => $element) {
-                if ($key === 0) {
-                    continue;
+        foreach ($jsonData as $key => $element) {
+            if ($element['type'] == "image") {
+                if ($element['id'] != "") {
+                    $imageId = $element['id'];
+                    $imageRepository = $entityManager->getRepository(Images::class);
+                    $image = $imageRepository->find($imageId);
                 }
-                if ($element['type'] == 'paragraph') {
-                    // Modifier le contenu du paragraphe existant
-                    $paragraphId = $element['id']; // Supposons que l'identifiant du paragraphe soit envoyé depuis le frontend
-                    $paragraph = $entityManager->getRepository(Paragraphes::class)->find($paragraphId);
-                    if ($paragraph) {
-                        $paragraph->setContent($element['content']);
-                        $entityManager->persist($paragraph);
-                    }
-                } elseif ($element['type'] == 'image') {
-                    // Modifier le chemin de l'image existante
-                    $imageId = $element['id']; // Supposons que l'identifiant de l'image soit envoyé depuis le frontend
-                    $image = $entityManager->getRepository(Images::class)->find($imageId);
-                    if ($image) {
-                        $image->setSrc($imagePath);
-                        $entityManager->persist($image);
-                    }
+                else {
+                    $image = new Images();
                 }
+                $image->setWidth($element['width']);
+                $image->setHeight($element['height']);
+                $image->setX($element['x']);
+                $image->setY($element['y']);
+                $image->setPostId($post);
+                $image->setSrc($element['src']);
+                $entityManager->persist($image);
+                $entityManager->flush();
+            }
+            
+            if ($element['type'] == 'paragraph') {
+                if (!isset($element['id']) || $element['id'] == "") {
+                    $paragraph = new Paragraphes();
+                } else {
+                    $paragraphId = $element['id'];
+                    $paragraphRepository = $entityManager->getRepository(Paragraphes::class);
+                    $paragraph = $paragraphRepository->find($paragraphId);
+                }
+                if($element['content'] == "" || $element['content'] == null) {
+                    $paragraph->setContent("");
+                }else{
+                    $paragraph->setContent($element['content']);
+                }
+                $paragraph->setWidth($element['width']);
+                $paragraph->setHeight($element['height']);
+                $paragraph->setX($element['x']);
+                $paragraph->setY($element['y']);
+                $paragraph->setPostId($post);
+                $entityManager->persist($paragraph);
+                $entityManager->flush();
             }
         }
-
-        $entityManager->flush();
 
         return new Response('Post modifié avec succès', Response::HTTP_OK);
     }
 
 
+    #[Route('/modification-post/upload', name: 'app_modification_posts_upload')]
+    public function upload(Request $request)
+    {
+        $uploadedFile = $request->files->get('file'); // Récupérer le fichier
+        $imageName = $request->request->get('image-name'); // Récupérer le nom de l'image
 
-    #[Route('/suppression-posts/{id}', name: 'app_suppression_posts')]
+        if ($imageName !== null && $uploadedFile !== null) {
+            $directory = $this->getParameter('kernel.project_dir') . '/public/images/post/';
+            $uploadedFile->move($directory, $imageName);
+            return new Response('Image uploaded successfully', Response::HTTP_OK);
+        }
+
+        return new Response('No file uploaded or invalid request', Response::HTTP_BAD_REQUEST);
+    }
+
+
+    #[Route('/modification-post/delete', name: 'app_modification_post_delete')]
+    public function deleteImage(Request $request, EntityManagerInterface $entityManager, ImagesRepository $imageRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $imageName = $data['imageName'];
+
+        $filePath = $this->getParameter('kernel.project_dir') . '/public' . $imageName;
+
+        if (file_exists($filePath)) {
+            unlink($filePath);
+
+            $image = $imageRepository->findOneBySrc($imageName);
+
+            if ($image != null) {
+                $entityManager->remove($image);
+                $entityManager->flush();
+            }
+
+            return new Response('Image deleted successfully', Response::HTTP_OK);
+        } else {
+            return new Response('File not found: ' . $filePath, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+
+
+
+    #[Route('/delete-posts/{id}', name: 'app_delete_posts')]
     public function delete($id): Response
     {
         $entityManager = $this->entityManager;
-
-        // Trouver le post à supprimer
         $post = $entityManager->getRepository(Post::class)->find($id);
 
         if (!$post) {
             throw new \Exception('Post non trouvé');
         }
 
-        // Supprimer les images associées au post
-        $images = $post->getImages();
+        $images = $entityManager->getRepository(Images::class)->findByPostId($id);
         foreach ($images as $image) {
             $imagePath = $this->getParameter('kernel.project_dir') . '/public' . $image->getSrc();
             if (file_exists($imagePath)) {
-                unlink($imagePath); // Supprimer le fichier image du répertoire public
+                unlink($imagePath); 
             }
-            $entityManager->remove($image); // Supprimer l'entité image de la base de données
+            $entityManager->remove($image);
         }
 
-        // Supprimer les paragraphes associés au post
-        $paragraphs = $post->getParagraphes();
+        $paragraphs = $entityManager->getRepository(Paragraphes::class)->findByPostId($id);
         foreach ($paragraphs as $paragraph) {
-            $entityManager->remove($paragraph); // Supprimer l'entité paragraphe de la base de données
+            $entityManager->remove($paragraph);
         }
 
-        // Supprimer le post lui-même
         $entityManager->remove($post);
         $entityManager->flush();
 
         return new Response('Post et ses éléments associés supprimés avec succès', Response::HTTP_OK);
     }
+
 
 }
