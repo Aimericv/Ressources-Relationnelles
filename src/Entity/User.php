@@ -5,6 +5,8 @@ namespace App\Entity;
 
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -54,10 +56,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
+    #[ORM\ManyToMany(targetEntity: Favorite::class, mappedBy: 'user')]
+    private Collection $post;
+
+    #[ORM\ManyToMany(targetEntity: UserParticipation::class, mappedBy: 'user')]
+    private Collection $userParticipations;
+
+    #[ORM\OneToMany(mappedBy: 'admin', targetEntity: AdminComment::class)]
+    private Collection $adminComments;
+
 
     public function __construct()
     {
         $this->roles = $this->roles ?? ['ROLE_USER'];
+        $this->post = new ArrayCollection();
+        $this->userParticipations = new ArrayCollection();
+        $this->adminComments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -230,6 +244,90 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeInterface $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getPost(): Collection
+    {
+        return $this->post;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorite->contains($favorite)) {
+            $this->favorite->add($favorite);
+            $favorite->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorite->removeElement($favorite)) {
+            $favorite->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserParticipation>
+     */
+    public function getUserParticipations(): Collection
+    {
+        return $this->userParticipations;
+    }
+
+    public function addUserParticipation(UserParticipation $userParticipation): static
+    {
+        if (!$this->userParticipations->contains($userParticipation)) {
+            $this->userParticipations->add($userParticipation);
+            $userParticipation->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserParticipation(UserParticipation $userParticipation): static
+    {
+        if ($this->userParticipations->removeElement($userParticipation)) {
+            $userParticipation->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AdminComment>
+     */
+    public function getAdminComments(): Collection
+    {
+        return $this->adminComments;
+    }
+
+    public function addAdminComment(AdminComment $adminComment): static
+    {
+        if (!$this->adminComments->contains($adminComment)) {
+            $this->adminComments->add($adminComment);
+            $adminComment->setAdmin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdminComment(AdminComment $adminComment): static
+    {
+        if ($this->adminComments->removeElement($adminComment)) {
+            // set the owning side to null (unless already changed)
+            if ($adminComment->getAdmin() === $this) {
+                $adminComment->setAdmin(null);
+            }
+        }
 
         return $this;
     }

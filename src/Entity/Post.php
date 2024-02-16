@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +36,22 @@ class Post
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
+
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Favorite::class)]
+    private Collection $favorites;
+
+    #[ORM\ManyToMany(targetEntity: UserParticipation::class, mappedBy: 'post')]
+    private Collection $userParticipations;
+
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: AdminComment::class)]
+    private Collection $adminComments;
+
+    public function __construct()
+    {
+        $this->favorites = new ArrayCollection();
+        $this->userParticipations = new ArrayCollection();
+        $this->adminComments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -127,6 +145,93 @@ class Post
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            // set the owning side to null (unless already changed)
+            if ($favorite->getPost() === $this) {
+                $favorite->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserParticipation>
+     */
+    public function getUserParticipations(): Collection
+    {
+        return $this->userParticipations;
+    }
+
+    public function addUserParticipation(UserParticipation $userParticipation): static
+    {
+        if (!$this->userParticipations->contains($userParticipation)) {
+            $this->userParticipations->add($userParticipation);
+            $userParticipation->addPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserParticipation(UserParticipation $userParticipation): static
+    {
+        if ($this->userParticipations->removeElement($userParticipation)) {
+            $userParticipation->removePost($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AdminComment>
+     */
+    public function getAdminComments(): Collection
+    {
+        return $this->adminComments;
+    }
+
+    public function addAdminComment(AdminComment $adminComment): static
+    {
+        if (!$this->adminComments->contains($adminComment)) {
+            $this->adminComments->add($adminComment);
+            $adminComment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdminComment(AdminComment $adminComment): static
+    {
+        if ($this->adminComments->removeElement($adminComment)) {
+            // set the owning side to null (unless already changed)
+            if ($adminComment->getPost() === $this) {
+                $adminComment->setPost(null);
+            }
+        }
 
         return $this;
     }
