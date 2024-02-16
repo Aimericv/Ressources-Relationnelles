@@ -105,6 +105,15 @@ public function findByAllStats(?int $userId = null): int
         ->getSingleScalarResult();
 }
 
+    //Search barre
+    public function findByTitle($term)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.title LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
+            ->getQuery()
+            ->getResult();
+    }
     
 
 //    /**

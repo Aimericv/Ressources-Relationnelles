@@ -20,6 +20,9 @@
             padding-top: 90px;
             padding-bottom: 100px;
         }
+        .hidden {
+            display: none;
+        }
         @media (min-width: 768px){
             .footer{
                 position: static;
@@ -38,7 +41,30 @@
             <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
             <a href="{{ path('app_user') }}"><li><img src="{{ asset('medias/user-white.png') }}"></li></a>
         </ul>
-        <img src={{ asset('medias/search-white.png') }}>
+        <a id="searchIcon"><img src={{ asset('medias/search-white.png') }}></a>
+
+        <!-- Ajoutez une classe à votre barre de recherche pour la manipuler avec JavaScript -->
+        <form id="searchForm" class="hidden" action="{{ path('app_post_search') }}" method="GET">
+            <input type="text" name="term" placeholder="Rechercher par titre...">
+            <button type="submit">Rechercher</button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchIcon = document.getElementById('searchIcon');
+                const searchForm = document.getElementById('searchForm');
+
+                searchIcon.addEventListener('click', function() {
+                    // Si la classe "hidden" est présente, la barre de recherche est cachée,
+                    // nous devons la montrer et vice versa.
+                    if (searchForm.classList.contains('hidden')) {
+                        searchForm.classList.remove('hidden');
+                    } else {
+                        searchForm.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
     </div>
     <a href="{{ path('app_help') }}" id="help">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"

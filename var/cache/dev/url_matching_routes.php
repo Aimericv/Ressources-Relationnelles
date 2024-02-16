@@ -27,6 +27,10 @@ return [
         '/help/add' => [[['_route' => 'app_help_add', '_controller' => 'App\\Controller\\HelpController::addQuestions'], null, null, null, false, false, null]],
         '/post' => [[['_route' => 'app_post_index', '_controller' => 'App\\Controller\\PostController::index'], null, ['GET' => 0], null, true, false, null]],
         '/register' => [[['_route' => 'app_register', '_controller' => 'App\\Controller\\RegistrationController::register'], null, null, null, false, false, null]],
+        '/search' => [
+            [['_route' => 'app_post_search', '_controller' => 'App\\Controller\\SearchController::search'], null, null, null, false, false, null],
+            [['_route' => 'search_posts', '_controller' => 'App\\Controller\\PostController::search'], null, null, null, false, false, null],
+        ],
         '/login' => [[['_route' => 'app_login', '_controller' => 'App\\Controller\\SecurityController::login'], null, null, null, false, false, null]],
         '/logout' => [[['_route' => 'app_logout', '_controller' => 'App\\Controller\\SecurityController::logout'], null, null, null, false, false, null]],
         '/user' => [[['_route' => 'app_user', '_controller' => 'App\\Controller\\UserController::monCompte'], null, null, null, false, false, null]],
