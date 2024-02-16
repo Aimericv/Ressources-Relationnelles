@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Favorite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class FavoriteRepository extends ServiceEntityRepository
-{
+{ 
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Favorite::class);

@@ -37,7 +37,7 @@ class Favorite
      */
     public function getUser(): Collection
     {
-        return $this->user;
+        return $this->user; 
     }
 
     public function addUser(User $user): static
