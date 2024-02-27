@@ -30,6 +30,9 @@ class Comment
     #[ORM\OneToMany(mappedBy: 'comment', targetEntity: CommentResponse::class)]
     private Collection $commentResponses;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
+
     public function __construct()
     {
         $this->commentResponses = new ArrayCollection();
@@ -102,6 +105,18 @@ class Comment
                 $commentResponse->setComment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }
