@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Favorite;
+use App\Entity\Follow;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Favorite>
+ * @extends ServiceEntityRepository<Follow>
  *
- * @method Favorite|null find($id, $lockMode = null, $lockVersion = null)
- * @method Favorite|null findOneBy(array $criteria, array $orderBy = null)
- * @method Favorite[]    findAll()
- * @method Favorite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Follow|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Follow|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Follow[]    findAll()
+ * @method Follow[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FavoriteRepository extends ServiceEntityRepository
+class FollowRepository extends ServiceEntityRepository
 { 
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Favorite::class);
+        parent::__construct($registry, Follow::class);
     }
 
 //    /**
-//     * @return Favorite[] Returns an array of Favorite objects
+//     * @return Follow[] Returns an array of Follow objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class FavoriteRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Favorite
+//    public function findOneBySomeField($value): ?Follow
 //    {
 //        return $this->createQueryBuilder('f')
 //            ->andWhere('f.exampleField = :val')

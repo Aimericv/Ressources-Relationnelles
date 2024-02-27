@@ -40,7 +40,7 @@ class AdminComment
     public function getContent(): ?string
     {
         return $this->content;
-    }
+    } 
 
     public function setContent(string $content): static
     {

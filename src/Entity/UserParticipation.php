@@ -13,7 +13,7 @@ class UserParticipation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id = null; 
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'userParticipations')]
     private Collection $user;

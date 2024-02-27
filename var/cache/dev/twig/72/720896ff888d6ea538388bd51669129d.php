@@ -48,32 +48,6 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
         // line 7
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("css/header-footer.css"), "html", null, true);
         echo ">
-    <!---
-    <link rel=\"stylesheet\" href=";
-        // line 9
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("css/posts.css"), "html", null, true);
-        echo ">
-    <link rel=\"stylesheet\" href=";
-        // line 10
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("css/account.css"), "html", null, true);
-        echo ">
-    <link rel=\"stylesheet\" href=";
-        // line 11
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("css/user.css"), "html", null, true);
-        echo ">
-    <link rel=\"stylesheet\" href=";
-        // line 12
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("css/create-account.css"), "html", null, true);
-        echo ">
-    <link rel=\"stylesheet\" href=";
-        // line 13
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("css/user-account.css"), "html", null, true);
-        echo ">
-    <link rel=\"stylesheet\" href=";
-        // line 14
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("css/create-post.css"), "html", null, true);
-        echo ">
-    --->
     <title>Ressources Relationnelles</title>
     <style>
         .footer{
@@ -89,6 +63,9 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
             padding-top: 90px;
             padding-bottom: 100px;
         }
+        .hidden {
+            display: none;
+        }
         @media (min-width: 768px){
             .footer{
                 position: static;
@@ -100,48 +77,74 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
 <header>
     <div>
         <a href=\"#post\"><img src=\"";
-        // line 41
+        // line 36
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/logo.png"), "html", null, true);
         echo "\" id=\"header-logo\"></a>
         <ul>
             <a href=\"";
-        // line 43
+        // line 38
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_homepage");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/home-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"";
-        // line 44
+        // line 39
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_catalogue");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/catalogue-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"";
-        // line 45
+        // line 40
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_creation_posts");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/add-post-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"";
-        // line 46
+        // line 41
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_favorite");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/favorite-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"";
-        // line 47
+        // line 42
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_user");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/user-white.png"), "html", null, true);
         echo "\"></li></a>
         </ul>
-        <img src=";
-        // line 49
+        <a id=\"searchIcon\"><img src=";
+        // line 44
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/search-white.png"), "html", null, true);
-        echo ">
+        echo "></a>
+
+        <!-- Ajoutez une classe à votre barre de recherche pour la manipuler avec JavaScript -->
+        <form id=\"searchForm\" class=\"hidden\" action=\"";
+        // line 47
+        echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_post_search");
+        echo "\" method=\"GET\">
+            <input type=\"text\" name=\"term\" placeholder=\"Rechercher par titre...\">
+            <button type=\"submit\">Rechercher</button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchIcon = document.getElementById('searchIcon');
+                const searchForm = document.getElementById('searchForm');
+
+                searchIcon.addEventListener('click', function() {
+                    // Si la classe \"hidden\" est présente, la barre de recherche est cachée,
+                    // nous devons la montrer et vice versa.
+                    if (searchForm.classList.contains('hidden')) {
+                        searchForm.classList.remove('hidden');
+                    } else {
+                        searchForm.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
     </div>
     <a href=\"";
-        // line 51
+        // line 69
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_help");
         echo "\" id=\"help\">
         <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"
@@ -160,34 +163,34 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
 </header>
 
 ";
-        // line 67
+        // line 85
         $this->displayBlock('body', $context, $blocks);
-        // line 68
+        // line 86
         echo "<footer class=\"footer\">
     <section id=\"footer-mobile\">
         <ul>
             <a href=\"";
-        // line 71
+        // line 89
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_homepage");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/home-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"";
-        // line 72
+        // line 90
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_catalogue");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/catalogue-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"#\"><li><img src=\"";
-        // line 73
+        // line 91
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/add-post-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"#\"><li><img src=\"";
-        // line 74
+        // line 92
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/favorite-white.png"), "html", null, true);
         echo "\"></li></a>
             <a href=\"";
-        // line 75
+        // line 93
         echo $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_user");
         echo "\"><li><img src=\"";
         echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/user-white.png"), "html", null, true);
@@ -195,7 +198,10 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
         </ul>
     </section>
     <section id=\"footer-computer\">
-        <div><img src=\"medias/logo.png\"></div>
+        <div><img src=\"";
+        // line 97
+        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("medias/logo.png"), "html", null, true);
+        echo "\"></div>
         <div>
             <h3>Plan du site</h3>
             <ul>
@@ -220,7 +226,7 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
 
     }
 
-    // line 67
+    // line 85
     public function block_body($context, array $blocks = [])
     {
         $macros = $this->macros;
@@ -244,7 +250,7 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
 
     public function getDebugInfo()
     {
-        return array (  224 => 67,  191 => 75,  187 => 74,  183 => 73,  177 => 72,  171 => 71,  166 => 68,  164 => 67,  145 => 51,  140 => 49,  133 => 47,  127 => 46,  121 => 45,  115 => 44,  109 => 43,  104 => 41,  74 => 14,  70 => 13,  66 => 12,  62 => 11,  58 => 10,  54 => 9,  49 => 7,  41 => 1,);
+        return array (  230 => 85,  203 => 97,  194 => 93,  190 => 92,  186 => 91,  180 => 90,  174 => 89,  169 => 86,  167 => 85,  148 => 69,  123 => 47,  117 => 44,  110 => 42,  104 => 41,  98 => 40,  92 => 39,  86 => 38,  81 => 36,  49 => 7,  41 => 1,);
     }
 
     public function getSourceContext()
@@ -256,14 +262,6 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
     <link rel=\"stylesheet\" href={{ asset('css/header-footer.css') }}>
-    <!---
-    <link rel=\"stylesheet\" href={{ asset('css/posts.css') }}>
-    <link rel=\"stylesheet\" href={{ asset('css/account.css') }}>
-    <link rel=\"stylesheet\" href={{ asset('css/user.css') }}>
-    <link rel=\"stylesheet\" href={{ asset('css/create-account.css') }}>
-    <link rel=\"stylesheet\" href={{ asset('css/user-account.css') }}>
-    <link rel=\"stylesheet\" href={{ asset('css/create-post.css') }}>
-    --->
     <title>Ressources Relationnelles</title>
     <style>
         .footer{
@@ -278,6 +276,9 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
         main {
             padding-top: 90px;
             padding-bottom: 100px;
+        }
+        .hidden {
+            display: none;
         }
         @media (min-width: 768px){
             .footer{
@@ -297,7 +298,30 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
             <a href=\"{{ path('app_favorite') }}\"><li><img src=\"{{ asset('medias/favorite-white.png') }}\"></li></a>
             <a href=\"{{ path('app_user') }}\"><li><img src=\"{{ asset('medias/user-white.png') }}\"></li></a>
         </ul>
-        <img src={{ asset('medias/search-white.png') }}>
+        <a id=\"searchIcon\"><img src={{ asset('medias/search-white.png') }}></a>
+
+        <!-- Ajoutez une classe à votre barre de recherche pour la manipuler avec JavaScript -->
+        <form id=\"searchForm\" class=\"hidden\" action=\"{{ path('app_post_search') }}\" method=\"GET\">
+            <input type=\"text\" name=\"term\" placeholder=\"Rechercher par titre...\">
+            <button type=\"submit\">Rechercher</button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchIcon = document.getElementById('searchIcon');
+                const searchForm = document.getElementById('searchForm');
+
+                searchIcon.addEventListener('click', function() {
+                    // Si la classe \"hidden\" est présente, la barre de recherche est cachée,
+                    // nous devons la montrer et vice versa.
+                    if (searchForm.classList.contains('hidden')) {
+                        searchForm.classList.remove('hidden');
+                    } else {
+                        searchForm.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
     </div>
     <a href=\"{{ path('app_help') }}\" id=\"help\">
         <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"
@@ -327,7 +351,7 @@ class __TwigTemplate_b3abf29ce6486b3160ab6e29fa345643 extends Template
         </ul>
     </section>
     <section id=\"footer-computer\">
-        <div><img src=\"medias/logo.png\"></div>
+        <div><img src=\"{{asset('medias/logo.png')}}\"></div>
         <div>
             <h3>Plan du site</h3>
             <ul>
