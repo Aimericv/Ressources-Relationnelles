@@ -1,0 +1,408 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/dashboard.css') }}>
+    {%  endblock %}
+<body>
+    <main class="container">
+        <section>
+            <article class="dashboard-title">
+                <span></span>
+                <h2>Statistiques</h2>
+                <span></span>
+            </article>
+            <article>
+                <select name="stats" id="stats-select">
+                    <option value="latest-month">Le mois dernier</option>
+                    <option value="three-latest-month">3 derniers mois</option>
+                    <option value="six-latest-month">6 derniers mois</option>
+                    <option value="latest-year">La dernière année</option>
+                    <option value="all">Sans filtre</option>
+                </select>
+            </article>
+            <article id="stat-value">
+                <div>
+                    <p>12</p>
+                    <p>Visites</p>
+                </div>
+                <div>
+                    <p>130</p>
+                    <p>Création de ressources</p>
+                </div>
+                <div>
+                    <p>74</p>
+                    <p>Création de comptes</p>
+                </div>
+                <div>
+                    <p>249</p>
+                    <p>Commentaires</p>
+                </div>
+            </article>
+        </section>
+
+
+
+        <section>
+            <article class="dashboard-title">
+                <span></span>
+                <h2>Ressources</h2>
+                <span></span>
+            </article>
+            <article class="search">
+                <div>
+                    <label for="posts-search">
+                        <img src="medias/search-green.png" alt="search">
+                    </label>
+                    <input type="text" id="posts-search" name="posts-search">
+                </div>
+                <div>
+                    <select name="posts" id="posts-select">
+                        <option value="">Sans filtre</option>
+                        <option value="games">Jeux</option>
+                        <option value="events">Évènements</option>
+                        <option value="well-being">Bien être</option>
+                    </select>
+                </div>
+            </article>
+            <article id="posts-value">
+                <!-- IL FAUT COUPER LES TITRES SI ILS SONT TROP LONG -->
+                <div>
+                    <div>
+                        <div>
+                            <img src="medias/user-green.png" alt="user2">
+                            <p>User 2</p>
+                        </div>
+                        <p>Titre de la Ressource</p>
+                    </div>
+                    <div>
+                        <a href="#">Valider</a>
+                        <a href="#">Supprimer</a>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <img src="medias/user-green.png" alt="user2">
+                            <p>User 2</p>
+                        </div>
+                        <p>Titre de la Ressource</p>
+                    </div>
+                    <div>
+                        <a href="#">Valider</a>
+                        <a href="#">Supprimer</a>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <img src="medias/user-green.png" alt="user2">
+                            <p>User 2</p>
+                        </div>
+                        <p>Titre de la Ressource</p>
+                    </div>
+                    <div>
+                        <a href="#">Valider</a>
+                        <a href="#">Supprimer</a>
+                    </div>
+                </div>
+            </article>
+            <article class="load-more">
+                <a href="#">Voir plus</a>
+            </article>
+        </section>
+
+
+
+        <section id="account-section">
+            <article class="dashboard-title">
+                <span></span>
+                <h2>Comptes</h2>
+                <span></span>
+            </article>
+            <article class="search">
+                <div>
+                    <label for="account-search">
+                        <img src="medias/search-green.png" alt="search">
+                    </label>
+                    <input type="text" id="account-search" name="account-search">
+                </div>
+            </article>
+            <article id="account-value">
+                <div>
+                    <img src="medias/user-green.png" alt="user1">
+                    <p>User 1</p>
+                </div>
+                <div>
+                    <img src="medias/user-green.png" alt="user2">
+                    <p>User 2</p>
+                </div>
+                <div>
+                    <img src="medias/user-green.png" alt="user3">
+                    <p>User 3</p>
+                </div>
+                <div>
+                    <img src="medias/user-green.png" alt="user4">
+                    <p>User 4</p>
+                </div>
+                <div>
+                    <img src="medias/user-green.png" alt="user5">
+                    <p>User 5</p>
+                </div>
+                <div>
+                    <img src="medias/user-green.png" alt="user6">
+                    <p>User 6</p>
+                </div>
+            </article>
+            <article class="load-more">
+                <a href="#">Voir plus</a>
+            </article>
+            <article id="account-form">
+                <img src="medias/user-green.png" alt="user1">
+                <p>User 1</p>
+                <select>
+                    <option value="citoyen">Citoyen</option>
+                    <option value="moderateur">Modérateur</option>
+                    <option value="admin">Administrateur</option>
+                    <option value="superAdmin">Super-admin</option>
+                </select>
+                <a href="#" id="valid-account">Valider</a>
+            </article>
+        </section>
+
+
+
+        <section>
+            <article class="dashboard-title">
+                <span></span>
+                <h2>Catégories</h2>
+                <span></span>
+            </article>
+            <article id="cat-value">
+                <div>
+                    <div>
+                        <img src="medias/user-green.png" alt="jeux">
+                        <p>Jeux</p>
+                    </div>
+                    <div>
+                        <a href="#">Modifier</a>
+                        <a href="#">Supprimer</a>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <img src="medias/user-green.png" alt="Évènements">
+                        <p>Évènements</p>
+                    </div>
+                    <div>
+                        <a href="#">Modifier</a>
+                        <a href="#">Supprimer</a>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <img src="medias/user-green.png" alt="bien-être">
+                        <p>Bien-être</p>
+                    </div>
+                    <div>
+                        <a href="#">Modifier</a>
+                        <a href="#">Supprimer</a>
+                    </div>
+                </div>
+                <a href="#" id="add-cat">Ajouter</a>
+            </article>
+            <article id="form-cat">
+                <form>
+                    <div>
+                        <label for="img-cat">Image de la catégorie</label>
+                        <input type="file" id="img-cat">
+                    </div>
+                    <div>
+                        <label for="name-cat">Nom de la catégorie</label>
+                        <input type="text" id="name-cat">
+                    </div>
+                    <div>
+                        <a href="#" id="add-cat-form" class="back-cat-form">Ajouter</a>
+                        <a href="#" id="back-cat-form" class="back-cat-form">Retour</a>
+                    </div>
+                </form>
+            </article>
+        </section>
+
+
+        <section>
+            <article class="dashboard-title">
+                <span></span>
+                <h2>Commentaires</h2>
+                <span></span>
+            </article>
+            <article>
+                <select name="comments" id="comments-select">
+                    <option value="to-valid">À valider</option>
+                    <option value="valid">Valider</option>
+                    <option value="all">Tout</option>
+                </select>
+            </article>
+            <article id="comments-value">
+                <div>
+                    <div>
+                        <div>
+                            <img src="medias/user-green.png" alt="user 1">
+                            <a href="#">User 1</a><!-- le a renvoie vers la ressource du commentaire -->
+                        </div>
+                        <div>
+                            <a href="#">Valider</a>
+                            <a href="#">Supprimer</a>
+                        </div>
+                    </div>
+                    <p>Le commentaires en question</p>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <img src="medias/user-green.png" alt="user 1">
+                            <a href="#">User 1</a><!-- le a renvoie vers la ressource du commentaire -->
+                        </div>
+                        <div>
+                            <a href="#">Valider</a>
+                            <a href="#">Supprimer</a>
+                        </div>
+                    </div>
+                    <p>Le commentaires en question</p>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <img src="medias/user-green.png" alt="user 1">
+                            <a href="#">User 1</a><!-- le a renvoie vers la ressource du commentaire -->
+                        </div>
+                        <div>
+                            <a href="#">Valider</a>
+                            <a href="#">Supprimer</a>
+                        </div>
+                    </div>
+                    <p>Le commentaires en question</p>
+                </div>
+            </article>
+            <article class="load-more">
+                <a href="#">Voir plus</a>
+            </article>
+        </section>
+
+
+        <section id="sav-section">
+            <article class="dashboard-title">
+                <span></span>
+                <h2>SAV</h2>
+                <span></span>
+            </article>
+            <article>
+                <div>
+                    <select name="sav-cat" id="sav-cat-select">
+                        <option value="">Tout</option>
+                        <option value="game">Jeux</option>
+                        <option value="event">Évènements</option>
+                        <option value="well-being">Bien-être</option>
+                    </select>
+                </div>
+                <div>
+                    <select name="sav-etat" id="sav-etat-select">
+                        <option value="">Tout</option>
+                        <option value="game">À traiter</option>
+                        <option value="event">Répondu</option>
+                        <option value="well-being">Publique</option>
+                        <option value="well-being">Privé</option>
+                    </select>
+                </div>
+            </article>
+            <article id="sav-value">
+                <div>
+                    <div>
+                        <p>Question 1<p>
+                        <div>
+                            <a href="#" class="open-sav-form">Répondre</a>
+                            <a href="#">Publier</a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>Question 2<p>
+                        <div>
+                            <a href="#" class="open-sav-form">Modifier</a>
+                            <a href="#">Publier</a>
+                        </div>
+                    </div>
+                    <p>Réponse 2</p>
+                </div>
+                <div>
+                    <div>
+                        <p>Question 3<p>
+                        <div>
+                            <a href="#" class="open-sav-form">Modifier</a>
+                            <a href="#">Privatiser</a>
+                        </div>
+                    </div>
+                    <p>Réponse 3</p>
+                </div>
+            </article>
+            <article id="sav-form">
+                <form>
+                    <p>Réponse à la question :</p>
+                    <textarea name="answer" id="" rows="10"></textarea>
+                    <div>
+                        <a href="#" class="back-sav-form sav-form-btn">Répondre</a>
+                        <a href="#" class="back-sav-form sav-form-btn">Retour</a>
+                    </div>
+                </form>
+            </article>
+        </section>
+    </main> 
+    <script>
+        const users = document.querySelectorAll('#account-value p');
+        const formAccount = document.getElementById('account-form');
+        const body = document.querySelector('body');
+        const valid = document.getElementById('valid-account');
+        const addCat = document.getElementById('add-cat');
+        const btnCatForms = document.querySelectorAll('.back-cat-form');
+        const formCat = document.getElementById('form-cat');
+        const savFormBtns = document.querySelectorAll('.open-sav-form');
+        const savForm = document.getElementById('sav-form');
+        const backSavForms = document.querySelectorAll('.back-sav-form');
+        
+        users.forEach((user) => {
+            user.addEventListener('click', () => {
+                formAccount.style.display = 'flex';
+                body.style.overflow = 'hidden';
+            });
+        });
+        valid.addEventListener('click', ()=> {
+            formAccount.style.display = 'none';
+            body.style.overflow = 'auto';
+        });
+        addCat.addEventListener('click', () => {
+            formCat.style.display = "flex";
+            body.style.overflow = "hidden";
+        });
+        btnCatForms.forEach((btnCatForm) => {
+            btnCatForm.addEventListener('click', () => {
+                formCat.style.display = "none";
+                body.style.overflow = "auto";
+            })
+        });
+        savFormBtns.forEach((savFormBtn) => {
+            savFormBtn.addEventListener('click', () => {
+                savForm.style.display = "flex";
+                body.style.overflow = "hidden";
+            })
+        });
+        backSavForms.forEach((backSavForm) => {
+            backSavForm.addEventListener('click', () => {
+                savForm.style.display = "none";
+                body.style.overflow = "auto";
+            })
+        })
+    </script>
+    
+</body>
+{% endblock %}
