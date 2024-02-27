@@ -5,6 +5,9 @@ namespace App\Entity;
 
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -47,13 +50,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private Role $role;
 
-    #[ORM\ManyToOne]
-    private ?Address $address = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created_at = null;
+
+    #[ORM\ManyToMany(targetEntity: Favorite::class, mappedBy: 'user')]
+    private Collection $post;
+
+    #[ORM\ManyToMany(targetEntity: UserParticipation::class, mappedBy: 'user')]
+    private Collection $userParticipations;
+
+    #[ORM\OneToMany(mappedBy: 'admin', targetEntity: AdminComment::class)]
+    private Collection $adminComments;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
+    private Collection $comments;
+
+    #[ORM\OneToMany(mappedBy: 'follower', targetEntity: Follow::class)]
+    private Collection $follows;
+
+    #[ORM\OneToMany(mappedBy: 'following', targetEntity: Follow::class)]
+    private Collection $following;
+
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
 
 
     public function __construct()
     {
         $this->roles = $this->roles ?? ['ROLE_USER'];
+        $this->post = new ArrayCollection();
+        $this->userParticipations = new ArrayCollection();
+        $this->adminComments = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->follows = new ArrayCollection();
+        $this->following = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -116,7 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-            public function getAvatarImg(): ?string
+    public function getAvatarImg(): ?string
     {
         return $this->avatar_img;
     }
@@ -136,18 +166,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(?Role $role): static
     {
         $this->role = $role;
-
-        return $this;
-    }
-
-    public function getAddress(): ?Address
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?Address $address): static
-    {
-        $this->address = $address;
 
         return $this;
     }
@@ -216,5 +234,203 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): static
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getPost(): Collection
+    {
+        return $this->post;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorite->contains($favorite)) {
+            $this->favorite->add($favorite);
+            $favorite->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorite->removeElement($favorite)) {
+            $favorite->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserParticipation>
+     */
+    public function getUserParticipations(): Collection
+    {
+        return $this->userParticipations;
+    }
+
+    public function addUserParticipation(UserParticipation $userParticipation): static
+    {
+        if (!$this->userParticipations->contains($userParticipation)) {
+            $this->userParticipations->add($userParticipation);
+            $userParticipation->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserParticipation(UserParticipation $userParticipation): static
+    {
+        if ($this->userParticipations->removeElement($userParticipation)) {
+            $userParticipation->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AdminComment>
+     */
+    public function getAdminComments(): Collection
+    {
+        return $this->adminComments;
+    }
+
+    public function addAdminComment(AdminComment $adminComment): static
+    {
+        if (!$this->adminComments->contains($adminComment)) {
+            $this->adminComments->add($adminComment);
+            $adminComment->setAdmin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdminComment(AdminComment $adminComment): static
+    {
+        if ($this->adminComments->removeElement($adminComment)) {
+            // set the owning side to null (unless already changed)
+            if ($adminComment->getAdmin() === $this) {
+                $adminComment->setAdmin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follow>
+     */
+    public function getFollows(): Collection
+    {
+        return $this->follows;
+    }
+
+    public function addFollow(Follow $follow): static
+    {
+        if (!$this->follows->contains($follow)) {
+            $this->follows->add($follow);
+            $follow->setFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollow(Follow $follow): static
+    {
+        if ($this->follows->removeElement($follow)) {
+            // set the owning side to null (unless already changed)
+            if ($follow->getFollower() === $this) {
+                $follow->setFollower(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follow>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    public function addFollowing(Follow $following): static
+    {
+        if (!$this->following->contains($following)) {
+            $this->following->add($following);
+            $following->setFollowing($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(Follow $following): static
+    {
+        if ($this->following->removeElement($following)) {
+            // set the owning side to null (unless already changed)
+            if ($following->getFollowing() === $this) {
+                $following->setFollowing(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): static
+    {
+        $this->address = $address;
+
+        return $this;
     }
 }

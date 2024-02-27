@@ -7,7 +7,7 @@ namespace Proxies\__CG__\App\Entity;
  */
 class PostStatus extends \App\Entity\PostStatus implements \Doctrine\ORM\Proxy\InternalProxy
 {
-     use \Symfony\Component\VarExporter\LazyGhostTrait {
+    use \Symfony\Component\VarExporter\LazyGhostTrait {
         initializeLazyObject as __load;
         setLazyObjectAsInitialized as public __setInitialized;
         isLazyObjectInitialized as private;
@@ -20,7 +20,7 @@ class PostStatus extends \App\Entity\PostStatus implements \Doctrine\ORM\Proxy\I
         "\0".parent::class."\0".'name' => [parent::class, 'name', null],
         'id' => [parent::class, 'id', null],
         'name' => [parent::class, 'name', null],
-    ];
+    ];
 
     public function __construct(?\Closure $initializer = null, ?\Closure $cloner = null)
     {

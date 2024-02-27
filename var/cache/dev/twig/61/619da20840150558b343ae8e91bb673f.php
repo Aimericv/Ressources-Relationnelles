@@ -89,11 +89,13 @@ class __TwigTemplate_2ffd1b47294b17498d0a45b4a9e9e9c4 extends Template
         echo ">
         </section>
         <section class=\"posts\">
-
             ";
+        // line 32
+        $context["sortedPosts"] = twig_sort_filter($this->env, (isset($context["posts"]) || array_key_exists("posts", $context) ? $context["posts"] : (function () { throw new RuntimeError('Variable "posts" does not exist.', 32, $this->source); })()), function ($__a__, $__b__) use ($context, $macros) { $context["a"] = $__a__; $context["b"] = $__b__; return (twig_get_attribute($this->env, $this->source, (isset($context["b"]) || array_key_exists("b", $context) ? $context["b"] : (function () { throw new RuntimeError('Variable "b" does not exist.', 32, $this->source); })()), "id", [], "any", false, false, false, 32) - twig_get_attribute($this->env, $this->source, (isset($context["a"]) || array_key_exists("a", $context) ? $context["a"] : (function () { throw new RuntimeError('Variable "a" does not exist.', 32, $this->source); })()), "id", [], "any", false, false, false, 32)); });
         // line 33
+        echo "            ";
         $context['_parent'] = $context;
-        $context['_seq'] = twig_ensure_traversable((isset($context["posts"]) || array_key_exists("posts", $context) ? $context["posts"] : (function () { throw new RuntimeError('Variable "posts" does not exist.', 33, $this->source); })()));
+        $context['_seq'] = twig_ensure_traversable((isset($context["sortedPosts"]) || array_key_exists("sortedPosts", $context) ? $context["sortedPosts"] : (function () { throw new RuntimeError('Variable "sortedPosts" does not exist.', 33, $this->source); })()));
         foreach ($context['_seq'] as $context["_key"] => $context["post"]) {
             // line 34
             echo "                <div class=\"post\">
@@ -122,22 +124,36 @@ class __TwigTemplate_2ffd1b47294b17498d0a45b4a9e9e9c4 extends Template
             echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, $context["post"], "getUser", [], "method", false, false, false, 42), "getLastName", [], "method", false, false, false, 42), "html", null, true);
             echo "</p>
                     </div>
-                    <div class=\"img-ressource\"><img class=\"img-ressource\" src=\"";
+                    ";
             // line 44
-            echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl(("/images/" . twig_get_attribute($this->env, $this->source, $context["post"], "img", [], "any", false, false, false, 44))), "html", null, true);
-            echo "\" alt=\"Image du Post\"></div>
-                    <p class=\"category\">Category 1</p>
+            $context["postImages"] = twig_get_attribute($this->env, $this->source, (isset($context["images"]) || array_key_exists("images", $context) ? $context["images"] : (function () { throw new RuntimeError('Variable "images" does not exist.', 44, $this->source); })()), twig_get_attribute($this->env, $this->source, $context["post"], "id", [], "any", false, false, false, 44), [], "array", false, false, false, 44);
+            // line 45
+            echo "                    ";
+            if ( !twig_test_empty((isset($context["postImages"]) || array_key_exists("postImages", $context) ? $context["postImages"] : (function () { throw new RuntimeError('Variable "postImages" does not exist.', 45, $this->source); })()))) {
+                // line 46
+                echo "                        <div class=\"img-ressource\">
+                            <img class=\"img-ressource\" src=\"";
+                // line 47
+                echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl(twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, (isset($context["postImages"]) || array_key_exists("postImages", $context) ? $context["postImages"] : (function () { throw new RuntimeError('Variable "postImages" does not exist.', 47, $this->source); })()), 0, [], "array", false, false, false, 47), "getSrc", [], "method", false, false, false, 47)), "html", null, true);
+                echo "\" alt=\"Image du Post\">
+                        </div>
+                    ";
+            }
+            // line 50
+            echo "                    <p class=\"category\">";
+            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "type", [], "any", false, false, false, 50), "html", null, true);
+            echo "</p>
                     <h2 class=\"title-ressource\">";
-            // line 46
-            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "title", [], "any", false, false, false, 46), "html", null, true);
+            // line 51
+            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "title", [], "any", false, false, false, 51), "html", null, true);
             echo "</h2>
                     <p class=\"description-ressource\">";
-            // line 47
-            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "description", [], "any", false, false, false, 47), "html", null, true);
+            // line 52
+            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "description", [], "any", false, false, false, 52), "html", null, true);
             echo "</p>
                     <button class=\"button-more-ressource\" type=\"button\"><a href=\"";
-            // line 48
-            echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_post_detail", ["id" => twig_get_attribute($this->env, $this->source, $context["post"], "id", [], "any", false, false, false, 48)]), "html", null, true);
+            // line 53
+            echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_post_detail", ["id" => twig_get_attribute($this->env, $this->source, $context["post"], "id", [], "any", false, false, false, 53)]), "html", null, true);
             echo "\">En savoir plus</a></button>
                 </div>
             ";
@@ -145,7 +161,7 @@ class __TwigTemplate_2ffd1b47294b17498d0a45b4a9e9e9c4 extends Template
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['post'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 51
+        // line 56
         echo "
         </section>
 
@@ -189,7 +205,7 @@ class __TwigTemplate_2ffd1b47294b17498d0a45b4a9e9e9c4 extends Template
 
     public function getDebugInfo()
     {
-        return array (  171 => 4,  164 => 3,  149 => 51,  140 => 48,  136 => 47,  132 => 46,  127 => 44,  120 => 42,  117 => 41,  111 => 39,  105 => 37,  103 => 36,  99 => 34,  95 => 33,  88 => 29,  63 => 6,  60 => 3,  53 => 2,  36 => 1,);
+        return array (  187 => 4,  180 => 3,  165 => 56,  156 => 53,  152 => 52,  148 => 51,  143 => 50,  137 => 47,  134 => 46,  131 => 45,  129 => 44,  122 => 42,  119 => 41,  113 => 39,  107 => 37,  105 => 36,  101 => 34,  96 => 33,  94 => 32,  88 => 29,  63 => 6,  60 => 3,  53 => 2,  36 => 1,);
     }
 
     public function getSourceContext()
@@ -225,8 +241,8 @@ class __TwigTemplate_2ffd1b47294b17498d0a45b4a9e9e9c4 extends Template
             <img src={{ asset('medias/filter-green.png') }}>
         </section>
         <section class=\"posts\">
-
-            {% for post in posts %}
+            {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
+            {% for post in sortedPosts %}
                 <div class=\"post\">
                     <div class=\"autor\">
                         {% if post.getUser().getAvatarImg() is not null %}
@@ -237,8 +253,13 @@ class __TwigTemplate_2ffd1b47294b17498d0a45b4a9e9e9c4 extends Template
 
                         <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
                     </div>
-                    <div class=\"img-ressource\"><img class=\"img-ressource\" src=\"{{ asset('/images/' ~ post.img) }}\" alt=\"Image du Post\"></div>
-                    <p class=\"category\">Category 1</p>
+                    {% set postImages = images[post.id] %}
+                    {% if postImages is not empty %}
+                        <div class=\"img-ressource\">
+                            <img class=\"img-ressource\" src=\"{{ asset(postImages[0].getSrc()) }}\" alt=\"Image du Post\">
+                        </div>
+                    {% endif %}
+                    <p class=\"category\">{{ post.type }}</p>
                     <h2 class=\"title-ressource\">{{ post.title }}</h2>
                     <p class=\"description-ressource\">{{ post.description }}</p>
                     <button class=\"button-more-ressource\" type=\"button\"><a href=\"{{ path('app_post_detail', {'id': post.id}) }}\">En savoir plus</a></button>
@@ -253,6 +274,6 @@ class __TwigTemplate_2ffd1b47294b17498d0a45b4a9e9e9c4 extends Template
     </body>
 
 {% endblock %}
-", "default/catalogue.html.twig", "C:\\xampp\\htdocs\\CDA\\Cubes\\application\\templates\\default\\catalogue.html.twig");
+", "default/catalogue.html.twig", "C:\\xampp\\htdocs\\CDA\\Cubes\\application\\Ressources-Relationnelles\\templates\\default\\catalogue.html.twig");
     }
 }

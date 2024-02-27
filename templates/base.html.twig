@@ -5,14 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href={{ asset('css/header-footer.css') }}>
-    <!---
-    <link rel="stylesheet" href={{ asset('css/posts.css') }}>
-    <link rel="stylesheet" href={{ asset('css/account.css') }}>
-    <link rel="stylesheet" href={{ asset('css/user.css') }}>
-    <link rel="stylesheet" href={{ asset('css/create-account.css') }}>
-    <link rel="stylesheet" href={{ asset('css/user-account.css') }}>
-    <link rel="stylesheet" href={{ asset('css/create-post.css') }}>
-    --->
     <title>Ressources Relationnelles</title>
     <style>
         .footer{
@@ -27,6 +19,9 @@
         main {
             padding-top: 90px;
             padding-bottom: 100px;
+        }
+        .hidden {
+            display: none;
         }
         @media (min-width: 768px){
             .footer{
@@ -46,7 +41,30 @@
             <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
             <a href="{{ path('app_user') }}"><li><img src="{{ asset('medias/user-white.png') }}"></li></a>
         </ul>
-        <img src={{ asset('medias/search-white.png') }}>
+        <a id="searchIcon"><img src={{ asset('medias/search-white.png') }}></a>
+
+        <!-- Ajoutez une classe à votre barre de recherche pour la manipuler avec JavaScript -->
+        <form id="searchForm" class="hidden" action="{{ path('app_post_search') }}" method="GET">
+            <input type="text" name="term" placeholder="Rechercher par titre...">
+            <button type="submit">Rechercher</button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchIcon = document.getElementById('searchIcon');
+                const searchForm = document.getElementById('searchForm');
+
+                searchIcon.addEventListener('click', function() {
+                    // Si la classe "hidden" est présente, la barre de recherche est cachée,
+                    // nous devons la montrer et vice versa.
+                    if (searchForm.classList.contains('hidden')) {
+                        searchForm.classList.remove('hidden');
+                    } else {
+                        searchForm.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
     </div>
     <a href="{{ path('app_help') }}" id="help">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -76,7 +94,7 @@
         </ul>
     </section>
     <section id="footer-computer">
-        <div><img src="medias/logo.png"></div>
+        <div><img src="{{asset('medias/logo.png')}}"></div>
         <div>
             <h3>Plan du site</h3>
             <ul>
