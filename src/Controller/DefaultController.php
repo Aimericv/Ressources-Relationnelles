@@ -57,7 +57,7 @@ class DefaultController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
         $visitDate = new \DateTime();
         $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
