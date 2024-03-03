@@ -270,4 +270,121 @@ class Post
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            // set the owning side to null (unless already changed)
+            if ($favorite->getPost() === $this) {
+                $favorite->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserParticipation>
+     */
+    public function getUserParticipations(): Collection
+    {
+        return $this->userParticipations;
+    }
+
+    public function addUserParticipation(UserParticipation $userParticipation): static
+    {
+        if (!$this->userParticipations->contains($userParticipation)) {
+            $this->userParticipations->add($userParticipation);
+            $userParticipation->addPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserParticipation(UserParticipation $userParticipation): static
+    {
+        if ($this->userParticipations->removeElement($userParticipation)) {
+            $userParticipation->removePost($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AdminComment>
+     */
+    public function getAdminComments(): Collection
+    {
+        return $this->adminComments;
+    }
+
+    public function addAdminComment(AdminComment $adminComment): static
+    {
+        if (!$this->adminComments->contains($adminComment)) {
+            $this->adminComments->add($adminComment);
+            $adminComment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdminComment(AdminComment $adminComment): static
+    {
+        if ($this->adminComments->removeElement($adminComment)) {
+            // set the owning side to null (unless already changed)
+            if ($adminComment->getPost() === $this) {
+                $adminComment->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getPost() === $this) {
+                $comment->setPost(null);
+            }
+        }
+
+        return $this;
+    }
 }

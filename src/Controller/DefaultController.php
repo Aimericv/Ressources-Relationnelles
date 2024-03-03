@@ -59,6 +59,10 @@ class DefaultController extends AbstractController
     #[Route("/", name:"app_homepage")]
     public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
     {
+        $visitDate = new \DateTime();
+        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
+
+
         $posts = $postRepository->findAll();
         $images = $imagesRepository->findAll();
         $imagesPosts = [];
@@ -172,11 +176,4 @@ class DefaultController extends AbstractController
     
         return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes]);
     }
-
-    
-
-    
-
-
-
 }

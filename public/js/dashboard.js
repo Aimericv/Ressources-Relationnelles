@@ -1,8 +1,6 @@
 // 
 // STATISTIQUES
 // 
-
-
 const users = document.querySelectorAll('#account-value p');
 const formAccount = document.getElementById('account-form');
 const body = document.querySelector('body');
@@ -72,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
         xhr.send('filter=' + encodeURIComponent(selectedOption));
     });
 });
-
 
 // 
 // RESSOURCES
