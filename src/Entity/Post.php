@@ -22,9 +22,6 @@ class Post
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $type = null;
-
     #[ORM\ManyToOne]
     private ?User $user = null;
 
@@ -48,6 +45,10 @@ class Post
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class)]
     private Collection $comments;
+
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $type = null;
 
     public function __construct()
     {
@@ -89,18 +90,6 @@ class Post
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(?string $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -266,6 +255,18 @@ class Post
                 $comment->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getType(): ?Category
+    {
+        return $this->type;
+    }
+
+    public function setType(?Category $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

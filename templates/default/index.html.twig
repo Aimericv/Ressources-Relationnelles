@@ -47,7 +47,7 @@
                             <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
                         </div>
                     {% endif %}
-                <p class="category">Catégorie : {{ post.type }}</p>
+                <p class="category">Catégorie : {{ post.getType().name }}</p>
                 <h2 class="title-ressource">{{ post.title }}</h2>
                 <p class="description-ressource">{{ post.description }}</p>
                 <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
@@ -77,12 +77,12 @@
                     <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
                 </div>
                 {% set postImages = images[post.id] %}
-                    {% if postImages is not empty %}
-                        <div class="img-ressource">
-                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
-                        </div>
-                    {% endif %}
-                <p class="category">Catégorie : {{ post.type }}</p>
+                {% if postImages is not empty %}
+                    <div class="img-ressource">
+                        <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                    </div>
+                {% endif %}
+                <p class="category">{{ post.getType().name }}</p>
                 <h2 class="title-ressource">{{ post.title }}</h2>
                 <p class="description-ressource">{{ post.description }}</p>
                 <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>

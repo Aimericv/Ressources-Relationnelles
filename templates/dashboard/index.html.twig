@@ -23,15 +23,15 @@
             </article>
             <article id="stat-value">
                 <div>
-                    <p id="show-visits-stat">{{ visits }}</p>
+                    <p id="show-visits-stat">{{ statistiques.visits }}</p>
                     <p>Visites</p>
                 </div>
                 <div>
-                    <p id="show-post-stat">{{ postStats }}</p>
+                    <p id="show-post-stat">{{ statistiques.postStats }}</p>
                     <p>Création de ressources</p>
                 </div>
                 <div>
-                    <p id="show-user-stat">{{ userStats }}</p>
+                    <p id="show-user-stat">{{ statistiques.userStats }}</p>
                     <p>Création de comptes</p>
                 </div>
                 <div>
@@ -67,45 +67,25 @@
             </article>
             <article id="posts-value">
                 <!-- IL FAUT COUPER LES TITRES SI ILS SONT TROP LONG -->
-                <div>
+                {% for post in ressources.posts %}
                     <div>
                         <div>
-                            <img src="medias/user-green.png" alt="user2">
-                            <p>User 2</p>
+                            <div>
+                                {% if ressources.users[post.id].avatarImg is not null %}
+                                    <img src="{{ asset('profiles/' ~ ressources.users[post.id].avatarImg) }}" alt="{{ ressources.users[post.id].firstName ~ ' ' ~ ressources.users[post.id].lastName }}">
+                                {% else %}
+                                    <img src="{{ asset('medias/user-green.png') }}" alt="{{ ressources.users[post.id].firstName ~ ' ' ~ ressources.users[post.id].lastName }}">
+                                {% endif %}
+                                <p>{{ ressources.users[post.id].firstName ~ ' ' ~ ressources.users[post.id].lastName }}</p>
+                            </div>
+                            <a href="/post/{{ post.id }}">{{ post.title }}</a>
                         </div>
-                        <p>Titre de la Ressource</p>
-                    </div>
-                    <div>
-                        <a href="#">Valider</a>
-                        <a href="#">Supprimer</a>
-                    </div>
-                </div>
-                <div>
-                    <div>
                         <div>
-                            <img src="medias/user-green.png" alt="user2">
-                            <p>User 2</p>
+                            <a href="">Valider</a>
+                            <a href="">Supprimer</a>
                         </div>
-                        <p>Titre de la Ressource</p>
                     </div>
-                    <div>
-                        <a href="#">Valider</a>
-                        <a href="#">Supprimer</a>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <div>
-                            <img src="medias/user-green.png" alt="user2">
-                            <p>User 2</p>
-                        </div>
-                        <p>Titre de la Ressource</p>
-                    </div>
-                    <div>
-                        <a href="#">Valider</a>
-                        <a href="#">Supprimer</a>
-                    </div>
-                </div>
+                {% endfor %}
             </article>
             <article class="load-more">
                 <a href="#">Voir plus</a>
@@ -129,34 +109,26 @@
                 </div>
             </article>
             <article id="account-value">
-                <div>
-                    <img src="medias/user-green.png" alt="user1">
-                    <p>User 1</p>
-                </div>
-                <div>
-                    <img src="medias/user-green.png" alt="user2">
-                    <p>User 2</p>
-                </div>
-                <div>
-                    <img src="medias/user-green.png" alt="user3">
-                    <p>User 3</p>
-                </div>
-                <div>
-                    <img src="medias/user-green.png" alt="user4">
-                    <p>User 4</p>
-                </div>
-                <div>
-                    <img src="medias/user-green.png" alt="user5">
-                    <p>User 5</p>
-                </div>
-                <div>
-                    <img src="medias/user-green.png" alt="user6">
-                    <p>User 6</p>
-                </div>
+                {% for compte in comptes %}
+                    <div class="compte" data-roles="{{ compte.roles|first }}" data-user-id="{{ compte.id }}" data-first-name="{{ compte.firstName }}" data-last-name="{{ compte.lastName }}" data-avatar="                        {% if compte.avatarImg is not null %}
+                    {{ asset('profiles/' ~ compte.avatarImg) }}" alt="{{ compte.firstName ~ ' ' ~ compte.lastName }}
+                {% else %}
+                    {{ asset('medias/user-green.png') }}" alt="{{ compte.firstName ~ ' ' ~ compte.lastName }}
+                {% endif %}">
+                        {% if compte.avatarImg is not null %}
+                            <img src="{{ asset('profiles/' ~ compte.avatarImg) }}" alt="{{ compte.firstName ~ ' ' ~ compte.lastName }}">
+                        {% else %}
+                            <img src="{{ asset('medias/user-green.png') }}" alt="{{ compte.firstName ~ ' ' ~ compte.lastName }}">
+                        {% endif %}
+                        <p>{{ compte.firstName ~ ' ' ~ compte.lastName }}</p>
+                    </div>
+                {% endfor %}
             </article>
             <article class="load-more">
                 <a href="#">Voir plus</a>
             </article>
+            {# ARTICLE UNIQUEMENT VISIBLE SI ON CLIQUE SUR UN UTILISATEUR EN JS #}
+            {# COMMENT FAIRE POUR QUE LES INFOS DE L'UTILISATEUR S'AFFICHE ? #}
             <article id="account-form">
                 <img src="medias/user-green.png" alt="user1">
                 <p>User 1</p>
@@ -316,35 +288,32 @@
                 </div>
             </article>
             <article id="sav-value">
-                <div>
+                {% for question in questions %}
                     <div>
-                        <p>Question 1<p>
                         <div>
-                            <a href="#" class="open-sav-form">Répondre</a>
-                            <a href="#">Publier</a>
+                            <p>{{ question.questions }}<p>
+                            <div>
+                                <a href="#" class="open-sav-form">
+                                    {% if question.answer is not null %}
+                                        Modifier
+                                    {% else %}
+                                        Répondre
+                                    {% endif %}
+                                </a>
+                                <a href="#">
+                                    {% if question.status == 0 or question.status == 1 %}
+                                        Publier
+                                    {% else %}
+                                        Privatiser
+                                    {% endif %}
+                                </a>
+                            </div>
                         </div>
+                        {% if question.answer is not null %}
+                            <p>{{ question.answer }}</p>
+                        {% endif %}
                     </div>
-                </div>
-                <div>
-                    <div>
-                        <p>Question 2<p>
-                        <div>
-                            <a href="#" class="open-sav-form">Modifier</a>
-                            <a href="#">Publier</a>
-                        </div>
-                    </div>
-                    <p>Réponse 2</p>
-                </div>
-                <div>
-                    <div>
-                        <p>Question 3<p>
-                        <div>
-                            <a href="#" class="open-sav-form">Modifier</a>
-                            <a href="#">Privatiser</a>
-                        </div>
-                    </div>
-                    <p>Réponse 3</p>
-                </div>
+                {% endfor %}
             </article>
             <article id="sav-form">
                 <form>

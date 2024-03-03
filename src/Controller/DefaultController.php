@@ -72,6 +72,7 @@ class DefaultController extends AbstractController
                 }
             }
             $imagesPosts[$post_id] = $imagesPostId;
+            $catId = $post->getType();
         }
         return $this->render('default/index.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
     }

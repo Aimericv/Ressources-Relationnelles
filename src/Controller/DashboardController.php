@@ -11,23 +11,44 @@ use App\Repository\UserRepository;
 use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Repository\HelpEntityRepository;
 
 
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session): Response
+    public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository): Response
     {
-        $filter = "";
-        $visits = $this->calculateVisits($session, $filter);
-
+        $stats_filter = "";
+        $visits = $this->calculateVisits($session, $stats_filter);
         $userStats = $userRepository->findByStatsForLatestMonth();
         $postStats = $postRepository->findByStatsForLatestMonth();
-
-        return $this->render('dashboard/index.html.twig', [
+        $statistiques = [
             'userStats' => $userStats,
             'postStats' => $postStats,
-            'visits' => $visits,
+            'visits' => $visits
+        ];
+
+        $posts = $postRepository->findAll();
+        $users = [];
+        foreach ($posts as $post) {
+            $user = $post->getUser();
+            $users[$post->getId()] = $user;
+        }
+        $ressources = [
+            'users' => $users,
+            'posts' => $posts,
+        ];
+
+        $comptes = $userRepository->findAll();
+
+        $questions = $helpRepository->findAll();
+
+        return $this->render('dashboard/index.html.twig', [
+            'statistiques' => $statistiques,
+            'ressources' => $ressources,
+            'comptes' => $comptes,
+            'questions' => $questions,
         ]);
     }
 

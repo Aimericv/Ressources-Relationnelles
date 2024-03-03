@@ -14,7 +14,7 @@
                 <p>{{ post.getAddress() }}</p>
             </article>
             <h2>Type :</h2>
-            <p> {{ post.getType() }}</p>
+            <p> {{ post.getType().name }}</p>
         </section>
         <section style="position: relative;min-height: 70vh; margin-top:40px">
             {% for img in images %}

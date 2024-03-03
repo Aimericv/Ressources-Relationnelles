@@ -1,3 +1,8 @@
+// 
+// STATISTIQUES
+// 
+
+
 const users = document.querySelectorAll('#account-value p');
 const formAccount = document.getElementById('account-form');
 const body = document.querySelector('body');
@@ -68,3 +73,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
+// 
+// RESSOURCES
+// 
+
+document.querySelectorAll('.compte').forEach(item => {
+    item.addEventListener('click', event => {
+        const userId = item.getAttribute('data-user-id');
+        const firstName = item.getAttribute('data-first-name');
+        const lastName = item.getAttribute('data-last-name');
+        const avatar = item.getAttribute('data-avatar');
+        const role = item.getAttribute('data-roles');
+        console.log(role)
+
+        // Mettez à jour les éléments dans #account-form
+        document.getElementById('account-form').innerHTML = `
+            <img src="${avatar}" alt="${firstName} ${lastName}">
+            <p>${firstName} ${lastName}</p>
+            <select>
+                <option value="citoyen" ${role === 'ROLE_USER' ? 'selected' : ''}>Citoyen</option>
+                <option value="moderateur" ${role === 'ROLE_MODERATOR' ? 'selected' : ''}>Modérateur</option>
+                <option value="admin" ${role === 'ROLE_ADMIN' ? 'selected' : ''}>Administrateur</option>
+                <option value="superAdmin" ${role === 'ROLE_SUPERADMIN' ? 'selected' : ''}>Super-admin</option>
+            </select>
+            <a href="#" id="valid-account">Valider</a>
+        `;
+
+        // Empêche le comportement par défaut de l'événement de clic
+        event.preventDefault();
+    });
+});
