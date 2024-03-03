@@ -16,9 +16,11 @@ class UserParticipation
     private ?int $id = null; 
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'userParticipations')]
+    #[ORM\JoinTable(name: 'user_participation')]
     private Collection $user;
 
     #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'userParticipations')]
+    #[ORM\JoinTable(name: 'user_participation')]
     private Collection $post;
 
     public function __construct()

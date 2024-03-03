@@ -141,7 +141,7 @@ class __TwigTemplate_f7855a74694dca9ea075ea0a6096fc1c extends Template
             }
             // line 50
             echo "                    <p class=\"category\">";
-            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "type", [], "any", false, false, false, 50), "html", null, true);
+            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, $context["post"], "getType", [], "method", false, false, false, 50), "getName", [], "method", false, false, false, 50), "html", null, true);
             echo "</p>
                     <h2 class=\"title-ressource\">";
             // line 51
@@ -259,7 +259,7 @@ class __TwigTemplate_f7855a74694dca9ea075ea0a6096fc1c extends Template
                             <img class=\"img-ressource\" src=\"{{ asset(postImages[0].getSrc()) }}\" alt=\"Image du Post\">
                         </div>
                     {% endif %}
-                    <p class=\"category\">{{ post.type }}</p>
+                    <p class=\"category\">{{ post.getType().getName() }}</p>
                     <h2 class=\"title-ressource\">{{ post.title }}</h2>
                     <p class=\"description-ressource\">{{ post.description }}</p>
                     <button class=\"button-more-ressource\" type=\"button\"><a href=\"{{ path('app_post_detail', {'id': post.id}) }}\">En savoir plus</a></button>
