@@ -11,13 +11,20 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Entity\Like;
+use App\Repository\LikeRepository;
+use Symfony\Component\Security\Core\Security;
+
+
 
 class DefaultController extends AbstractController
 {
+    private $security;
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(Security $security, EntityManagerInterface $entityManager)
     {
+        $this->security = $security;
         $this->entityManager = $entityManager;
     }
 
@@ -50,7 +57,7 @@ class DefaultController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
     {
         $visitDate = new \DateTime();
         $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
@@ -69,6 +76,7 @@ class DefaultController extends AbstractController
                 }
             }
             $imagesPosts[$post_id] = $imagesPostId;
+            $catId = $post->getType();
         }
         return $this->render('default/index.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
     }
@@ -93,26 +101,79 @@ class DefaultController extends AbstractController
         return $this->render('default/catalogue.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
     }
 
-    #[Route("/post/{id}", name: "app_post_detail")]
-    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
+    //ça marche bien mais ça s'active même quand je refresh la page
+
+    #[Route("/post/{id}", name: "app_post_like", methods: ['POST'])]
+    public function postLike($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository): \Symfony\Component\HttpFoundation\Response
     {
+
+        
         $post = $postRepository->find($id);
-        $user = $post->getUser();
         $images = $imagesRepository->findBy(['post_id' => $id]);
         $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
     
-        return $this->render('default/postDetail.html.twig', [
-            'user' => $user,
+        if (!$this->security->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+    
+        $post = $this->entityManager->getRepository(Post::class)->find($id);
+    
+        if (!$post) {
+            throw $this->createNotFoundException('Post not found');
+        }
+    
+        $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
+            'user' => $this->security->getUser(),
             'post' => $post,
-            'images' => $images,
-            'paragraphes' => $paragraphes
         ]);
+    
+        if (!$existingLike) {
+
+            $like = new Like();
+            $like->setUser($this->security->getUser());
+            $like->setPost($post);
+    
+            $this->entityManager->persist($like);
+            $this->entityManager->flush();
+
+            $existingLike=true;
+        }else{
+            $this->entityManager->remove($existingLike);
+            $this->entityManager->flush();
+            $existingLike=false;
+
+        }
+    
+        return $this->redirectToRoute('app_post_like', ['id' => $id]);
+
     }
+    
+
+    #[Route("/post/{id}", name: "app_post_detail")]
+    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository): \Symfony\Component\HttpFoundation\Response
+    {
+        $post = $postRepository->find($id);
+        $images = $imagesRepository->findBy(['post_id' => $id]);
+        $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
+    
+        if (!$this->security->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+    
+        $post = $this->entityManager->getRepository(Post::class)->find($id);
+    
+        if (!$post) {
+            throw $this->createNotFoundException('Post not found');
+        }
 
 
-
-
-    /* Route /user dans userController */
-
-
+ 
+        $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
+            'user' => $this->security->getUser(),
+            'post' => $post,
+        ]);
+        
+    
+        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes]);
+    }
 }

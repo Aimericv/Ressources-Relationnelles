@@ -8,47 +8,60 @@
     {% endblock %}
     <main class="container">
         <section class="ressources">
+            <h1>{{ post.getTitle() }}</h1>
             <article>
-                <h1>{{ post.getTitle() }}</h1>
-                <div id="user-block">
-                    <img id="user-avatar" src="{{ asset('profiles/' ~ user.getAvatarImg()) }}" alt="{{ user.getLastName() }}">
-                    <a href="#">{{ user.getFirstName() }} {{ user.getLastName() }}</a>
-                </div>
+                <h2>Lieu d'activité : </h2>
+                <p>{{ post.getAddress() }}</p>
             </article>
-            <article class="post-infos">
-                <div>
-                    <h2>Type :</h2>
-                    <p> {{ post.getType() }}</p>
-                </div>
-                <div>
-                    <h2>Lieu d'activité : </h2>
-                    <p>{{ post.getAddress() }}</p>
-                </div>
-            </article>
+            <h2>Type :</h2>
+            <p> {{ post.getType().name }}</p>
         </section>
-        <section class="ressource-section" style="position: relative; min-height: 110vh; margin-top:40px">
+        <section style="position: relative;min-height: 70vh; margin-top:40px">
             {% for img in images %}
-                <img src="{{ img.src }}" alt="Rencontre" style="top:{{ img.y }}px; left:{{ img.x }}px; width: {{ img.width }}px; height: {{ img.height }}px; z-index:-1;">
+                <img src="{{ img.src }}" alt="Rencontre" style="position: absolute; top:{{ img.y }}px; left:{{ img.x }}px; width: {{ img.width }}px; height: {{ img.height }}px; z-index:-1;">
             {% endfor %}
             {% for paragraph in paragraphes %}
-                <div style="top:{{ paragraph.y }}px; left:{{ paragraph.x }}px; width: {{ paragraph.width }}px; height: {{ paragraph.height }}px; z-index:-1;">
+                <div style="position: absolute; top:{{ paragraph.y }}px; left:{{ paragraph.x }}px; width: {{ paragraph.width }}px; height: {{ paragraph.height }}px; z-index:-1;">
                     {{ paragraph.getContent()|raw }}
                 </div>
-            {% endfor %}                 
+            {% endfor %}
         </section>
         <section class="actions-section">
-            <article class="actions">
-                <img src="{{ asset('medias/like-green.png')}}" alt="Liker">
-                <img src="{{ asset('medias/favorite-green.png')}}" alt="Enregistrer">
-                <img src="{{ asset('medias/exploited-green.png')}}" alt="Exploiter">
-                <img src="{{ asset('medias/send-green.png')}}" alt="Partager">
-            </article>
-            <article class="space">
-                <div class="line"></div>
-                <h3>Commentaires</h3>
-                <div class="line"></div>
-            </article>
-        </section>
+    <article class="actions">
+
+
+
+        <form action="{{ path('app_post_like', {'id': post.getId()}) }}" method="post">
+
+    <button type="submit" class="like-link">
+        {% if existingLike %}
+            <img src="{{ asset('medias/like-yellow.png')}}" alt="Liker">
+        {% else %}
+            <img src="{{ asset('medias/like-green.png')}}" alt="Liker">
+        {% endif %}
+    </button>
+</form>
+
+
+
+        <a href="#">
+            <img src="{{ asset('medias/favorite-green.png')}}" alt="Enregistrer">
+        </a>
+        <a href="#">
+            <img src="{{ asset('medias/exploited-green.png')}}" alt="Exploiter">
+        </a>
+        <a href="#">
+            <img src="{{ asset('medias/send-green.png')}}" alt="Partager">
+        </a>
+    </article>
+    <article class="space">
+        <div class="line"></div>
+        <h3>Commentaires</h3>
+        <div class="line"></div>
+    </article>
+</section>
+
+
         <section class="comment-section">
             <article class="comment">
                 <div class="comment-user">

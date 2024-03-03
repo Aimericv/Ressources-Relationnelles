@@ -44,12 +44,14 @@ return [
                 .')'
                 .'|/delete\\-posts/([^/]++)(*:117)'
                 .'|/post/(?'
-                    .'|([^/]++)(*:142)'
-                    .'|new(*:153)'
                     .'|([^/]++)(?'
-                        .'|(*:172)'
-                        .'|/edit(*:185)'
-                        .'|(*:193)'
+                        .'|(*:145)'
+                    .')'
+                    .'|new(*:157)'
+                    .'|([^/]++)(?'
+                        .'|(*:176)'
+                        .'|/edit(*:189)'
+                        .'|(*:197)'
                     .')'
                 .')'
                 .'|/like/(\\d+)(*:214)'
@@ -60,13 +62,15 @@ return [
         74 => [[['_route' => 'app_modification_posts', '_controller' => 'App\\Controller\\CreationPostsController::modify'], ['id'], null, null, false, true, null]],
         86 => [[['_route' => 'app_modification_posts_edit', '_controller' => 'App\\Controller\\CreationPostsController::edit'], ['id'], null, null, false, false, null]],
         117 => [[['_route' => 'app_delete_posts', '_controller' => 'App\\Controller\\CreationPostsController::delete'], ['id'], null, null, false, true, null]],
-        142 => [[['_route' => 'app_post_detail', '_controller' => 'App\\Controller\\DefaultController::postDetail'], ['id'], null, null, false, true, null]],
-        153 => [[['_route' => 'app_post_new', '_controller' => 'App\\Controller\\PostController::new'], [], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        172 => [[['_route' => 'app_post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        185 => [[['_route' => 'app_post_edit', '_controller' => 'App\\Controller\\PostController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        193 => [[['_route' => 'app_post_delete', '_controller' => 'App\\Controller\\PostController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
-        214 => [
-            [['_route' => 'app_like', '_controller' => 'App\\Controller\\LikeController::likeAction'], ['id'], null, null, false, true, null],
+        145 => [
+            [['_route' => 'app_post_like', '_controller' => 'App\\Controller\\DefaultController::postLike'], ['id'], ['POST' => 0], null, false, true, null],
+            [['_route' => 'app_post_detail', '_controller' => 'App\\Controller\\DefaultController::postDetail'], ['id'], null, null, false, true, null],
+        ],
+        157 => [[['_route' => 'app_post_new', '_controller' => 'App\\Controller\\PostController::new'], [], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        176 => [[['_route' => 'app_post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        189 => [[['_route' => 'app_post_edit', '_controller' => 'App\\Controller\\PostController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        197 => [
+            [['_route' => 'app_post_delete', '_controller' => 'App\\Controller\\PostController::delete'], ['id'], ['POST' => 0], null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],
     ],

@@ -22,9 +22,9 @@
             <div>
                 <label for="category">Catégorie de la Ressource</label>
                 <select name="category" id="category">
-                    <option value="game" {% if post is defined and post.type == "game" %}selected{% endif %}>Jeux</option>
-                    <option value="event" {% if post is defined and post.type == "event" %}selected{% endif %}>Évènements</option>
-                    <option value="well-being" {% if post is defined and post.type == "well-being" %}selected{% endif %}>Bien-être</option>
+                    {% for cat in categories %}      
+                        <option value="{{ cat.id }}" {% if post.getType() is defined and post.getType().getId() == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
                 </select>                
             </div>
             <div>

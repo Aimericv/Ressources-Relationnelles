@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Security;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\ImagesRepository;
+use App\Repository\CategoryRepository;
 
 
 class CreationPostsController extends AbstractController
@@ -29,13 +30,16 @@ class CreationPostsController extends AbstractController
     }
 
     #[Route('/creation-posts', name: 'app_creation_posts')]
-    public function index(): Response
+    public function index(CategoryRepository $catRepo): Response
     {
         if (!$this->security->getUser()) {
             return $this->redirectToRoute('app_login');
         }
+        $categories = $catRepo->findAll();
 
-        return $this->render('creation_posts/index.html.twig');
+        return $this->render('creation_posts/index.html.twig', [
+            'categories' => $categories,
+        ]);
     }
 
     #[Route('/creation-posts/add', name: 'app_creation_posts_add')]
@@ -50,7 +54,9 @@ class CreationPostsController extends AbstractController
         $post = new Post();
         $post->setTitle($jsonData[0]['title']); // Récupérer le titre du premier élément du tableau JSON
         $post->setDescription($jsonData[0]['description']); // Récupérer la description du premier élément du tableau JSON
-        $post->setType($jsonData[0]['category']);
+        $category_id = $jsonData[0]['category'];
+        $category = $entityManager->getReference('App\Entity\Category', $category_id);
+        $post->setType($category);
         $post->setCreatedAt(new \DateTime());
         $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
         $userRepository = $entityManager->getRepository(User::class);
@@ -89,19 +95,21 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/modification-posts/{id}', name: 'app_modification_posts')]
-    public function modify(Request $request, $id): Response
+    public function modify(Request $request, $id, CategoryRepository $catRepo): Response
     {
         $userId = $this->security->getUser()->getId();
         $entityManager = $this->entityManager;
 
         $post = $entityManager->getRepository(Post::class)->find($id);
         $paragraphs = $entityManager->getRepository(Paragraphes::class)->findByPostId($id);
-        $images = $entityManager->getRepository(Images::class)->findByPostId($id);        
+        $images = $entityManager->getRepository(Images::class)->findByPostId($id);     
+        $categorie = $catRepo->findAll();   
 
         if (!$post) {
             throw new \Exception('Post non trouvé');
         }
         return $this->render('creation_posts/index.html.twig', [
+            'categories' => $categorie,
             'post' => $post,
             'images' => $images,
             'paragraphes' => $paragraphs
@@ -110,7 +118,7 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/modification-posts/{id}/edit', name: 'app_modification_posts_edit')]
-    public function edit(Request $request, $id): Response
+    public function edit(Request $request, $id, CategoryRepository $catRepo): Response
     {
         $jsonData = json_decode($request->request->get('json_data'), true);
         var_dump($jsonData);
@@ -124,7 +132,8 @@ class CreationPostsController extends AbstractController
 
         $post->setTitle($jsonData[0]['title']);
         $post->setDescription($jsonData[0]['description']);
-        $post->setType($jsonData[0]['category']);
+        $category = $catRepo->find((int) $jsonData[0]['category']);
+        $post->setType($category);        
         $post->setCreatedAt(new \DateTime());
         $post->setAddress($jsonData[0]['address']);
         $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
