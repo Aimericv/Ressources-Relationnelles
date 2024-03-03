@@ -139,7 +139,7 @@ class __TwigTemplate_302cfcb3e48912fb94617ea86a00aef3 extends Template
             }
             // line 50
             echo "                <p class=\"category\">Catégorie : ";
-            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "type", [], "any", false, false, false, 50), "html", null, true);
+            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, $context["post"], "getType", [], "method", false, false, false, 50), "name", [], "any", false, false, false, 50), "html", null, true);
             echo "</p>
                 <h2 class=\"title-ressource\">";
             // line 51
@@ -211,20 +211,20 @@ class __TwigTemplate_302cfcb3e48912fb94617ea86a00aef3 extends Template
             // line 79
             $context["postImages"] = twig_get_attribute($this->env, $this->source, (isset($context["images"]) || array_key_exists("images", $context) ? $context["images"] : (function () { throw new RuntimeError('Variable "images" does not exist.', 79, $this->source); })()), twig_get_attribute($this->env, $this->source, $context["post"], "id", [], "any", false, false, false, 79), [], "array", false, false, false, 79);
             // line 80
-            echo "                    ";
+            echo "                ";
             if ( !twig_test_empty((isset($context["postImages"]) || array_key_exists("postImages", $context) ? $context["postImages"] : (function () { throw new RuntimeError('Variable "postImages" does not exist.', 80, $this->source); })()))) {
                 // line 81
-                echo "                        <div class=\"img-ressource\">
-                            <img class=\"img-ressource\" src=\"";
+                echo "                    <div class=\"img-ressource\">
+                        <img class=\"img-ressource\" src=\"";
                 // line 82
                 echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl(twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, (isset($context["postImages"]) || array_key_exists("postImages", $context) ? $context["postImages"] : (function () { throw new RuntimeError('Variable "postImages" does not exist.', 82, $this->source); })()), 0, [], "array", false, false, false, 82), "getSrc", [], "method", false, false, false, 82)), "html", null, true);
                 echo "\" alt=\"Image du Post\">
-                        </div>
-                    ";
+                    </div>
+                ";
             }
             // line 85
-            echo "                <p class=\"category\">Catégorie : ";
-            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["post"], "type", [], "any", false, false, false, 85), "html", null, true);
+            echo "                <p class=\"category\">";
+            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, $context["post"], "getType", [], "method", false, false, false, 85), "name", [], "any", false, false, false, 85), "html", null, true);
             echo "</p>
                 <h2 class=\"title-ressource\">";
             // line 86
@@ -341,7 +341,7 @@ class __TwigTemplate_302cfcb3e48912fb94617ea86a00aef3 extends Template
                             <img class=\"img-ressource\" src=\"{{ asset(postImages[0].getSrc()) }}\" alt=\"Image du Post\">
                         </div>
                     {% endif %}
-                <p class=\"category\">Catégorie : {{ post.type }}</p>
+                <p class=\"category\">Catégorie : {{ post.getType().name }}</p>
                 <h2 class=\"title-ressource\">{{ post.title }}</h2>
                 <p class=\"description-ressource\">{{ post.description }}</p>
                 <button class=\"button-more-ressource\" type=\"button\" onclick=\"window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';\">En savoir plus</button>
@@ -371,12 +371,12 @@ class __TwigTemplate_302cfcb3e48912fb94617ea86a00aef3 extends Template
                     <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
                 </div>
                 {% set postImages = images[post.id] %}
-                    {% if postImages is not empty %}
-                        <div class=\"img-ressource\">
-                            <img class=\"img-ressource\" src=\"{{ asset(postImages[0].getSrc()) }}\" alt=\"Image du Post\">
-                        </div>
-                    {% endif %}
-                <p class=\"category\">Catégorie : {{ post.type }}</p>
+                {% if postImages is not empty %}
+                    <div class=\"img-ressource\">
+                        <img class=\"img-ressource\" src=\"{{ asset(postImages[0].getSrc()) }}\" alt=\"Image du Post\">
+                    </div>
+                {% endif %}
+                <p class=\"category\">{{ post.getType().name }}</p>
                 <h2 class=\"title-ressource\">{{ post.title }}</h2>
                 <p class=\"description-ressource\">{{ post.description }}</p>
                 <button class=\"button-more-ressource\" type=\"button\" onclick=\"window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';\">En savoir plus</button>
