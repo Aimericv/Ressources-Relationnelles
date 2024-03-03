@@ -23,7 +23,7 @@
                 <label for="category">Catégorie de la Ressource</label>
                 <select name="category" id="category">
                     {% for cat in categories %}      
-                        <option value="{{ cat.id }}" {% if categorie is defined and categorie.name == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+                        <option value="{{ cat.id }}" {% if post.getType() is defined and post.getType().getId() == cat.id %}selected{% endif %}>{{ cat.name }}</option>
                     {% endfor %}
                 </select>                
             </div>

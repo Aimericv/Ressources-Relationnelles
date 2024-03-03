@@ -95,7 +95,7 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/modification-posts/{id}', name: 'app_modification_posts')]
-    public function modify(Request $request, $id): Response
+    public function modify(Request $request, $id, CategoryRepository $catRepo): Response
     {
         $userId = $this->security->getUser()->getId();
         $entityManager = $this->entityManager;
@@ -103,13 +103,13 @@ class CreationPostsController extends AbstractController
         $post = $entityManager->getRepository(Post::class)->find($id);
         $paragraphs = $entityManager->getRepository(Paragraphes::class)->findByPostId($id);
         $images = $entityManager->getRepository(Images::class)->findByPostId($id);     
-        $categorie = $post->getType();   
+        $categorie = $catRepo->findAll();   
 
         if (!$post) {
             throw new \Exception('Post non trouvé');
         }
         return $this->render('creation_posts/index.html.twig', [
-            'categorie' => $categorie,
+            'categories' => $categorie,
             'post' => $post,
             'images' => $images,
             'paragraphes' => $paragraphs
@@ -118,7 +118,7 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/modification-posts/{id}/edit', name: 'app_modification_posts_edit')]
-    public function edit(Request $request, $id): Response
+    public function edit(Request $request, $id, CategoryRepository $catRepo): Response
     {
         $jsonData = json_decode($request->request->get('json_data'), true);
         var_dump($jsonData);
@@ -132,7 +132,8 @@ class CreationPostsController extends AbstractController
 
         $post->setTitle($jsonData[0]['title']);
         $post->setDescription($jsonData[0]['description']);
-        $post->setType($jsonData[0]['category']);
+        $category = $catRepo->find((int) $jsonData[0]['category']);
+        $post->setType($category);        
         $post->setCreatedAt(new \DateTime());
         $post->setAddress($jsonData[0]['address']);
         $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
