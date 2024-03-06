@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Security\Role\RoleConverter;
+use App\Repository\RoleRepository;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -25,9 +27,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
-
-    #[ORM\Column(type: 'json')]
-    private array $roles = [];
 
     #[ORM\Column(type: 'string')]
     private string $password;
@@ -43,12 +42,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar_img = null;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Role")
-     * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     */
-    private Role $role;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
@@ -74,10 +67,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Role $role = null;
+
 
     public function __construct()
     {
-        $this->roles = $this->roles ?? ['ROLE_USER'];
         $this->post = new ArrayCollection();
         $this->userParticipations = new ArrayCollection();
         $this->adminComments = new ArrayCollection();
@@ -158,18 +154,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?Role
-    {
-        return $this->role;
-    }
-
-    public function setRole(?Role $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     /**
      * The public representation of the user (e.g. a username, an email address, etc.)
      *
@@ -178,27 +162,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     */
-
-    public function getRoles(): array
-    {
-        $roles = $this->roles ?? [];
-        // garantir que chaque utilisateur a au moins le rôle ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 
     /**
@@ -431,6 +394,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->address = $address;
 
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roleConverter = new RoleConverter();
+        return $roleConverter->intToRole($this->role->getId());
+    }
+
+    public function setRoles($role, RoleRepository $roleRepo): static
+    {
+        $roleConverter = new RoleConverter();
+        $this->role = $roleConverter->roleToInt([$role], $roleRepo);
         return $this;
     }
 }

@@ -22,5 +22,4 @@ class LikeController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-   
 }

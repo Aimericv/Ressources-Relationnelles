@@ -31,7 +31,6 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\InternalProxy
         "\0".parent::class."\0".'password' => [parent::class, 'password', null],
         "\0".parent::class."\0".'post' => [parent::class, 'post', null],
         "\0".parent::class."\0".'role' => [parent::class, 'role', null],
-        "\0".parent::class."\0".'roles' => [parent::class, 'roles', null],
         "\0".parent::class."\0".'userParticipations' => [parent::class, 'userParticipations', null],
         'address' => [parent::class, 'address', null],
         'adminComments' => [parent::class, 'adminComments', null],
@@ -48,7 +47,6 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\InternalProxy
         'password' => [parent::class, 'password', null],
         'post' => [parent::class, 'post', null],
         'role' => [parent::class, 'role', null],
-        'roles' => [parent::class, 'roles', null],
         'userParticipations' => [parent::class, 'userParticipations', null],
     ];
 
@@ -60,7 +58,6 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\InternalProxy
 
         self::createLazyGhost($initializer, [
             "\0".parent::class."\0".'id' => true,
-            "\0".parent::class."\0".'role' => true,
         ], $this);
     }
 

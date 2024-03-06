@@ -15,7 +15,8 @@ class Favorite
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'post')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'post')]
+    #[ORM\JoinColumn(nullable: false)]
     private Collection $user;
 
     #[ORM\ManyToOne(inversedBy: 'favorites')]

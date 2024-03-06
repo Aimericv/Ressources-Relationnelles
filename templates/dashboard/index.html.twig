@@ -67,7 +67,8 @@
             </article>
             <article id="posts-value">
                 <!-- IL FAUT COUPER LES TITRES SI ILS SONT TROP LONG -->
-                {% for post in ressources.posts %}
+                {% set posts = ressources.posts|filter(post => post.getStatus() is defined and post.getStatus().getId() == 2)|sort((a, b) => b.id - a.id) %}
+                {% for post in posts %}
                     <div>
                         <div>
                             <div>
@@ -81,8 +82,8 @@
                             <a href="/post/{{ post.id }}">{{ post.title }}</a>
                         </div>
                         <div>
-                            <a href="">Valider</a>
-                            <a href="">Supprimer</a>
+                            <a href="{{ path('app_dashboard_valid_ressource', {'id': post.id, 'status': 3}) }}">Valider</a>
+                            <a href="{{ path('app_dashboard_valid_ressource', {'id': post.id, 'status': 1}) }}">Refuser</a>                            
                         </div>
                     </div>
                 {% endfor %}
@@ -110,7 +111,7 @@
             </article>
             <article id="account-value">
                 {% for compte in comptes %}
-                    <div class="compte" data-roles="{{ compte.roles|first }}" data-user-id="{{ compte.id }}" data-first-name="{{ compte.firstName }}" data-last-name="{{ compte.lastName }}" data-avatar="                        {% if compte.avatarImg is not null %}
+                <div class="compte" data-roles="{% for role in compte.getRoles() %}{{ role|replace({'ROLE_': ''})|lower }}{% if not loop.last %},{% endif %}{% endfor %}" data-user-id="{{ compte.id }}" data-first-name="{{ compte.firstName }}" data-last-name="{{ compte.lastName }}" data-avatar="                        {% if compte.avatarImg is not null %}
                     {{ asset('profiles/' ~ compte.avatarImg) }}" alt="{{ compte.firstName ~ ' ' ~ compte.lastName }}
                 {% else %}
                     {{ asset('medias/user-green.png') }}" alt="{{ compte.firstName ~ ' ' ~ compte.lastName }}

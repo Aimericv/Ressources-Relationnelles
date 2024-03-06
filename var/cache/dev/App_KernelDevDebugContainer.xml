@@ -243,6 +243,7 @@
     <service id="App\Controller\DashboardController" class="App\Controller\DashboardController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
+      <argument type="service" id="doctrine"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\DashboardController"/>
       </call>
@@ -396,6 +397,7 @@
       <argument type="service" id="router.default"/>
     </service>
     <service id="App\Security\AuthentiAuthenticator" class="App\Security\AuthentiAuthenticator" autowire="true" autoconfigure="true"/>
+    <service id="App\Security\Role\RoleConverter" class="App\Security\Role\RoleConverter" autowire="true" autoconfigure="true"/>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="argument_resolver.backed_enum_resolver" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">
       <tag priority="100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">controller.argument_value_resolver</tag>
@@ -422,7 +424,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
       <tag priority="-50" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">controller.argument_value_resolver</tag>
-      <argument type="service" id=".service_locator.iek27L_"/>
+      <argument type="service" id=".service_locator.kcSdU8y"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">
       <tag priority="-100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">controller.argument_value_resolver</tag>
@@ -2718,7 +2720,7 @@
     </service>
     <service id="argument_resolver.not_tagged_controller" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
       <tag name="controller.argument_value_resolver" priority="-200"/>
-      <argument type="service" id=".service_locator.iek27L_"/>
+      <argument type="service" id=".service_locator.kcSdU8y"/>
     </service>
     <service id="routing.resolver" class="Symfony\Component\Config\Loader\LoaderResolver">
       <call method="addLoader">
@@ -6425,6 +6427,20 @@
         <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
+    <service id=".service_locator.sNmotg3" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="postRepo" type="service_closure" id="App\Repository\PostRepository"/>
+        <argument key="postStatusRepo" type="service_closure" id="App\Repository\PostStatusRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.AighZxN" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="roleRepo" type="service_closure" id="App\Repository\RoleRepository"/>
+        <argument key="userRepo" type="service_closure" id="App\Repository\UserRepository"/>
+      </argument>
+    </service>
     <service id=".service_locator.M.WXHx5" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -6504,7 +6520,7 @@
         <argument key="request" type="service_closure" id=".errored.aDDyJk4"/>
       </argument>
     </service>
-    <service id=".service_locator.iek27L_" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.kcSdU8y" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\Admin\DashboardController::configureUserMenu" type="service_closure" id=".service_locator.t7nLwyX"/>
@@ -6534,7 +6550,9 @@
         <argument key="App\Controller\CreationPostsController::index" type="service_closure" id=".service_locator.8EFOMQ0"/>
         <argument key="App\Controller\CreationPostsController::modify" type="service_closure" id=".service_locator.8EFOMQ0"/>
         <argument key="App\Controller\DashboardController::index" type="service_closure" id=".service_locator.okxhNg_"/>
+        <argument key="App\Controller\DashboardController::roleUser" type="service_closure" id=".service_locator.AighZxN"/>
         <argument key="App\Controller\DashboardController::statistiques" type="service_closure" id=".service_locator.k55bG3z"/>
+        <argument key="App\Controller\DashboardController::validRessource" type="service_closure" id=".service_locator.sNmotg3"/>
         <argument key="App\Controller\DefaultController::base" type="service_closure" id=".service_locator.M.WXHx5"/>
         <argument key="App\Controller\DefaultController::catalogue" type="service_closure" id=".service_locator.8gm2.1E"/>
         <argument key="App\Controller\DefaultController::post" type="service_closure" id=".service_locator.8gm2.1E"/>
@@ -6604,7 +6622,9 @@
         <argument key="App\Controller\CreationPostsController:index" type="service_closure" id=".service_locator.8EFOMQ0"/>
         <argument key="App\Controller\CreationPostsController:modify" type="service_closure" id=".service_locator.8EFOMQ0"/>
         <argument key="App\Controller\DashboardController:index" type="service_closure" id=".service_locator.okxhNg_"/>
+        <argument key="App\Controller\DashboardController:roleUser" type="service_closure" id=".service_locator.AighZxN"/>
         <argument key="App\Controller\DashboardController:statistiques" type="service_closure" id=".service_locator.k55bG3z"/>
+        <argument key="App\Controller\DashboardController:validRessource" type="service_closure" id=".service_locator.sNmotg3"/>
         <argument key="App\Controller\DefaultController:base" type="service_closure" id=".service_locator.M.WXHx5"/>
         <argument key="App\Controller\DefaultController:catalogue" type="service_closure" id=".service_locator.8gm2.1E"/>
         <argument key="App\Controller\DefaultController:post" type="service_closure" id=".service_locator.8gm2.1E"/>
@@ -8265,7 +8285,7 @@
     <service id="EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface" alias="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.7nzbL4K" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.iek27L_"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.kcSdU8y"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface" alias="logger"/>
@@ -8277,12 +8297,13 @@
     <service id=".service_locator.Lazlz4J" alias=".service_locator.jG5xrFj"/>
     <service id=".service_locator.dQc8md_" alias=".service_locator.okxhNg_"/>
     <service id=".service_locator.K78gCNe" alias=".service_locator.k55bG3z"/>
+    <service id=".service_locator.MKHrCP3" alias=".service_locator.AighZxN"/>
     <service id=".service_locator..a5istG" alias=".service_locator.8gm2.1E"/>
     <service id=".service_locator.OoYYYzs" alias=".service_locator.RnyZtc6"/>
     <service id=".service_locator.Z3z_5ay" alias=".service_locator.Q_mV0WD"/>
     <service id=".service_locator.f4YP24X" alias=".service_locator.ckGzNSR"/>
     <service id=".service_locator.c.VxI5h" alias=".service_locator.oogCZpI"/>
-    <service id=".service_locator.erS44Rn" alias=".service_locator.iek27L_"/>
+    <service id=".service_locator.bH3lMC3" alias=".service_locator.kcSdU8y"/>
     <service id=".service_locator.BFrsqsn" alias=".service_locator.F9PKc.7"/>
     <service id=".service_locator.Ccz2edK" alias=".service_locator.BR1VzPv"/>
     <service id=".service_locator.LMuqDDe" alias=".service_locator.VHsrTPK"/>
@@ -8316,6 +8337,8 @@
     <service id=".service_locator.wu9bFY3" alias=".service_locator.sjxRXbY"/>
     <service id=".service_locator.Gqh7FAV" alias=".service_locator.okxhNg_"/>
     <service id=".service_locator.PPxfLZm" alias=".service_locator.k55bG3z"/>
+    <service id=".service_locator.cPOBK8V" alias=".service_locator.sNmotg3"/>
+    <service id=".service_locator.t4sMwM2" alias=".service_locator.AighZxN"/>
     <service id=".service_locator..WEANAS" alias=".service_locator.M.WXHx5"/>
     <service id=".service_locator.Pxosbax" alias=".service_locator.8gm2.1E"/>
     <service id=".service_locator.otVs3qA" alias=".service_locator.RnyZtc6"/>

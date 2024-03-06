@@ -42,16 +42,22 @@ return [
                     .'|(*:74)'
                     .'|/edit(*:86)'
                 .')'
-                .'|/delete\\-posts/([^/]++)(*:117)'
+                .'|/d(?'
+                    .'|elete\\-posts/([^/]++)(*:120)'
+                    .'|ashboard/(?'
+                        .'|valid\\-post/([^/]++)/([^/]++)(*:169)'
+                        .'|role\\-user/([^/]++)/([^/]++)(*:205)'
+                    .')'
+                .')'
                 .'|/post/(?'
                     .'|([^/]++)(?'
-                        .'|(*:145)'
+                        .'|(*:235)'
                     .')'
-                    .'|new(*:157)'
+                    .'|new(*:247)'
                     .'|([^/]++)(?'
-                        .'|(*:176)'
-                        .'|/edit(*:189)'
-                        .'|(*:197)'
+                        .'|(*:266)'
+                        .'|/edit(*:279)'
+                        .'|(*:287)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -60,15 +66,17 @@ return [
         35 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
         74 => [[['_route' => 'app_modification_posts', '_controller' => 'App\\Controller\\CreationPostsController::modify'], ['id'], null, null, false, true, null]],
         86 => [[['_route' => 'app_modification_posts_edit', '_controller' => 'App\\Controller\\CreationPostsController::edit'], ['id'], null, null, false, false, null]],
-        117 => [[['_route' => 'app_delete_posts', '_controller' => 'App\\Controller\\CreationPostsController::delete'], ['id'], null, null, false, true, null]],
-        145 => [
+        120 => [[['_route' => 'app_delete_posts', '_controller' => 'App\\Controller\\CreationPostsController::delete'], ['id'], null, null, false, true, null]],
+        169 => [[['_route' => 'app_dashboard_valid_ressource', '_controller' => 'App\\Controller\\DashboardController::validRessource'], ['id', 'status'], null, null, false, true, null]],
+        205 => [[['_route' => 'app_dashboard_role_user', '_controller' => 'App\\Controller\\DashboardController::roleUser'], ['id', 'role'], null, null, false, true, null]],
+        235 => [
             [['_route' => 'app_post_like', '_controller' => 'App\\Controller\\DefaultController::postLike'], ['id'], ['POST' => 0], null, false, true, null],
             [['_route' => 'app_post_detail', '_controller' => 'App\\Controller\\DefaultController::postDetail'], ['id'], null, null, false, true, null],
         ],
-        157 => [[['_route' => 'app_post_new', '_controller' => 'App\\Controller\\PostController::new'], [], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        176 => [[['_route' => 'app_post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        189 => [[['_route' => 'app_post_edit', '_controller' => 'App\\Controller\\PostController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        197 => [
+        247 => [[['_route' => 'app_post_new', '_controller' => 'App\\Controller\\PostController::new'], [], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        266 => [[['_route' => 'app_post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        279 => [[['_route' => 'app_post_edit', '_controller' => 'App\\Controller\\PostController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        287 => [
             [['_route' => 'app_post_delete', '_controller' => 'App\\Controller\\PostController::delete'], ['id'], ['POST' => 0], null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

@@ -14,6 +14,8 @@ return [
     'app_delete_posts' => [['id'], ['_controller' => 'App\\Controller\\CreationPostsController::delete'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/delete-posts']], [], [], []],
     'app_dashboard' => [[], ['_controller' => 'App\\Controller\\DashboardController::index'], [], [['text', '/dashboard']], [], [], []],
     'app_dashboard_ajax' => [[], ['_controller' => 'App\\Controller\\DashboardController::statistiques'], [], [['text', '/dashboard/ajax']], [], [], []],
+    'app_dashboard_valid_ressource' => [['id', 'status'], ['_controller' => 'App\\Controller\\DashboardController::validRessource'], [], [['variable', '/', '[^/]++', 'status', true], ['variable', '/', '[^/]++', 'id', true], ['text', '/dashboard/valid-post']], [], [], []],
+    'app_dashboard_role_user' => [['id', 'role'], ['_controller' => 'App\\Controller\\DashboardController::roleUser'], [], [['variable', '/', '[^/]++', 'role', true], ['variable', '/', '[^/]++', 'id', true], ['text', '/dashboard/role-user']], [], [], []],
     'app_default' => [[], ['_controller' => 'App\\Controller\\DefaultController::index'], [], [['text', '/default']], [], [], []],
     'app_base' => [[], ['_controller' => 'App\\Controller\\DefaultController::base'], [], [['text', '/base']], [], [], []],
     'app_homepage' => [[], ['_controller' => 'App\\Controller\\DefaultController::post'], [], [['text', '/']], [], [], []],

@@ -1,6 +1,8 @@
 // 
 // STATISTIQUES
 // 
+
+
 const users = document.querySelectorAll('#account-value p');
 const formAccount = document.getElementById('account-form');
 const body = document.querySelector('body');
@@ -71,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
 // 
 // RESSOURCES
 // 
@@ -81,23 +84,32 @@ document.querySelectorAll('.compte').forEach(item => {
         const firstName = item.getAttribute('data-first-name');
         const lastName = item.getAttribute('data-last-name');
         const avatar = item.getAttribute('data-avatar');
-        const role = item.getAttribute('data-roles');
-        console.log(role)
+        const roleId = item.getAttribute('data-roles'); 
+        console.log(roleId);
 
-        // Mettez à jour les éléments dans #account-form
+        // Mettre à jour les éléments dans #account-form
         document.getElementById('account-form').innerHTML = `
             <img src="${avatar}" alt="${firstName} ${lastName}">
             <p>${firstName} ${lastName}</p>
-            <select>
-                <option value="citoyen" ${role === 'ROLE_USER' ? 'selected' : ''}>Citoyen</option>
-                <option value="moderateur" ${role === 'ROLE_MODERATOR' ? 'selected' : ''}>Modérateur</option>
-                <option value="admin" ${role === 'ROLE_ADMIN' ? 'selected' : ''}>Administrateur</option>
-                <option value="superAdmin" ${role === 'ROLE_SUPERADMIN' ? 'selected' : ''}>Super-admin</option>
+            <select id="role-select">
+                <option value="ROLE_USER" ${roleId === 'user' ? 'selected' : ''}>Citoyen</option>
+                <option value="ROLE_MODERATOR" ${roleId === 'moderator' ? 'selected' : ''}>Modérateur</option>
+                <option value="ROLE_ADMIN" ${roleId === 'admin' ? 'selected' : ''}>Administrateur</option>
+                <option value="ROLE_SUPERADMIN" ${roleId === 'superadmin' ? 'selected' : ''}>Super-admin</option>
             </select>
-            <a href="#" id="valid-account">Valider</a>
+            <a href="#" id="valid-account" data-user-id="${userId}" data-role-id="${roleId}">Valider</a>
         `;
 
-        // Empêche le comportement par défaut de l'événement de clic
+        // Ajouter un gestionnaire d'événements pour le changement dans le sélecteur déroulant
+        document.getElementById('role-select').addEventListener('change', event => {
+            const selectedRoleId = event.target.value;
+            document.getElementById('valid-account').setAttribute('data-role-id', selectedRoleId);
+            const userId = document.getElementById('valid-account').getAttribute('data-user-id');
+            const href = "/dashboard/role-user/" + userId + "/" + selectedRoleId;
+            document.getElementById('valid-account').setAttribute('href', href);
+        });
+
+        // Empêcher le comportement par défaut de l'événement de clic
         event.preventDefault();
     });
 });

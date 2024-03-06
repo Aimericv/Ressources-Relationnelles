@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserParticipationRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserParticipationRepository::class)]
@@ -15,70 +13,38 @@ class UserParticipation
     #[ORM\Column]
     private ?int $id = null; 
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'userParticipations')]
-    #[ORM\JoinTable(name: 'user_participation')]
-    private Collection $user;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $user;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'userParticipations')]
-    #[ORM\JoinTable(name: 'user_participation')]
-    private Collection $post;
-
-    public function __construct()
-    {
-        $this->user = new ArrayCollection();
-        $this->post = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(targetEntity: Post::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Post $post;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUser(): Collection
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function addUser(User $user): static
+    public function setUser(User $user): static
     {
-        if (!$this->user->contains($user)) {
-            $this->user->add($user);
-        }
-
+        $this->user = $user;
         return $this;
     }
 
-    public function removeUser(User $user): static
-    {
-        $this->user->removeElement($user);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Post>
-     */
-    public function getPost(): Collection
+    public function getPost(): Post
     {
         return $this->post;
     }
 
-    public function addPost(Post $post): static
+    public function setPost(Post $post): static
     {
-        if (!$this->post->contains($post)) {
-            $this->post->add($post);
-        }
-
-        return $this;
-    }
-
-    public function removePost(Post $post): static
-    {
-        $this->post->removeElement($post);
-
+        $this->post = $post;
         return $this;
     }
 }

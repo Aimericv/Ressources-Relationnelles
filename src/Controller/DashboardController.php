@@ -8,14 +8,23 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Repository\RoleRepository;
 use App\Repository\PostRepository;
+use App\Repository\PostStatusRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\HelpEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 
 class DashboardController extends AbstractController
 {
+    private $doctrine;
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository): Response
     {
@@ -136,5 +145,32 @@ class DashboardController extends AbstractController
             }
         }
         return $visits;
+    }
+
+    #[Route('/dashboard/valid-post/{id}/{status}', name: 'app_dashboard_valid_ressource')]
+    public function validRessource($id, $status, PostRepository $postRepo, PostStatusRepository $postStatusRepo): Response
+    {
+        $post = $postRepo->find($id);
+
+        if (!$post) {
+            throw $this->createNotFoundException('No post found for id '.$id);
+        }
+    
+        $newStatusId = $status;
+        $status = $postStatusRepo->find($newStatusId);
+        $post->setStatus($status);
+    
+        $this->doctrine->getManager()->flush();
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/dashboard/role-user/{id}/{role}', name: 'app_dashboard_role_user')]
+    public function roleUser($id, $role, UserRepository $userRepo, RoleRepository $roleRepo): Response
+    {
+        $user = $userRepo->find($id);
+        $user->setRoles($role, $roleRepo);
+    
+        $this->doctrine->getManager()->flush();
+        return $this->redirectToRoute('app_dashboard');
     }
 }
