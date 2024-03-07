@@ -71,6 +71,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
 
+    #[ORM\OneToMany(mappedBy: 'reposted_by', targetEntity: Post::class)]
+    private Collection $reposted;
+
 
     public function __construct()
     {
@@ -80,6 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->follows = new ArrayCollection();
         $this->following = new ArrayCollection();
+        $this->reposted = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -407,6 +411,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roleConverter = new RoleConverter();
         $this->role = $roleConverter->roleToInt([$role], $roleRepo);
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getReposted(): Collection
+    {
+        return $this->reposted;
+    }
+
+    public function addReposted(Post $reposted): static
+    {
+        if (!$this->reposted->contains($reposted)) {
+            $this->reposted->add($reposted);
+            $reposted->setRepostedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReposted(Post $reposted): static
+    {
+        if ($this->reposted->removeElement($reposted)) {
+            // set the owning side to null (unless already changed)
+            if ($reposted->getRepostedBy() === $this) {
+                $reposted->setRepostedBy(null);
+            }
+        }
+
         return $this;
     }
 }

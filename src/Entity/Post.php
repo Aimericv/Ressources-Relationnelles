@@ -50,6 +50,9 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $type = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reposted')]
+    private ?User $reposted_by = null;
+
     public function __construct()
     {
         $this->favorites = new ArrayCollection();
@@ -267,6 +270,18 @@ class Post
     public function setType(?Category $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getRepostedBy(): ?User
+    {
+        return $this->reposted_by;
+    }
+
+    public function setRepostedBy(?User $reposted_by): static
+    {
+        $this->reposted_by = $reposted_by;
 
         return $this;
     }
