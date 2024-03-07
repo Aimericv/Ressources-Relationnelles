@@ -266,9 +266,9 @@
             </article>
             <article id="sav-value">
                 {% for question in questions %}
-                    <div>
-                        <div>
-                            <p>{{ question.questions }}<p>
+                    <div class="answer-container">
+                        <div class="question-container">
+                            <p data-id="{{ question.id }}" class="question">{{ question.questions }}</p>
                             <div>
                                 <a href="#" class="open-sav-form">
                                     {% if question.answer is not null %}
@@ -287,7 +287,7 @@
                             </div>
                         </div>
                         {% if question.answer is not null %}
-                            <p>{{ question.answer }}</p>
+                            <p class="answer">{{ question.answer }}</p>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -295,9 +295,10 @@
             <article id="sav-form">
                 <form>
                     <p>Réponse à la question :</p>
-                    <textarea name="answer" id="" rows="10"></textarea>
+                    <p id="existinQuestion"></p>
+                    <textarea name="answer" rows="10"></textarea>
                     <div>
-                        <a href="#" class="back-sav-form sav-form-btn">Répondre</a>
+                        <button type="submit" class="back-sav-form sav-form-btn">Répondre</button>
                         <a href="#" class="back-sav-form sav-form-btn">Retour</a>
                     </div>
                 </form>

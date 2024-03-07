@@ -142,3 +142,32 @@ nameInput.addEventListener('input', function() {
     nameInput.setAttribute('value', nameInput.value);
 });
 
+
+// 
+// SAV
+// 
+
+document.addEventListener("DOMContentLoaded", function() {
+    let editButtons = document.querySelectorAll(".open-sav-form");
+    editButtons.forEach(function(button) {
+        button.addEventListener("click", function(event) {
+            let savForm = document.querySelector("#sav-form textarea");
+            let questionContainer = event.target.closest(".question-container");
+            let question = questionContainer.querySelector("p").textContent.trim();
+            let existingQuestion = document.getElementById('existinQuestion');
+            existingQuestion.innerHTML = question;
+
+            let answerContainer = event.target.closest(".answer-container");
+            let answer = answerContainer.querySelector(".answer");
+            if (answer !== null && answer !== undefined) {
+                answer = answer.textContent.trim();
+                savForm.innerHTML = answer;
+            };
+
+            let questionId = questionContainer.querySelector('p').dataset.id;
+            savForm.addEventListener("input", function() {
+                savForm.innerHTML = savForm.value;
+            })
+        });
+    });
+});
