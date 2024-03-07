@@ -258,6 +258,19 @@ select:focus, input:focus {
     color: #03989e;
 }
 
+#form-cat button {
+    background-color: transparent;
+    border: 0;
+    color: #000;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#form-cat button:hover {
+    color: #03989e;
+}
+
 /* VOIR PLUS */
 
 .load-more {

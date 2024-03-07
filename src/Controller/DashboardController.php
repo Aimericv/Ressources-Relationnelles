@@ -7,10 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
+use App\Entity\Category;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
 use App\Repository\PostRepository;
 use App\Repository\PostStatusRepository;
+use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\HelpEntityRepository;
@@ -26,7 +28,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository): Response
+    public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
     {
         $stats_filter = "";
         $visits = $this->calculateVisits($session, $stats_filter);
@@ -53,11 +55,14 @@ class DashboardController extends AbstractController
 
         $questions = $helpRepository->findAll();
 
+        $category = $catRepo->findAll();
+
         return $this->render('dashboard/index.html.twig', [
             'statistiques' => $statistiques,
             'ressources' => $ressources,
             'comptes' => $comptes,
             'questions' => $questions,
+            'categories' => $category,
         ]);
     }
 
@@ -171,6 +176,41 @@ class DashboardController extends AbstractController
         $user->setRoles($role, $roleRepo);
     
         $this->doctrine->getManager()->flush();
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/dashboard/category/edit/{id}', name: 'app_dashboard_edit_category')]
+    public function editCategory($id, CategoryRepository $catRepo, Request $request): Response
+    {
+        $formData = $request->request->get('name-cat');
+        $category = $catRepo->find($id);
+        $category->setName($formData);
+        $this->doctrine->getManager()->flush();
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/dashboard/category/add', name: 'app_dashboard_add_category')]
+    public function addCategory(Request $request): Response
+    {
+        $formData = $request->request->get('name-cat');
+        $category = new Category();
+        $category->setName($formData);
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($category);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/dashboard/category/delete/{id}', name: 'app_dashboard_delete_category')]
+    public function deleteCategory($id, CategoryRepository $catRepo): Response
+    {
+        $category = $catRepo->find($id);
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->remove($category);
+        $entityManager->flush();
+
         return $this->redirectToRoute('app_dashboard');
     }
 }

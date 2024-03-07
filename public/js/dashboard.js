@@ -40,12 +40,6 @@ savFormBtns.forEach((savFormBtn) => {
         body.style.overflow = "hidden";
     })
 });
-backSavForms.forEach((backSavForm) => {
-    backSavForm.addEventListener('click', () => {
-        savForm.style.display = "none";
-        body.style.overflow = "auto";
-    })
-})
 
 // REQUÊTE AJAX
 
@@ -75,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // 
-// RESSOURCES
+// COMPTES
 // 
 
 document.querySelectorAll('.compte').forEach(item => {
@@ -87,7 +81,6 @@ document.querySelectorAll('.compte').forEach(item => {
         const roleId = item.getAttribute('data-roles'); 
         console.log(roleId);
 
-        // Mettre à jour les éléments dans #account-form
         document.getElementById('account-form').innerHTML = `
             <img src="${avatar}" alt="${firstName} ${lastName}">
             <p>${firstName} ${lastName}</p>
@@ -100,7 +93,6 @@ document.querySelectorAll('.compte').forEach(item => {
             <a href="#" id="valid-account" data-user-id="${userId}" data-role-id="${roleId}">Valider</a>
         `;
 
-        // Ajouter un gestionnaire d'événements pour le changement dans le sélecteur déroulant
         document.getElementById('role-select').addEventListener('change', event => {
             const selectedRoleId = event.target.value;
             document.getElementById('valid-account').setAttribute('data-role-id', selectedRoleId);
@@ -109,7 +101,44 @@ document.querySelectorAll('.compte').forEach(item => {
             document.getElementById('valid-account').setAttribute('href', href);
         });
 
-        // Empêcher le comportement par défaut de l'événement de clic
         event.preventDefault();
     });
 });
+
+// 
+// CATEGORY
+// 
+
+let form = document.querySelector('#form-cat form');
+let nameInput = document.querySelector('#name-cat');
+let editLinks = document.querySelectorAll('#cat-value a[data-action="edit"]');
+let categoryContainers = document.querySelectorAll('.categoryContainer');
+
+editLinks.forEach(function(editLink, index) {
+    editLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        let categoryId = categoryContainers[index].dataset.id; // Récupérer l'ID de la catégorie correspondante
+        let categoryName = categoryContainers[index].querySelector('p').textContent;
+        nameInput.setAttribute('value', categoryName);
+        console.log(nameInput);
+        document.getElementById('add-cat-form').textContent = 'Modifier';
+        form.action = '/dashboard/category/edit/' + categoryId;
+        document.getElementById('form-cat').style.display = 'flex';
+    });
+});
+
+let backButton = document.querySelector('#back-cat-form');
+
+backButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    form.reset();
+    document.getElementById('add-cat-form').textContent = 'Ajouter';
+    form.action = '{{ path("app_dashboard_add_category") }}';
+    document.getElementById('form-cat').style.display = 'none';
+    body.style.overflow = "auto";
+});
+
+nameInput.addEventListener('input', function() {
+    nameInput.setAttribute('value', nameInput.value);
+});
+

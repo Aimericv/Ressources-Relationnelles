@@ -128,8 +128,6 @@
             <article class="load-more">
                 <a href="#">Voir plus</a>
             </article>
-            {# ARTICLE UNIQUEMENT VISIBLE SI ON CLIQUE SUR UN UTILISATEUR EN JS #}
-            {# COMMENT FAIRE POUR QUE LES INFOS DE L'UTILISATEUR S'AFFICHE ? #}
             <article id="account-form">
                 <img src="medias/user-green.png" alt="user1">
                 <p>User 1</p>
@@ -152,51 +150,29 @@
                 <span></span>
             </article>
             <article id="cat-value">
-                <div>
+                {% for category in categories %}
                     <div>
-                        <img src="medias/user-green.png" alt="jeux">
-                        <p>Jeux</p>
+                        <div class="categoryContainer" data-id="{{ category.id }}">
+                            <img src="medias/user-green.png" alt="{{ category.name }}">
+                            <p>{{ category.name }}</p>
+                        </div>
+                        <div>
+                            <a href="" data-action="edit">Modifier</a>
+                            <a href="{{ path('app_dashboard_delete_category', {'id': category.id}) }}">Supprimer</a>
+                        </div>
                     </div>
-                    <div>
-                        <a href="#">Modifier</a>
-                        <a href="#">Supprimer</a>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <img src="medias/user-green.png" alt="Évènements">
-                        <p>Évènements</p>
-                    </div>
-                    <div>
-                        <a href="#">Modifier</a>
-                        <a href="#">Supprimer</a>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <img src="medias/user-green.png" alt="bien-être">
-                        <p>Bien-être</p>
-                    </div>
-                    <div>
-                        <a href="#">Modifier</a>
-                        <a href="#">Supprimer</a>
-                    </div>
-                </div>
+                {% endfor %}
                 <a href="#" id="add-cat">Ajouter</a>
             </article>
             <article id="form-cat">
-                <form>
-                    <div>
-                        <label for="img-cat">Image de la catégorie</label>
-                        <input type="file" id="img-cat">
-                    </div>
+                <form action="{{ path('app_dashboard_add_category') }}" method="post">
                     <div>
                         <label for="name-cat">Nom de la catégorie</label>
-                        <input type="text" id="name-cat">
+                        <input type="text" name="name-cat" id="name-cat" value="">
                     </div>
                     <div>
-                        <a href="#" id="add-cat-form" class="back-cat-form">Ajouter</a>
-                        <a href="#" id="back-cat-form" class="back-cat-form">Retour</a>
+                        <button type="submit" id="add-cat-form" class="back-cat-form">Ajouter</button>
+                        <a href="#" id="back-cat-form" id="back-cat-form">Retour</a>
                     </div>
                 </form>
             </article>
