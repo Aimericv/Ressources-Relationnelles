@@ -37,7 +37,7 @@ class Post
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Favorite::class)]
     private Collection $favorites;
 
-    #[ORM\ManyToMany(targetEntity: UserParticipation::class, mappedBy: 'post')]
+    #[ORM\OneToMany(targetEntity: UserParticipation::class, mappedBy: 'post')]
     private Collection $userParticipations;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: AdminComment::class)]
@@ -50,8 +50,30 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $type = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reposted')]
-    private ?User $reposted_by = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Post $post = null;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $author;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $category;
+    
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
 
     public function __construct()
     {
@@ -270,18 +292,6 @@ class Post
     public function setType(?Category $type): static
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getRepostedBy(): ?User
-    {
-        return $this->reposted_by;
-    }
-
-    public function setRepostedBy(?User $reposted_by): static
-    {
-        $this->reposted_by = $reposted_by;
 
         return $this;
     }

@@ -277,13 +277,12 @@
                                         Répondre
                                     {% endif %}
                                 </a>
-                                <a href="#">
-                                    {% if question.status == 0 or question.status == 1 %}
-                                        Publier
-                                    {% else %}
-                                        Privatiser
-                                    {% endif %}
-                                </a>
+                                
+                                {% if question.status == 0 or question.status == 1 %}
+                                    <a href="{{ path('app_dashboard_public_help', {'id': question.id}) }}">Publier</a>
+                                {% else %}
+                                    <a href="{{ path('app_dashboard_private_help', {'id': question.id}) }}">Privatiser</a>
+                                {% endif %}
                             </div>
                         </div>
                         {% if question.answer is not null %}
@@ -293,7 +292,7 @@
                 {% endfor %}
             </article>
             <article id="sav-form">
-                <form>
+                <form method="post">
                     <p>Réponse à la question :</p>
                     <p id="existinQuestion"></p>
                     <textarea name="answer" rows="10"></textarea>

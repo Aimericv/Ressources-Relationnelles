@@ -213,4 +213,36 @@ class DashboardController extends AbstractController
 
         return $this->redirectToRoute('app_dashboard');
     }
+
+    #[Route('/dashboard/help/answer/{id}', name: 'app_dashboard_answer_help')]
+    public function answerHelp($id, HelpEntityRepository $helpRepo, Request $request): Response
+    {
+        $formData = $request->request->get('answer');
+        $question = $helpRepo->find($id);
+        $question->setAnswer($formData);
+        $question->setStatus(1);
+        $this->doctrine->getManager()->flush();
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/dashboard/help/private/{id}', name: 'app_dashboard_private_help')]
+    public function privateHelp($id, HelpEntityRepository $helpRepo): Response
+    {
+        $question = $helpRepo->find($id);
+        $question->setStatus(1);
+        $this->doctrine->getManager()->flush();
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/dashboard/help/public/{id}', name: 'app_dashboard_public_help')]
+    public function publicHelp($id, HelpEntityRepository $helpRepo): Response
+    {
+        $question = $helpRepo->find($id);
+        $question->setStatus(2);
+        $this->doctrine->getManager()->flush();
+
+        return $this->redirectToRoute('app_dashboard');
+    }
 }

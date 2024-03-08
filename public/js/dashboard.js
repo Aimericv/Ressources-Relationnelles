@@ -40,6 +40,12 @@ savFormBtns.forEach((savFormBtn) => {
         body.style.overflow = "hidden";
     })
 });
+backSavForms.forEach((backSavForm) => {
+    backSavForm.addEventListener('click', () => {
+        savForm.style.display = "none";
+        body.style.overflow = "auto";
+    })
+});
 
 // REQUÊTE AJAX
 
@@ -165,6 +171,9 @@ document.addEventListener("DOMContentLoaded", function() {
             };
 
             let questionId = questionContainer.querySelector('p').dataset.id;
+            let form = document.querySelector("#sav-form form");
+            form.setAttribute('action', "/dashboard/help/answer/"+questionId);
+
             savForm.addEventListener("input", function() {
                 savForm.innerHTML = savForm.value;
             })
