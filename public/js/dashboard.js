@@ -180,3 +180,34 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+
+// 
+// SEARCH BAR
+// 
+
+let inputs = document.querySelectorAll('.searchbar');
+let listsContainer = document.querySelectorAll('.lists');
+
+inputs.forEach(function(input) {
+    let filter = input.getAttribute('data-filter');
+    let idContainer = filter + "-value";
+    let listContainer = document.getElementById(idContainer);
+    input.addEventListener('input', function() {
+        searchBar(input.value.trim().toLowerCase(), listContainer, idContainer);
+    });
+})
+
+function searchBar(input, listContainer, idContainer) {
+    let items = listContainer.querySelectorAll('#' + idContainer + ' > div');
+    items.forEach(function(item) {
+        for (let i = 0; i < items.length; i++) {
+            let name = item.querySelector('.post-title').textContent.trim().toLowerCase();
+            if (name.includes(input)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        }
+    });
+}

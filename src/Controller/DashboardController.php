@@ -17,19 +17,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\HelpEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 
 class DashboardController extends AbstractController
 {
     private $doctrine;
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(Security $security, ManagerRegistry $doctrine)
     {
+        $this->security = $security;
         $this->doctrine = $doctrine;
     }
 
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
     {
+        if (!$this->security->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+        $connectUser = $this->security->getUser()->getRoles();
+        $roleUser = $connectUser[0];
+        if ($roleUser == "ROLE_USER"){
+            return $this->redirectToRoute('app_homepage');
+        } 
+
         $stats_filter = "";
         $visits = $this->calculateVisits($session, $stats_filter);
         $userStats = $userRepository->findByStatsForLatestMonth();
@@ -58,6 +69,7 @@ class DashboardController extends AbstractController
         $category = $catRepo->findAll();
 
         return $this->render('dashboard/index.html.twig', [
+            'roleUser' => $roleUser,
             'statistiques' => $statistiques,
             'ressources' => $ressources,
             'comptes' => $comptes,
