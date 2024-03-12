@@ -37,7 +37,7 @@ class Post
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Favorite::class)]
     private Collection $favorites;
 
-    #[ORM\OneToMany(targetEntity: UserParticipation::class, mappedBy: 'post')]
+    #[ORM\ManyToMany(targetEntity: UserParticipation::class, mappedBy: 'post')]
     private Collection $userParticipations;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: AdminComment::class)]
