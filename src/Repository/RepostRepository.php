@@ -24,15 +24,8 @@ class RepostRepository extends ServiceEntityRepository
 
     public function findRepostPostsByUser(User $user): array
     {
-        // Première requête
-        $repostPosts = $this->createQueryBuilder('f')
-            ->join('f.post', 'p')
-            ->andWhere('f.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+        
     
-        // Deuxième requête
         $followingRepostPosts = $this->createQueryBuilder('r')
             ->join('r.post', 'p')
             ->join('r.user', 'u')
@@ -42,14 +35,9 @@ class RepostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     
-        // Utilisez les résultats comme vous le souhaitez
-        // Par exemple, vous pouvez les concaténer ou les retourner dans un tableau
-        $allRepostPosts = array_merge($repostPosts, $followingRepostPosts);
+        $allRepostPosts = array_merge( $followingRepostPosts);
     
-        // Vous pouvez également retourner les résultats séparément ou les manipuler autrement
         return $allRepostPosts;
     }
-    
 
-    // ... your other methods
 }
