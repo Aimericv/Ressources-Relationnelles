@@ -24,7 +24,7 @@
                 <div style="position: absolute; top:{{ paragraph.y }}px; left:{{ paragraph.x }}px; width: {{ paragraph.width }}px; height: {{ paragraph.height }}px; z-index:-1;">
                     {{ paragraph.getContent()|raw }}
                 </div>
-            {% endfor %}                 
+            {% endfor %}
         </section>
         <section class="actions-section">
     <article class="actions">
@@ -103,5 +103,44 @@
                 </div>
             </article>
         </section>
+        {# Afficher les commentaires existants #}
+        <section class="comment-section">
+            {% for comment in comments %}
+                <article class="comment">
+                    <div class="comment-user">
+                        <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
+                        <a href="#">{{ comment.getUser().getUsername() }}</a>
+                    </div>
+                    <div>
+                        <p>{{ comment.getContent() }}</p>
+                    </div>
+                    <div class="comment-actions">
+                        <a href="#reply">Répondre</a>
+                    </div>
+                </article>
+                {# Afficher les réponses aux commentaires s'il y en a #}
+                {% for response in comment.getResponses() %}
+                    <article class="answer-comment comment">
+                        <div class="comment-user">
+                            <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
+                            <a href="#">{{ response.getUser().getUsername() }}</a>
+                        </div>
+                        <div>
+                            <p>{{ response.getContent() }}</p>
+                        </div>
+                        <div class="comment-actions">
+                            <a href="#reply">Répondre</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endfor %}
+        </section>
+
+        {# Formulaire pour ajouter un nouveau commentaire #}
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.content) }}
+        <button type="submit">Ajouter un commentaire</button>
+        {{ form_end(commentForm) }}
+
     </main>
 {% endblock %}

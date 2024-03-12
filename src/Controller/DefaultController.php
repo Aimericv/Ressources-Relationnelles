@@ -2,15 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
+use App\Entity\CommentResponse;
 use App\Entity\Post;
+use App\Form\CommentResponseType;
+use App\Form\CommentType;
 use App\Repository\PostRepository;
-use http\Client\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Like;
 use App\Repository\LikeRepository;
 use Symfony\Component\Security\Core\Security;
@@ -146,31 +149,82 @@ class DefaultController extends AbstractController
     
 
     #[Route("/post/{id}", name: "app_post_detail")]
-    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
         $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
-    
+        // Récupérer les commentaires du post
+        $comments = $post->getComments();
+
+        // Créer un nouveau commentaire
+        $comment = new Comment();
+        $commentForm = $this->createForm(CommentType::class, $comment);
+        $commentForm->handleRequest($request);
+
         if (!$this->security->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-    
+
         $post = $this->entityManager->getRepository(Post::class)->find($id);
-    
+
         if (!$post) {
             throw $this->createNotFoundException('Post not found');
         }
 
 
- 
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $comment->setUser($this->getUser());
+            $comment->setPost($post);
+            $comment->setDate(new \DateTime());
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_detail', ['id' => $post->getId()]);
+        }
+
+        // Récupérer les formulaires de réponse aux commentaires
+        $commentResponseForms = [];
+        foreach ($comments as $existingComment) {
+            $commentResponse = new CommentResponse();
+            $commentResponseForm = $this->createForm(CommentResponseType::class, $commentResponse);
+            $commentResponseForms[$existingComment->getId()] = $commentResponseForm->createView();
+        }
+
+        // Créer un nouveau commentaire réponse
+        $commentResponse = new CommentResponse();
+        $commentResponseForm = $this->createForm(CommentResponseType::class, $commentResponse);
+        $commentResponseForm->handleRequest($request);
+
+        if ($commentResponseForm->isSubmitted() && $commentResponseForm->isValid()) {
+            //$commentResponse->setUser($this->getUser());
+            $commentResponse->setDate(new \DateTime());
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($commentResponse);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_detail', ['id' => $post->getId()]);
+        }
+
+
+
         $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
             'user' => $this->security->getUser(),
             'post' => $post,
         ]);
-        
-    
-        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes]);
+
+
+        return $this->render('default/postDetail.html.twig', [
+            'id' => $id,
+            'existingLike' => $existingLike,
+            'post' => $post,
+            'images' => $images,
+            'paragraphes' => $paragraphes,
+            'comments' => $comments,
+            'commentForm' => $commentForm->createView(),
+            'commentResponseForm' => $commentResponseForm->createView()
+        ]);
     }
 
     
