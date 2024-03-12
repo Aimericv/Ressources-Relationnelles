@@ -3,7 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Repost;
+
+use App\Entity\Repost;
+
 use App\Repository\PostRepository;
+use App\Repository\RepostRepository;
+
 use http\Client\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -78,12 +84,13 @@ class DefaultController extends AbstractController
     }
 
     #[Route("/catalogue", name:"app_catalogue")]
-    public function catalogue(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository): \Symfony\Component\HttpFoundation\Response
+    public function catalogue(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
     {
-        $posts = $postRepository->findAll();
-        $images = $imagesRepository->findAll();
+                $images = $imagesRepository->findAll();
         $imagesPosts = [];
         $utilisateur = $this->getUser();
+        $posts = $postRepository->findPostsByUser($utilisateur);
+
         foreach ($posts as $post) {
             $post_id = $post->getId();
             $imagesPostId = [];
@@ -94,7 +101,14 @@ class DefaultController extends AbstractController
             }
             $imagesPosts[$post_id] = $imagesPostId;
         }
-        return $this->render('default/catalogue.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
+
+
+        $user = $this->getUser();
+
+        $repostPosts = $repostRepository->findRepostPostsByUser($user);
+
+        return $this->render('default/catalogue.html.twig', ['posts' => $posts,             'repostPosts' => $repostPosts,
+        'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
     }
 
     //ça marche bien mais ça s'active même quand je refresh la page
@@ -103,26 +117,42 @@ class DefaultController extends AbstractController
     public function postLike($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository): \Symfony\Component\HttpFoundation\Response
     {
 
-        
-        $post = $postRepository->find($id);
-        $images = $imagesRepository->findBy(['post_id' => $id]);
-        $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
-    
-        if (!$this->security->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
-    
-        $post = $this->entityManager->getRepository(Post::class)->find($id);
-    
-        if (!$post) {
-            throw $this->createNotFoundException('Post not found');
-        }
-    
-        $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
-            'user' => $this->security->getUser(),
-            'post' => $post,
-        ]);
-    
+
+#[Route("/post/{id}", name: "app_post_actions", methods: ['POST'])]
+public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository): \Symfony\Component\HttpFoundation\Response
+{
+    $post = $postRepository->find($id);
+    $images = $imagesRepository->findBy(['post_id' => $id]);
+    $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
+
+    if (!$this->security->getUser()) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    $post = $this->entityManager->getRepository(Post::class)->find($id);
+
+    if (!$post) {
+        throw $this->createNotFoundException('Post not found');
+    }
+
+    $action = $request->request->get('action');
+
+    $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
+        'user' => $this->security->getUser(),
+        'post' => $post,
+    ]);
+
+    $existingFavorite = $this->entityManager->getRepository(Favorite::class)->findOneBy([
+        'user' => $this->security->getUser(),
+        'post' => $post,
+    ]);
+
+    $existingRepost = $this->entityManager->getRepository(Repost::class)->findOneBy([
+        'user' => $this->security->getUser(),
+        'post' => $post,
+    ]);
+
+    if ($action === 'like') {
         if (!$existingLike) {
 
             $like = new Like();
@@ -138,15 +168,148 @@ class DefaultController extends AbstractController
             $this->entityManager->flush();
             $existingLike=false;
 
+        $favorite = new Favorite();
+        $favorite->setUser($this->security->getUser());
+        $favorite->setPost($post);
+
+        $this->entityManager->persist($favorite);
+        $this->entityManager->flush();
+
+        $existingFavorite=true;
+    }else{
+        $this->entityManager->remove($existingFavorite);
+        $this->entityManager->flush();
+        $existingFavorite=false;
+
+    }
+    } elseif ($action === 'repost') {
+        if (!$existingRepost) {
+    
+            $repost = new Repost();
+            $repost->setUser($this->security->getUser());
+            $repost->setPost($post);
+    
+            $this->entityManager->persist($repost);
+            $this->entityManager->flush();
+    
+            $existingRepost=true;
+        }else{
+            $this->entityManager->remove($existingRepost);
+            $this->entityManager->flush();
+            $existingRepost=false;
+    
         }
+        }
+
+    // ... existing logic
+
+    return $this->redirectToRoute('app_post_detail', ['id' => $id]);
+}
+
+#[Route("/post/{id}", name: "app_post_like", methods: ['POST'])]
+public function postLike($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
+{
+
     
         return $this->redirectToRoute('app_post_like', ['id' => $id]);
 
     }
     
 
+#[Route("/post/{id}", name: "app_post_repost", methods: ['POST'])]
+public function postRepost($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
+{
+
+    
+    $post = $postRepository->find($id);
+    $images = $imagesRepository->findBy(['post_id' => $id]);
+    $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
+
+    if (!$this->security->getUser()) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    $post = $this->entityManager->getRepository(Post::class)->find($id);
+
+    if (!$post) {
+        throw $this->createNotFoundException('Post not found');
+    }
+
+    $existingRepost = $this->entityManager->getRepository(Repost::class)->findOneBy([
+        'user' => $this->security->getUser(),
+        'post' => $post,
+    ]);
+
+    if (!$existingRepost) {
+
+        $repost = new Repost();
+        $repost->setUser($this->security->getUser());
+        $repost->setPost($post);
+
+        $this->entityManager->persist($repost);
+        $this->entityManager->flush();
+
+        $existingRepost=true;
+    }else{
+        $this->entityManager->remove($existingRepost);
+        $this->entityManager->flush();
+        $existingRepost=false;
+
+    }
+
+
+    return $this->redirectToRoute('app_post_detail', ['id' => $id]);
+
+}
+
+#[Route("/post/{id}", name: "app_post_repost", methods: ['POST'])]
+public function postRepost($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
+{
+
+    
+    $post = $postRepository->find($id);
+    $images = $imagesRepository->findBy(['post_id' => $id]);
+    $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
+
+    if (!$this->security->getUser()) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    $post = $this->entityManager->getRepository(Post::class)->find($id);
+
+    if (!$post) {
+        throw $this->createNotFoundException('Post not found');
+    }
+
+    $existingRepost = $this->entityManager->getRepository(Repost::class)->findOneBy([
+        'user' => $this->security->getUser(),
+        'post' => $post,
+    ]);
+
+    if (!$existingRepost) {
+
+        $repost = new Repost();
+        $repost->setUser($this->security->getUser());
+        $repost->setPost($post);
+
+        $this->entityManager->persist($repost);
+        $this->entityManager->flush();
+
+        $existingRepost=true;
+    }else{
+        $this->entityManager->remove($existingRepost);
+        $this->entityManager->flush();
+        $existingRepost=false;
+
+    }
+
+
+    return $this->redirectToRoute('app_post_detail', ['id' => $id]);
+
+}
+
     #[Route("/post/{id}", name: "app_post_detail")]
-    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
@@ -168,9 +331,19 @@ class DefaultController extends AbstractController
             'user' => $this->security->getUser(),
             'post' => $post,
         ]);
+
+        $existingRepost = $this->entityManager->getRepository(Post::class)->findOneBy([
+            'user' => $this->security->getUser(),
+            'post' => $post,
+        ]);
+
+        $existingRepost = $this->entityManager->getRepository(Post::class)->findOneBy([
+            'user' => $this->security->getUser(),
+            'post' => $post,
+        ]);
         
     
-        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes]);
+        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes]);
     }
 
     
