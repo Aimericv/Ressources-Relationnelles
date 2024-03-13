@@ -29,6 +29,7 @@
             <img src={{ asset('medias/filter-green.png') }}>
         </section>
         <section class="posts">
+        {% if app.user %}
             {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
             {% for post in sortedPosts %}
                 <div class="post">
@@ -90,6 +91,8 @@
 
                     </article>
                 {% endfor %}
+                                    {% endif %}
+
             </section>
         
 
