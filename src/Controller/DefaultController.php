@@ -69,34 +69,9 @@ class DefaultController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
     {
-        $visitDate = new \DateTime();
-        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
-
-
-        $posts = $postRepository->findAll();
         $images = $imagesRepository->findAll();
-        $imagesPosts = [];
-        $utilisateur = $this->getUser();
-        foreach ($posts as $post) {
-            $post_id = $post->getId();
-            $imagesPostId = [];
-            foreach ($images as $image) {
-                if ($post_id == $image->getPostId()->getId()) {
-                    $imagesPostId[] = $image;
-                }
-            }
-            $imagesPosts[$post_id] = $imagesPostId;
-            $catId = $post->getType();
-        }
-        return $this->render('default/index.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
-    }
-
-    #[Route("/catalogue", name:"app_catalogue")]
-    public function catalogue(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
-    {
-                $images = $imagesRepository->findAll();
         $imagesPosts = [];
         $utilisateur = $this->getUser();
         $posts = $postRepository->findPostsByUser($utilisateur);
@@ -117,8 +92,33 @@ class DefaultController extends AbstractController
 
         $repostPosts = $repostRepository->findRepostPostsByUser($user);
 
-        return $this->render('default/catalogue.html.twig', ['posts' => $posts,             'repostPosts' => $repostPosts,
+        return $this->render('default/index.html.twig', ['posts' => $posts,             'repostPosts' => $repostPosts,
         'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
+    }
+
+    #[Route("/catalogue", name:"app_catalogue")]
+    public function catalogue(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
+    {
+        $visitDate = new \DateTime();
+        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
+
+
+        $posts = $postRepository->findAll();
+        $images = $imagesRepository->findAll();
+        $imagesPosts = [];
+        $utilisateur = $this->getUser();
+        foreach ($posts as $post) {
+            $post_id = $post->getId();
+            $imagesPostId = [];
+            foreach ($images as $image) {
+                if ($post_id == $image->getPostId()->getId()) {
+                    $imagesPostId[] = $image;
+                }
+            }
+            $imagesPosts[$post_id] = $imagesPostId;
+            $catId = $post->getType();
+        }
+        return $this->render('default/catalogue.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
     }
 
     //quand je met la route de app_favorite avant ça fait l'inverse

@@ -10,8 +10,8 @@
         <main class="container">
             <h1>Catalogue</h1>
 
-            <section class="posts">
-            {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
+           <section class="posts">
+        {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
             {% for post in sortedPosts %}
                 <div class="post">
                     <div class="autor">
@@ -35,44 +35,32 @@
                     <button class="button-more-ressource" type="button"><a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>
                 </div>
             {% endfor %}
-                {% for repostPost in repostPosts %}
-{% set repostUser = repostPost.getUser() %}
 
-
-                    <article class="post">
-                        {# Assuming you have properties like 'author', 'category', 'title', etc., adjust accordingly #}
-                            <p>Reposted by: {{ repostUser.getFirstName() }} {{ repostUser.getLastName() }}</p>
-
-
-                        <div class="autor">
-                    {% if repostPost.post.getUser().getAvatarImg() is not null %}
-                        <img src="{{ asset('profiles/' ~ repostPost.post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+            {% for post in posts %}
+            <div class="post">
+                <div class="autor">
+                    {% if post.getUser().getAvatarImg() is not null %}
+                        <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
                     {% else %}
                         <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                     {% endif %}
 
-                    <p>{{ repostPost.post.getUser().getFirstName() }} {{ repostPost.post.getUser().getLastName() }}</p>
-
+                    <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
                 </div>
-                {# {% set postImages = images[repostPost.post.id] %}
+                {% set postImages = images[post.id] %}
                     {% if postImages is not empty %}
                         <div class="img-ressource">
                             <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
                         </div>
-                    {% endif %} #}
-                        
-                        <p class="category">Catégorie : {{ repostPost.post.getType().name }}</p>
-                        <h2 class="title-ressource">{{ repostPost.post.title }}</h2>
-                        <p class="description-ressource">{{ repostPost.post.description }}</p>
+                    {% endif %}
+                <p class="category">Catégorie : {{ post.getType().name }}</p>
+                <h2 class="title-ressource">{{ post.title }}</h2>
+                <p class="description-ressource">{{ post.description }}</p>
+                <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
+            </div>
+            {% endfor %}
 
-
-<button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': repostPost.post.id}) }}';">En savoir plus</button>                        
-
-               
-
-                    </article>
-                {% endfor %}
-            </section>
+        </section>
         </main>
     </body>
 {% endblock %}
