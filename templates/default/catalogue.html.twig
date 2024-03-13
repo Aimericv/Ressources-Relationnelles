@@ -36,8 +36,14 @@
                 </div>
             {% endfor %}
                 {% for repostPost in repostPosts %}
+{% set repostUser = repostPost.getUser() %}
+
+
                     <article class="post">
                         {# Assuming you have properties like 'author', 'category', 'title', etc., adjust accordingly #}
+                            <p>Reposted by: {{ repostUser.getFirstName() }} {{ repostUser.getLastName() }}</p>
+
+
                         <div class="autor">
                     {% if repostPost.post.getUser().getAvatarImg() is not null %}
                         <img src="{{ asset('profiles/' ~ repostPost.post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
@@ -46,6 +52,7 @@
                     {% endif %}
 
                     <p>{{ repostPost.post.getUser().getFirstName() }} {{ repostPost.post.getUser().getLastName() }}</p>
+
                 </div>
                 {# {% set postImages = images[repostPost.post.id] %}
                     {% if postImages is not empty %}
