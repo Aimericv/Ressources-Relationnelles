@@ -89,13 +89,18 @@ class DefaultController extends AbstractController
 
 
         $user = $this->getUser();
+        if($user){
+            $repostPosts = $repostRepository->findRepostPostsByUser($user);
 
-        $repostPosts = $repostRepository->findRepostPostsByUser($user);
+        }else{
+            $repostPosts='null';
+        }
+
 
         $allposts = $postRepository->findAll();
 
 
-        return $this->render('default/index.html.twig', ['posts' => $posts, 'allposts'=>$allposts,  'repostPosts' => $repostPosts,
+        return $this->render('default/index.html.twig', ['user' => $this->getUser(),'posts' => $posts, 'allposts'=>$allposts,  'repostPosts' => $repostPosts,
         'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
     }
 
