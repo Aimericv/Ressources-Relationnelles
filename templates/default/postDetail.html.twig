@@ -105,28 +105,50 @@
         </section>
         {# Afficher les commentaires existants #}
         <section class="comment-section">
+            {# colonnne que t'as rajouté est égal à zero #}
             {% for comment in comments %}
+                {% if comment.getIsResponse() == 0 %}
                 <article class="comment">
                     <div class="comment-user">
-                        <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
-                        <a href="#">{{ comment.getUser().getUsername() }}</a>
+                        {% if comment.getUser().getAvatarImg() is not null %}
+                            <img src="{{ asset('profiles/' ~ comment.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                        {% else %}
+                            <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                        {% endif %}
+                        <a href="#">{{ comment.getUser().getFirstName() }} {{ comment.getUser().getLastName() }}</a>
                     </div>
                     <div>
                         <p>{{ comment.getContent() }}</p>
                     </div>
                     <div class="comment-actions">
-                        <a href="#reply">Répondre</a>
+                        <a href="#reply" class="buttomResponse" data-target="responseForm{{ comment.id }}">Répondre</a>
+                    </div>
+                    <div id="responseForm{{ comment.id }}">
+                        <form action="/comment/response/{{ post.id }}" method="post" style="display: none">
+                            <input type="hidden" name="comment-id" value="{{ comment.id }}">
+                            <div>
+                                <label for="response-comment">Répondre au commentaire</label>
+                                <input id="response-comment" name="response-comment">
+                            </div>
+                            <button type="submit">Répondre</button>
+                        </form>
                     </div>
                 </article>
+                {% endif %}
                 {# Afficher les réponses aux commentaires s'il y en a #}
-                {% for response in comment.getResponses() %}
+                {% for response in comment.getCommentResponses() %}
+                    {# if getcommentResponses.getCommenttoComment == comment.id #}
                     <article class="answer-comment comment">
                         <div class="comment-user">
-                            <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
-                            <a href="#">{{ response.getUser().getUsername() }}</a>
+                            {% if response.getCommentToComment().getUser().getAvatarImg() is not null %}
+                                <img src="{{ asset('profiles/' ~ response.getCommentToComment().getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                            {% else %}
+                                <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                            {% endif %}
+                            <a href="#">{{ response.getCommentToComment().getUser().getFirstName() }} {{ response.getCommentToComment().getUser().getLastName() }}</a>
                         </div>
                         <div>
-                            <p>{{ response.getContent() }}</p>
+                            <p>{{ response.getComment().getContent() }}</p>
                         </div>
                         <div class="comment-actions">
                             <a href="#reply">Répondre</a>
@@ -136,11 +158,36 @@
             {% endfor %}
         </section>
 
-        {# Formulaire pour ajouter un nouveau commentaire #}
-        {{ form_start(commentForm) }}
-        {{ form_row(commentForm.content) }}
-        <button type="submit">Ajouter un commentaire</button>
-        {{ form_end(commentForm) }}
+        <section>
+            <form action="/comment/add/{{ post.id }}" method="post">
+                <label for="comment">Ajouter un commentaire</label>
+                <input type="text" id="comment" name="comment">
+                <button type="submit">Envoyer</button>
+            </form>
+        </section>
 
     </main>
+    <script>
+        let buttomsResponse = document.querySelectorAll('.buttomResponse');
+        const replyForms = document.querySelectorAll('.comment form');
+
+        buttomsResponse.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const targetFormDiv = document.getElementById(targetId);
+                console.log(targetFormDiv, targetId);
+                const targetForm = targetFormDiv.querySelector("form");
+                if (targetForm) {
+                    // Masquer tous les formulaires de réponse
+                    replyForms.forEach(form => {
+                        if (form !== targetForm) {
+                            form.style.display = 'none';
+                        }
+                    });
+                    // Afficher le formulaire de réponse cible
+                    targetForm.style.display = 'block';
+                }
+            });
+        });
+    </script>
 {% endblock %}

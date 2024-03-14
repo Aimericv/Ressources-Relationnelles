@@ -33,6 +33,9 @@ class Comment
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $isResponse = false;
+
     public function __construct()
     {
         $this->commentResponses = new ArrayCollection();
@@ -87,6 +90,11 @@ class Comment
         return $this->commentResponses;
     }
 
+    public function getIsResponse(): bool
+    {
+        return $this->isResponse;
+    }
+
     public function addCommentResponse(CommentResponse $commentResponse): static
     {
         if (!$this->commentResponses->contains($commentResponse)) {
@@ -117,6 +125,13 @@ class Comment
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function setIsResponse(bool $isResponse): static
+    {
+        $this->isResponse = $isResponse;
 
         return $this;
     }

@@ -32,7 +32,7 @@ class DefaultController extends AbstractController
     }
 
     #[Route('/default', name: 'app_default')]
-    public function index(): JsonResponse
+    public function index(): \Symfony\Component\HttpFoundation\JsonResponse
     {
         return $this->json([
             'message' => 'Welcome to your new controller!',
@@ -40,16 +40,6 @@ class DefaultController extends AbstractController
         ]);
     }
 
-//    #[Route("/", name:"app_homepage")]
-//    public function indexs()
-//    {
-//        //$utilisateur = $this->getUser();
-//
-//
-//        return $this->render('default/index.html.twig', /*[
-//            'utilisateur' => $utilisateur,
-//        ]*/);
-//    }
 
     #[Route("/base", name:"app_base")]
     public function base(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
@@ -157,58 +147,6 @@ class DefaultController extends AbstractController
         // Récupérer les commentaires du post
         $comments = $post->getComments();
 
-        // Créer un nouveau commentaire
-        $comment = new Comment();
-        $commentForm = $this->createForm(CommentType::class, $comment);
-        $commentForm->handleRequest($request);
-
-        if (!$this->security->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $post = $this->entityManager->getRepository(Post::class)->find($id);
-
-        if (!$post) {
-            throw $this->createNotFoundException('Post not found');
-        }
-
-
-        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            $comment->setUser($this->getUser());
-            $comment->setPost($post);
-            $comment->setDate(new \DateTime());
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_post_detail', ['id' => $post->getId()]);
-        }
-
-        // Récupérer les formulaires de réponse aux commentaires
-        $commentResponseForms = [];
-        foreach ($comments as $existingComment) {
-            $commentResponse = new CommentResponse();
-            $commentResponseForm = $this->createForm(CommentResponseType::class, $commentResponse);
-            $commentResponseForms[$existingComment->getId()] = $commentResponseForm->createView();
-        }
-
-        // Créer un nouveau commentaire réponse
-        $commentResponse = new CommentResponse();
-        $commentResponseForm = $this->createForm(CommentResponseType::class, $commentResponse);
-        $commentResponseForm->handleRequest($request);
-
-        if ($commentResponseForm->isSubmitted() && $commentResponseForm->isValid()) {
-            //$commentResponse->setUser($this->getUser());
-            $commentResponse->setDate(new \DateTime());
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($commentResponse);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_post_detail', ['id' => $post->getId()]);
-        }
-
-
-
         $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
             'user' => $this->security->getUser(),
             'post' => $post,
@@ -221,9 +159,7 @@ class DefaultController extends AbstractController
             'post' => $post,
             'images' => $images,
             'paragraphes' => $paragraphes,
-            'comments' => $comments,
-            'commentForm' => $commentForm->createView(),
-            'commentResponseForm' => $commentResponseForm->createView()
+            'comments' => $comments
         ]);
     }
 
