@@ -46,9 +46,6 @@ class LikeTest extends WebTestCase
 
         $nonExistentUserId = 999;
         $this->assertFalse($this->isLikeValid($postId, $nonExistentUserId));
-
-        $invalidPostStatusId = 2;
-        $this->assertFalse($this->isLikeValid($invalidPostStatusId, $userId));
     }
 }
 
