@@ -1,5 +1,6 @@
 <?php
-namespace Tests;
+
+namespace App\Tests\ServicesTests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Repository\PostRepository;
@@ -26,7 +27,7 @@ class LikeTest extends WebTestCase
 
         if (isset($user, $post)) {
             $postStatus = $post->getStatus();
-            if($postStatus == 3) {
+            if($postStatus->getId() == 3) {
                 return true;
             }
         }
@@ -36,8 +37,8 @@ class LikeTest extends WebTestCase
     
     public function testCreateLike()
     {
-        $postId = 1;
-        $userId = 1;
+        $postId = 4;
+        $userId = 18;
 
         $this->assertTrue($this->isLikeValid($postId, $userId));
 

@@ -20,19 +20,11 @@ use App\Repository\CategoryRepository;
 
 class CreationPostsController extends AbstractController
 {
-    private $security;
-    private $entityManager; // Ajoutez la propriété entityManager
-
-    public function __construct(Security $security, EntityManagerInterface $entityManager)
-    {
-        $this->security = $security;
-        $this->entityManager = $entityManager; // Initialisez la propriété entityManager
-    }
 
     #[Route('/creation-posts', name: 'app_creation_posts')]
     public function index(CategoryRepository $catRepo): Response
     {
-        if (!$this->security->getUser()) {
+        if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
         $categories = $catRepo->findAll();
@@ -43,13 +35,10 @@ class CreationPostsController extends AbstractController
     }
 
     #[Route('/creation-posts/add', name: 'app_creation_posts_add')]
-    public function add(Request $request): Response
+    public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $userId = $this->security->getUser()->getId();
+        $userId = $this->getUser()->getId();
         $jsonData = json_decode($request->request->get('json_data'), true);
-
-
-        $entityManager = $this->entityManager;
 
         $post = new Post();
         $post->setTitle($jsonData[0]['title']); // Récupérer le titre du premier élément du tableau JSON
@@ -95,10 +84,9 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/modification-posts/{id}', name: 'app_modification_posts')]
-    public function modify(Request $request, $id, CategoryRepository $catRepo): Response
+    public function modify(Request $request, $id, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
     {
-        $userId = $this->security->getUser()->getId();
-        $entityManager = $this->entityManager;
+        $userId = $this->getUser()->getId();
 
         $post = $entityManager->getRepository(Post::class)->find($id);
         $paragraphs = $entityManager->getRepository(Paragraphes::class)->findByPostId($id);
@@ -118,11 +106,10 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/modification-posts/{id}/edit', name: 'app_modification_posts_edit')]
-    public function edit(Request $request, $id, CategoryRepository $catRepo): Response
+    public function edit(Request $request, $id, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
     {
         $jsonData = json_decode($request->request->get('json_data'), true);
         var_dump($jsonData);
-        $entityManager = $this->entityManager;
 
         $post = $entityManager->getRepository(Post::class)->find($id);
 
@@ -232,9 +219,8 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/delete-posts/{id}', name: 'app_delete_posts')]
-    public function delete($id): Response
+    public function delete($id, EntityManagerInterface $entityManager): Response
     {
-        $entityManager = $this->entityManager;
         $post = $entityManager->getRepository(Post::class)->find($id);
 
         if (!$post) {
