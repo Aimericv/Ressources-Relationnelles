@@ -1,5 +1,7 @@
 /var
 /vendor
+/public/bundles/
+composer.lock
 
 ###> phpunit/phpunit ###
 /phpunit.xml
