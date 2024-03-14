@@ -5,17 +5,11 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\CommentResponse;
 use App\Entity\Post;
-use App\Form\CommentResponseType;
-use App\Form\CommentType;
 use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Favorite;
 use App\Entity\Repost;
-
-use App\Repository\PostRepository;
 use App\Repository\RepostRepository;
-
-
 use http\Client\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,12 +20,8 @@ use App\Entity\Like;
 use App\Entity\UserParticipation;
 use App\Repository\LikeRepository;
 use App\Repository\FavoriteRepository;
-use App\Repository\UserParticipationRepository;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\VarDumper\VarDumper;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 
