@@ -20,7 +20,6 @@ use App\Entity\Like;
 use App\Entity\UserParticipation;
 use App\Repository\LikeRepository;
 use App\Repository\FavoriteRepository;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
@@ -29,14 +28,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DefaultController extends AbstractController
 {
-    private $security;
-    private $entityManager;
-
-    public function __construct(Security $security, EntityManagerInterface $entityManager)
-    {
-        $this->security = $security;
-        $this->entityManager = $entityManager;
-    }
 
     #[Route('/default', name: 'app_default')]
     public function index(): \Symfony\Component\HttpFoundation\JsonResponse
@@ -123,17 +114,17 @@ class DefaultController extends AbstractController
 
 
 #[Route("/post/{id}", name: "app_post_actions", methods: ['POST'])]
-public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository): \Symfony\Component\HttpFoundation\Response
+public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
 {
     $post = $postRepository->find($id);
     $images = $imagesRepository->findBy(['post_id' => $id]);
     $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
 
-    if (!$this->security->getUser()) {
+    if (!$this->getUser()) {
         return $this->redirectToRoute('app_login');
     }
 
-    $post = $this->entityManager->getRepository(Post::class)->find($id);
+    $post = $entityManager->getRepository(Post::class)->find($id);
 
     if (!$post) {
         throw $this->createNotFoundException('Post not found');
@@ -141,23 +132,23 @@ public function postActions($id, Request $request, PostRepository $postRepositor
 
     $action = $request->request->get('action');
 
-    $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
-        'user' => $this->security->getUser(),
+    $existingLike = $entityManager->getRepository(Like::class)->findOneBy([
+        'user' => $this->getUser(),
         'post' => $post,
     ]);
 
-    $existingFavorite = $this->entityManager->getRepository(Favorite::class)->findOneBy([
-        'user' => $this->security->getUser(),
+    $existingFavorite = $entityManager->getRepository(Favorite::class)->findOneBy([
+        'user' => $this->getUser(),
         'post' => $post,
     ]);
 
-    $existingRepost = $this->entityManager->getRepository(Repost::class)->findOneBy([
-        'user' => $this->security->getUser(),
+    $existingRepost = $entityManager->getRepository(Repost::class)->findOneBy([
+        'user' => $this->getUser(),
         'post' => $post,
     ]);
 
-    $existingExploited = $this->entityManager->getRepository(UserParticipation::class)->findOneBy([
-        'user' => $this->security->getUser(),
+    $existingExploited = $entityManager->getRepository(UserParticipation::class)->findOneBy([
+        'user' => $this->getUser(),
         'post' => $post,
     ]);
 
@@ -165,16 +156,16 @@ public function postActions($id, Request $request, PostRepository $postRepositor
         if (!$existingLike) {
 
             $like = new Like();
-            $like->setUser($this->security->getUser());
+            $like->setUser($this->getUser());
             $like->setPost($post);
     
-            $this->entityManager->persist($like);
-            $this->entityManager->flush();
+            $entityManager->persist($like);
+            $entityManager->flush();
     
             $existingLike=true;
         }else{
-            $this->entityManager->remove($existingLike);
-            $this->entityManager->flush();
+            $entityManager->remove($existingLike);
+            $entityManager->flush();
             $existingLike=false;
     
         }   
@@ -182,16 +173,16 @@ public function postActions($id, Request $request, PostRepository $postRepositor
     if (!$existingFavorite) {
 
         $favorite = new Favorite();
-        $favorite->setUser($this->security->getUser());
+        $favorite->setUser($this->getUser());
         $favorite->setPost($post);
 
-        $this->entityManager->persist($favorite);
-        $this->entityManager->flush();
+        $entityManager->persist($favorite);
+        $entityManager->flush();
 
         $existingFavorite=true;
     }else{
-        $this->entityManager->remove($existingFavorite);
-        $this->entityManager->flush();
+        $entityManager->remove($existingFavorite);
+        $entityManager->flush();
         $existingFavorite=false;
 
     }
@@ -199,16 +190,16 @@ public function postActions($id, Request $request, PostRepository $postRepositor
         if (!$existingRepost) {
     
             $repost = new Repost();
-            $repost->setUser($this->security->getUser());
+            $repost->setUser($this->getUser());
             $repost->setPost($post);
     
-            $this->entityManager->persist($repost);
-            $this->entityManager->flush();
+            $entityManager->persist($repost);
+            $entityManager->flush();
     
             $existingRepost=true;
         }else{
-            $this->entityManager->remove($existingRepost);
-            $this->entityManager->flush();
+            $entityManager->remove($existingRepost);
+            $entityManager->flush();
             $existingRepost=false;
     
         }
@@ -217,16 +208,16 @@ public function postActions($id, Request $request, PostRepository $postRepositor
             if (!$existingExploited) {
         
                 $exploited = new UserParticipation();
-                $exploited->setUser($this->security->getUser());
+                $exploited->setUser($this->getUser());
                 $exploited->setPost($post);
         
-                $this->entityManager->persist($exploited);
-                $this->entityManager->flush();
+                $entityManager->persist($exploited);
+                $entityManager->flush();
         
                 $existingExploited=true;
             }else{
-                $this->entityManager->remove($existingExploited);
-                $this->entityManager->flush();
+                $entityManager->remove($existingExploited);
+                $entityManager->flush();
                 $existingExploited=false;
         
             }
@@ -241,7 +232,7 @@ public function postActions($id, Request $request, PostRepository $postRepositor
 
     #[Route("/post/{id}", name: "app_post_detail")]
 
-    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
@@ -249,24 +240,24 @@ public function postActions($id, Request $request, PostRepository $postRepositor
         // Récupérer les commentaires du post
         $comments = $post->getComments();
 
-        $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
-            'user' => $this->security->getUser(),
+        $existingLike = $entityManager->getRepository(Like::class)->findOneBy([
+            'user' => $this->getUser(),
             'post' => $post,
         ]);  
 
 
-        $existingFavorite = $this->entityManager->getRepository(Favorite::class)->findOneBy([
-            'user' => $this->security->getUser(),
+        $existingFavorite = $entityManager->getRepository(Favorite::class)->findOneBy([
+            'user' => $this->getUser(),
             'post' => $post,
         ]);
 
-        $existingRepost = $this->entityManager->getRepository(Post::class)->findOneBy([
-            'user' => $this->security->getUser(),
+        $existingRepost = $entityManager->getRepository(Post::class)->findOneBy([
+            'user' => $this->getUser(),
             'post' => $post,
         ]);
 
-        $existingExploited = $this->entityManager->getRepository(UserParticipation::class)->findOneBy([
-            'user' => $this->security->getUser(),
+        $existingExploited = $entityManager->getRepository(UserParticipation::class)->findOneBy([
+            'user' => $this->getUser(),
             'post' => $post,
         ]);
         

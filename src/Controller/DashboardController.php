@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,20 +23,14 @@ use Symfony\Component\Security\Core\Security;
 
 class DashboardController extends AbstractController
 {
-    private $doctrine;
-    public function __construct(Security $security, ManagerRegistry $doctrine)
-    {
-        $this->security = $security;
-        $this->doctrine = $doctrine;
-    }
-
+    
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
     {
-        if (!$this->security->getUser()) {
+        if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        $connectUser = $this->security->getUser()->getRoles();
+        $connectUser = $this->getUser()->getRoles();
         $roleUser = $connectUser[0];
         if ($roleUser == "ROLE_USER"){
             return $this->redirectToRoute('app_homepage');
@@ -165,7 +160,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/valid-post/{id}/{status}', name: 'app_dashboard_valid_ressource')]
-    public function validRessource($id, $status, PostRepository $postRepo, PostStatusRepository $postStatusRepo): Response
+    public function validRessource($id, $status, PostRepository $postRepo, PostStatusRepository $postStatusRepo, EntityManagerInterface $entityManager): Response
     {
         $post = $postRepo->find($id);
 
@@ -176,39 +171,44 @@ class DashboardController extends AbstractController
         $newStatusId = $status;
         $status = $postStatusRepo->find($newStatusId);
         $post->setStatus($status);
-    
-        $this->doctrine->getManager()->flush();
+
+        $entityManager->persist($post);
+        $entityManager->flush();
         return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/role-user/{id}/{role}', name: 'app_dashboard_role_user')]
-    public function roleUser($id, $role, UserRepository $userRepo, RoleRepository $roleRepo): Response
+    public function roleUser($id, $role, UserRepository $userRepo, RoleRepository $roleRepo, EntityManagerInterface $entityManager): Response
     {
         $user = $userRepo->find($id);
         $user->setRoles($role, $roleRepo);
-    
-        $this->doctrine->getManager()->flush();
+
+        $entityManager->persist($user);
+        $entityManager->flush();
         return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/category/edit/{id}', name: 'app_dashboard_edit_category')]
-    public function editCategory($id, CategoryRepository $catRepo, Request $request): Response
+    public function editCategory($id, CategoryRepository $catRepo, Request $request, EntityManagerInterface $entityManager): Response
     {
         $formData = $request->request->get('name-cat');
         $category = $catRepo->find($id);
         $category->setName($formData);
-        $this->doctrine->getManager()->flush();
+
+        $entityManager->persist($category);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/category/add', name: 'app_dashboard_add_category')]
-    public function addCategory(Request $request): Response
+    public function addCategory(Request $request, EntityManagerInterface $entityManager): Response
     {
         $formData = $request->request->get('name-cat');
         $category = new Category();
         $category->setName($formData);
-        $entityManager = $this->doctrine->getManager();
+
+
         $entityManager->persist($category);
         $entityManager->flush();
 
@@ -216,10 +216,10 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/category/delete/{id}', name: 'app_dashboard_delete_category')]
-    public function deleteCategory($id, CategoryRepository $catRepo): Response
+    public function deleteCategory($id, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
     {
         $category = $catRepo->find($id);
-        $entityManager = $this->doctrine->getManager();
+
         $entityManager->remove($category);
         $entityManager->flush();
 
@@ -227,33 +227,39 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/help/answer/{id}', name: 'app_dashboard_answer_help')]
-    public function answerHelp($id, HelpEntityRepository $helpRepo, Request $request): Response
+    public function answerHelp($id, HelpEntityRepository $helpRepo, Request $request, EntityManagerInterface $entityManager): Response
     {
         $formData = $request->request->get('answer');
         $question = $helpRepo->find($id);
         $question->setAnswer($formData);
         $question->setStatus(1);
-        $this->doctrine->getManager()->flush();
+
+        $entityManager->persist($question);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/help/private/{id}', name: 'app_dashboard_private_help')]
-    public function privateHelp($id, HelpEntityRepository $helpRepo): Response
+    public function privateHelp($id, HelpEntityRepository $helpRepo, EntityManagerInterface $entityManager): Response
     {
         $question = $helpRepo->find($id);
         $question->setStatus(1);
-        $this->doctrine->getManager()->flush();
+
+        $entityManager->persist($question);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/help/public/{id}', name: 'app_dashboard_public_help')]
-    public function publicHelp($id, HelpEntityRepository $helpRepo): Response
+    public function publicHelp($id, HelpEntityRepository $helpRepo, EntityManagerInterface $entityManager): Response
     {
         $question = $helpRepo->find($id);
         $question->setStatus(2);
-        $this->doctrine->getManager()->flush();
+
+        $entityManager->persist($question);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_dashboard');
     }

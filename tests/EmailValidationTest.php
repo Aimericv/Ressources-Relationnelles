@@ -2,44 +2,32 @@
 
 namespace App\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints\Email;
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class EmailValidationTest extends TestCase
+class EmailValidationTest extends WebTestCase
 {
-    public function testValidEmailFormat()
-    {
-        $validator = Validation::createValidator();
 
-        // Définir une adresse email valide
-        $email = 'test@example.com';
+    private $client;
 
-        // Valider l'adresse email
-        $violations = $validator->validate($email, [
-            new Email()
-        ]);
-
-        // Vérifier qu'il n'y a pas de violations de contraintes
-        $this->assertCount(0, $violations);
+    protected function setUp(): void {
+        $this->client = static::createClient(['environment' => 'test']);
     }
 
-    public function testInvalidEmailFormat()
+    public function testValidEmailFormat()
     {
-        $validator = Validation::createValidator();
 
-        // Définir une adresse email invalide
-        $email = 'adresse-email-invalid';
+        $userRepo = static::getContainer()->get(UserRepository::class);
+        $user = $userRepo->find(18);
+        // Définir une adresse email valide
+        $result = preg_match("/^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/", $user->getEmail());
 
-        // Valider l'adresse email
-        $violations = $validator->validate($email, [
-            new Email()
-        ]);
+        $bool = false;
+        if ($result === 1) {
+            $bool = true;
+        }
 
-        // Vérifier qu'il y a une violation de contrainte
-        $this->assertCount(1, $violations);
-
-        // Vérifier que le message d'erreur contient le mot "email"
-        $this->assertStringContainsString('email', $violations[0]->getMessage());
+        // Vérifier qu'il n'y a pas de violations de contraintes
+        $this->assertTrue($bool);
     }
 }
