@@ -122,7 +122,7 @@
                         {% else %}
                             <img src="{{ asset('medias/user-green.png') }}" alt="{{ compte.firstName ~ ' ' ~ compte.lastName }}">
                         {% endif %}
-                        <p class="post-title">{{ compte.firstName ~ ' ' ~ compte.lastName }}</p>
+                        <a href="{{ path('app_dashboard_valid_ressource', {'id': compte.id}) }}" class="post-title">{{ compte.firstName ~ ' ' ~ compte.lastName }}</a>
                     </div>
                 {% endfor %}
             </article>

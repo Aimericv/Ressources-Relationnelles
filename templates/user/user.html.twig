@@ -28,65 +28,72 @@
     <!--Connnected-->
         {% block stylesheetsConnected %}
             <link rel="stylesheet" href={{ asset('css/user.css') }}>
-
-    <section id="avatar-section">
-        <div class="autor"> <img src="{{ asset('profiles/user1_avatar.j&pg') }}"></div>
-        <h1>{{ utilisateur.firstName }} {{ utilisateur.lastName }}</h1>
-        <p>Rôle 1</p>
-    </section>
-    <section class="container" id="stats-section">
-        <article class="stats-section">
-            <div>
-                <p class="data-user">7</p>
-                <p>Ressources</p>
+    <section id="user-section">
+        <article id="avatar-section">
+            <div class="autor"> <img src="{{ asset('profiles/user1_avatar.j&pg') }}"></div>
+            <h1>{{ utilisateur.firstName }} {{ utilisateur.lastName }}</h1>
+            <p>{{ utilisateur.getRoles[0] }}</p>
+        </article>
+        <article class="container" id="stats-section">
+            <div class="stats-section">
+                <div>
+                    <p class="data-user">7</p>
+                    <p>Ressources</p>
+                </div>
+                <div>
+                    <p class="data-user">75</p>
+                    <p>Abonnements</p>
+                </div>
+                <div>
+                    <p class="data-user">52</p>
+                    <p>Abonnés</p>
+                </div>
             </div>
-            <div>
-                <p class="data-user">75</p>
-                <p>Abonnements</p>
+    
+            <div id="stats">
+                <div class="line"></div>
+                <p>STATISTIQUES</p>
+                <div class="line"></div>
             </div>
-            <div>
-                <p class="data-user">52</p>
-                <p>Abonnés</p>
+    
+            <div class="stats-section">
+                <div>
+                    <p class="data-user">30</p>
+                    <p>Vues</p>
+                </div>
+                <div>
+                    <p class="data-user">12</p>
+                    <p>Likes</p>
+                </div>
+                <div>
+                    <p class="data-user">21</p>
+                    <p>Exploités</p>
+                </div>
             </div>
         </article>
-
-        <article id="stats">
-            <div class="line"></div>
-            <p>STATISTIQUES</p>
-            <div class="line"></div>
-        </article>
-
-        <article class="stats-section">
-            <div>
-                <p class="data-user">30</p>
-                <p>Vues</p>
-            </div>
-            <div>
-                <p class="data-user">12</p>
-                <p>Likes</p>
-            </div>
-            <div>
-                <p class="data-user">21</p>
-                <p>Exploités</p>
+        <article class="container" id="adaptation-user">
+            <input type="range" id="police" name="police" min="10" max="26" step="2" value="16"/>
+            <p>Police :<output id="value"></output></p>
+            <div id="reglementation-user">
+                <a href="#">MENTIONS LÉGALES</a>
+                <a href='{{ path('app_logout') }}'>SE DÉCONNECTER</a>
+                <a href="#">SUPPRESSION DU COMPTE</a>
             </div>
         </article>
     </section>
-    <section class="container" id="adaptation-user">
-        <input type="range" id="police" name="police" min="10" max="26" step="2" value="16"/>
-        <p>Police :<output id="value"></output></p>
-        <script>
-            const value = document.querySelector("#value");
-            const input = document.querySelector("#police");
-            value.textContent = input.value;
-            input.addEventListener("input", (event) => {
-                value.textContent = event.target.value;
-            });
-        </script>
-    </section>
-    <section id="reglementation-user">
-        <a href="#">MENTIONS LÉGALES</a>
-        <a href='{{ path('app_logout') }}'>SE DÉCONNECTER</a>
-        <a href="#">SUPPRESSION DU COMPTE</a>
+    <section id="post-section">
+        {% for post in posts %}
+        <div>
+            {% if imageSrc[post.id] is not null %}
+                <div class="img-ressource">
+                    <img class="img-ressource" src="{{ asset(imageSrc[post.id]) }}" alt="Image du Post">
+                </div>
+            {% endif %}
+            <h2 class="title-ressource">{{ post.title }}</h2>
+            <p class="description-ressource">{{ post.description }}</p>
+            <button class="button-more-ressource" type="button"><a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>
+        </div>
+        {% endfor %}
     </section>
         {%  endblock %}
         {% else %}
@@ -104,6 +111,15 @@
         {%  endblock %}
         {% endif %}
 </main>
+
+    <script>
+        const value = document.querySelector("#value");
+        const input = document.querySelector("#police");
+        value.textContent = input.value;
+        input.addEventListener("input", (event) => {
+            value.textContent = event.target.value;
+        })
+    </script>
 
     </body>
 {% endblock %}

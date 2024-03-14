@@ -115,9 +115,11 @@ input[type='range'] {
 
 #adaptation-user {
     display: flex;
-    align-items: end;
+    flex-direction: column;
+    align-items: center;
+    /* align-items: end;
     gap: 50px;
-    justify-content: center;
+    justify-content: center; */
 }
 
 #reglementation-user {
@@ -142,26 +144,73 @@ main {
     gap: 40px;
 }
 
+#user-section {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+#post-section {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+#post-section img{
+    width: 100%;
+    object-fit: cover;
+    height: 150px;
+}
+
+#post-section>div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+#data-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#post-section button {
+    background-color: white;
+    border: 2px solid #03989e;
+    padding: 5px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#post-section button:hover {
+    background-color: #03989e;
+}
+
+#post-section button a {
+    color:#03989e;
+    text-decoration: none;
+}
+
+#post-section button:hover a {
+    color: white;
+}
+
 @media (min-width: 768px) {
     .container {
         width: 720px;
+    }
+    #post-section>div {
+        width: 48%;
     }
 }
 
 @media (min-width: 992px) {
     .container {
         width: 960px;
-    }
-    #stats-section {
-        order: 1;
-    }
-    main {
-        height: 110vh;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    main section {
-        width: 30% !important;
     }
     #avatar {
         width: 200px;
@@ -173,7 +222,12 @@ main {
         margin: 0;
     }
     #stats-section {
-        margin: 0;
         width: 50% !important;
+    }
+    #post-section>div {
+        width: 31%;
+    }
+    #data-user {
+        flex-direction: row;
     }
 }

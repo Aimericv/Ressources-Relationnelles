@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Repository\PostRepository;
+use App\Repository\ImagesRepository;
 
 class UserController extends AbstractCrudController
 {
@@ -59,13 +62,51 @@ class UserController extends AbstractCrudController
     }
 
     #[Route('/user', name: 'app_user')]
-    public function monCompte(): Response
+    public function monCompte(UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
     {
         // Récupérer l'utilisateur connecté
         $utilisateur = $this->getUser();
+        $id = $this->getUser()->getId();
+        $posts = $postRepo->findBy(['user' => $id]);
+        foreach ($posts as $post) {
+            $postId = $post->getId();
+            $images = $imageRepo->findBy(['post_id' => $postId]);
+            if (!empty($images)) {
+                $image = $images[0];
+                $imageSrc[$postId] = $image->getSrc();
+            } else {
+                $imageSrc[$postId] = null;
+            }
+        }
 
         return $this->render('user/user.html.twig', [
             'utilisateur' => $utilisateur,
+            'posts' => $posts,
+            'imageSrc' => $imageSrc,
+        ]);
+    }
+
+
+    #[Route('/user/{id}', name: 'app_other_user')]
+    public function otherUser($id, UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
+    {
+        $utilisateur = $userRepo->find($id);
+        $posts = $postRepo->findBy(['user' => $id]);
+        foreach ($posts as $post) {
+            $postId = $post->getId();
+            $images = $imageRepo->findBy(['post_id' => $postId]);
+            if (!empty($images)) {
+                $image = $images[0];
+                $imageSrc[$postId] = $image->getSrc();
+            } else {
+                $imageSrc[$postId] = null;
+            }
+        }
+
+        return $this->render('user/otherUser.html.twig', [
+            'utilisateur' => $utilisateur,
+            'posts' => $posts,
+            'imageSrc' => $imageSrc,
         ]);
     }
 
