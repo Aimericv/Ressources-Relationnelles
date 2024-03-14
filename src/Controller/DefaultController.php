@@ -9,6 +9,7 @@ use App\Entity\Repost;
 use App\Repository\PostRepository;
 use App\Repository\RepostRepository;
 
+
 use http\Client\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,8 +18,10 @@ use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Like;
+use App\Entity\UserParticipation;
 use App\Repository\LikeRepository;
 use App\Repository\FavoriteRepository;
+use App\Repository\UserParticipationRepository;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Security\Core\Security;
@@ -168,6 +171,11 @@ public function postActions($id, Request $request, PostRepository $postRepositor
         'post' => $post,
     ]);
 
+    $existingExploited = $this->entityManager->getRepository(UserParticipation::class)->findOneBy([
+        'user' => $this->security->getUser(),
+        'post' => $post,
+    ]);
+
     if ($action === 'like') {
         if (!$existingLike) {
 
@@ -220,149 +228,31 @@ public function postActions($id, Request $request, PostRepository $postRepositor
     
         }
         }
+        elseif ($action === 'exploited') {
+            if (!$existingExploited) {
+        
+                $exploited = new UserParticipation();
+                $exploited->setUser($this->security->getUser());
+                $exploited->setPost($post);
+        
+                $this->entityManager->persist($exploited);
+                $this->entityManager->flush();
+        
+                $existingExploited=true;
+            }else{
+                $this->entityManager->remove($existingExploited);
+                $this->entityManager->flush();
+                $existingExploited=false;
+        
+            }
+            }
 
     // ... existing logic
 
     return $this->redirectToRoute('app_post_detail', ['id' => $id]);
 }
 
-#[Route("/post/{id}", name: "app_post_like", methods: ['POST'])]
-public function postLike($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
-{
 
-    
-    $post = $postRepository->find($id);
-    $images = $imagesRepository->findBy(['post_id' => $id]);
-    $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
-
-    if (!$this->security->getUser()) {
-        return $this->redirectToRoute('app_login');
-    }
-
-    $post = $this->entityManager->getRepository(Post::class)->find($id);
-
-    if (!$post) {
-        throw $this->createNotFoundException('Post not found');
-    }
-
-    $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
-        'user' => $this->security->getUser(),
-        'post' => $post,
-    ]);
-
-    if (!$existingLike) {
-
-        $like = new Like();
-        $like->setUser($this->security->getUser());
-        $like->setPost($post);
-
-        $this->entityManager->persist($like);
-        $this->entityManager->flush();
-
-        $existingLike=true;
-    }else{
-        $this->entityManager->remove($existingLike);
-        $this->entityManager->flush();
-        $existingLike=false;
-
-    }
-
-
-    return $this->redirectToRoute('app_post_detail', ['id' => $id]);
-
-}
-
-#[Route("/post/{id}", name: "app_post_favorite", methods: ['POST'])]
-public function postFavorite($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, FavoriteRepository $favoriteRepository): \Symfony\Component\HttpFoundation\Response
-{
-
-    
-    $post = $postRepository->find($id);
-    $images = $imagesRepository->findBy(['post_id' => $id]);
-    $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
-
-    if (!$this->security->getUser()) {
-        return $this->redirectToRoute('app_login');
-    }
-
-    $post = $this->entityManager->getRepository(Post::class)->find($id);
-
-    if (!$post) {
-        throw $this->createNotFoundException('Post not found');
-    }
-
-    $existingFavorite = $this->entityManager->getRepository(Favorite::class)->findOneBy([
-        'user' => $this->security->getUser(),
-        'post' => $post,
-    ]);
-
-    if (!$existingFavorite) {
-
-        $favorite = new Favorite();
-        $favorite->setUser($this->security->getUser());
-        $favorite->setPost($post);
-
-        $this->entityManager->persist($favorite);
-        $this->entityManager->flush();
-
-        $existingFavorite=true;
-    }else{
-        $this->entityManager->remove($existingFavorite);
-        $this->entityManager->flush();
-        $existingFavorite=false;
-
-    }
-
-
-    return $this->redirectToRoute('app_post_detail', ['id' => $id]);
-
-}
-
-#[Route("/post/{id}", name: "app_post_repost", methods: ['POST'])]
-public function postRepost($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
-{
-
-    
-    $post = $postRepository->find($id);
-    $images = $imagesRepository->findBy(['post_id' => $id]);
-    $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
-
-    if (!$this->security->getUser()) {
-        return $this->redirectToRoute('app_login');
-    }
-
-    $post = $this->entityManager->getRepository(Post::class)->find($id);
-
-    if (!$post) {
-        throw $this->createNotFoundException('Post not found');
-    }
-
-    $existingRepost = $this->entityManager->getRepository(Repost::class)->findOneBy([
-        'user' => $this->security->getUser(),
-        'post' => $post,
-    ]);
-
-    if (!$existingRepost) {
-
-        $repost = new Repost();
-        $repost->setUser($this->security->getUser());
-        $repost->setPost($post);
-
-        $this->entityManager->persist($repost);
-        $this->entityManager->flush();
-
-        $existingRepost=true;
-    }else{
-        $this->entityManager->remove($existingRepost);
-        $this->entityManager->flush();
-        $existingRepost=false;
-
-    }
-
-
-    return $this->redirectToRoute('app_post_detail', ['id' => $id]);
-
-}
 
     #[Route("/post/{id}", name: "app_post_detail")]
     public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository): \Symfony\Component\HttpFoundation\Response
@@ -397,8 +287,13 @@ public function postRepost($id, PostRepository $postRepository, ImagesRepository
             'user' => $this->security->getUser(),
             'post' => $post,
         ]);
+
+        $existingExploited = $this->entityManager->getRepository(UserParticipation::class)->findOneBy([
+            'user' => $this->security->getUser(),
+            'post' => $post,
+        ]);
         
     
-        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes]);
+        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes, 'existingExploited' => $existingExploited]);
     }
 }
