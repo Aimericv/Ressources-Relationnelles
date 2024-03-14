@@ -2,7 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
+use App\Entity\CommentResponse;
 use App\Entity\Post;
+use App\Form\CommentResponseType;
+use App\Form\CommentType;
+use App\Repository\PostRepository;
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Favorite;
 use App\Entity\Repost;
 
@@ -16,7 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Like;
 use App\Entity\UserParticipation;
 use App\Repository\LikeRepository;
@@ -44,7 +49,7 @@ class DefaultController extends AbstractController
     }
 
     #[Route('/default', name: 'app_default')]
-    public function index(): JsonResponse
+    public function index(): \Symfony\Component\HttpFoundation\JsonResponse
     {
         return $this->json([
             'message' => 'Welcome to your new controller!',
@@ -52,16 +57,6 @@ class DefaultController extends AbstractController
         ]);
     }
 
-//    #[Route("/", name:"app_homepage")]
-//    public function indexs()
-//    {
-//        //$utilisateur = $this->getUser();
-//
-//
-//        return $this->render('default/index.html.twig', /*[
-//            'utilisateur' => $utilisateur,
-//        ]*/);
-//    }
 
     #[Route("/base", name:"app_base")]
     public function base(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
@@ -255,28 +250,20 @@ public function postActions($id, Request $request, PostRepository $postRepositor
 
 
     #[Route("/post/{id}", name: "app_post_detail")]
-    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository): \Symfony\Component\HttpFoundation\Response
+
+    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
         $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
-    
-        if (!$this->security->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
-    
-        $post = $this->entityManager->getRepository(Post::class)->find($id);
-    
-        if (!$post) {
-            throw $this->createNotFoundException('Post not found');
-        }
+        // Récupérer les commentaires du post
+        $comments = $post->getComments();
 
-
- 
         $existingLike = $this->entityManager->getRepository(Like::class)->findOneBy([
             'user' => $this->security->getUser(),
             'post' => $post,
-        ]);
+        ]);  
+
 
         $existingFavorite = $this->entityManager->getRepository(Favorite::class)->findOneBy([
             'user' => $this->security->getUser(),
@@ -294,6 +281,6 @@ public function postActions($id, Request $request, PostRepository $postRepositor
         ]);
         
     
-        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes, 'existingExploited' => $existingExploited]);
+        return $this->render('default/postDetail.html.twig', ['id' => $id, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes, 'existingExploited' => $existingExploited, 'comments' => $comments]);
     }
 }

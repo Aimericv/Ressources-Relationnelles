@@ -16,3 +16,8 @@ search_posts:
     path: /search
     controller: App\Controller\PostController::search
 
+# config/routes.yaml
+post_show:
+    path: /post/{id}
+    controller: App\Controller\PostController::show
+
