@@ -60,9 +60,20 @@
 </form>
 
 
-        <a href="#">
+
+
+        <form id="exploitedForm" action="{{ path('app_post_actions', {'id': post.getId()}) }}" method="post">
+    <input type="hidden" name="_method" value="POST">
+    <p hidden>{{ csrf_token('exploited_form') }}<p>
+    <input type="hidden" name="action" value="exploited">
+    <button type="submit" class="exploited-link">
+        {% if existingExploited %}
+            <img src="{{ asset('medias/exploited-yellow.png')}}" alt="Exploiter">
+        {% else %}
             <img src="{{ asset('medias/exploited-green.png')}}" alt="Exploiter">
-        </a>
+        {% endif %}
+    </button>
+</form>
         
 <form id="repostForm" action="{{ path('app_post_actions', {'id': post.getId()}) }}" method="post">
     <input type="hidden" name="_method" value="POST">
@@ -87,6 +98,10 @@
 
     document.querySelector('.repost-link').addEventListener('click', function () {
         document.querySelector('#repostForm').submit();
+    });
+
+    document.querySelector('.exploited-link').addEventListener('click', function () {
+        document.querySelector('#exploitedForm').submit();
     });
 </script>
     </article>
