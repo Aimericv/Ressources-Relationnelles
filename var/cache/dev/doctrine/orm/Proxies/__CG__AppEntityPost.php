@@ -7,7 +7,7 @@ namespace Proxies\__CG__\App\Entity;
  */
 class Post extends \App\Entity\Post implements \Doctrine\ORM\Proxy\InternalProxy
 {
-    use \Symfony\Component\VarExporter\LazyGhostTrait {
+     use \Symfony\Component\VarExporter\LazyGhostTrait {
         initializeLazyObject as __load;
         setLazyObjectAsInitialized as public __setInitialized;
         isLazyObjectInitialized as private;
@@ -46,7 +46,7 @@ class Post extends \App\Entity\Post implements \Doctrine\ORM\Proxy\InternalProxy
         'type' => [parent::class, 'type', null],
         'user' => [parent::class, 'user', null],
         'userParticipations' => [parent::class, 'userParticipations', null],
-    ];
+    ];
 
     public function __isInitialized(): bool
     {

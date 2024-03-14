@@ -12,6 +12,7 @@ return [
             [['_route' => 'admin', '_controller' => 'App\\Controller\\Admin\\DashboardController::index'], null, null, null, false, false, null],
             [['_route' => 'dashboard', '_controller' => 'App\\Controller\\Admin\\DashboardController::index'], null, null, null, false, false, null],
         ],
+        '/catalogue' => [[['_route' => 'app_catalogue', '_controller' => 'App\\Controller\\CatalogueController::catalogue'], null, null, null, false, false, null]],
         '/creation-posts' => [[['_route' => 'app_creation_posts', '_controller' => 'App\\Controller\\CreationPostsController::index'], null, null, null, false, false, null]],
         '/creation-posts/add' => [[['_route' => 'app_creation_posts_add', '_controller' => 'App\\Controller\\CreationPostsController::add'], null, null, null, false, false, null]],
         '/modification-post/upload' => [[['_route' => 'app_modification_posts_upload', '_controller' => 'App\\Controller\\CreationPostsController::upload'], null, null, null, false, false, null]],
@@ -19,14 +20,13 @@ return [
         '/dashboard' => [[['_route' => 'app_dashboard', '_controller' => 'App\\Controller\\DashboardController::index'], null, null, null, false, false, null]],
         '/dashboard/ajax' => [[['_route' => 'app_dashboard_ajax', '_controller' => 'App\\Controller\\DashboardController::statistiques'], null, null, null, false, false, null]],
         '/dashboard/category/add' => [[['_route' => 'app_dashboard_add_category', '_controller' => 'App\\Controller\\DashboardController::addCategory'], null, null, null, false, false, null]],
-        '/default' => [[['_route' => 'app_default', '_controller' => 'App\\Controller\\DefaultController::index'], null, null, null, false, false, null]],
-        '/base' => [[['_route' => 'app_base', '_controller' => 'App\\Controller\\DefaultController::base'], null, null, null, false, false, null]],
-        '/' => [[['_route' => 'app_homepage', '_controller' => 'App\\Controller\\DefaultController::post'], null, null, null, false, false, null]],
-        '/catalogue' => [[['_route' => 'app_catalogue', '_controller' => 'App\\Controller\\DefaultController::catalogue'], null, null, null, false, false, null]],
         '/favorite' => [[['_route' => 'app_favorite', '_controller' => 'App\\Controller\\FavoriteController::index'], null, null, null, false, false, null]],
         '/help' => [[['_route' => 'app_help', '_controller' => 'App\\Controller\\HelpController::index'], null, null, null, false, false, null]],
         '/help/add' => [[['_route' => 'app_help_add', '_controller' => 'App\\Controller\\HelpController::addQuestions'], null, null, null, false, false, null]],
+        '/base' => [[['_route' => 'app_base', '_controller' => 'App\\Controller\\HomeController::base'], null, null, null, false, false, null]],
+        '/' => [[['_route' => 'app_homepage', '_controller' => 'App\\Controller\\HomeController::post'], null, null, null, false, false, null]],
         '/post' => [[['_route' => 'app_post_index', '_controller' => 'App\\Controller\\PostController::index'], null, ['GET' => 0], null, true, false, null]],
+        '/post/new' => [[['_route' => 'app_post_new', '_controller' => 'App\\Controller\\PostController::new'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
         '/register' => [[['_route' => 'app_register', '_controller' => 'App\\Controller\\RegistrationController::register'], null, null, null, false, false, null]],
         '/search' => [
             [['_route' => 'app_post_search', '_controller' => 'App\\Controller\\SearchController::search'], null, null, null, false, false, null],
@@ -68,14 +68,15 @@ return [
                 .'|/post/(?'
                     .'|([^/]++)(?'
                         .'|(*:432)'
+                        .'|/edit(*:445)'
+                        .'|(*:453)'
                     .')'
-                    .'|new(*:444)'
-                    .'|([^/]++)(?'
-                        .'|(*:463)'
-                        .'|/edit(*:476)'
-                        .'|(*:484)'
+                    .'|post/([^/]++)(?'
+                        .'|(*:478)'
                     .')'
+                    .'|([^/]++)(*:495)'
                 .')'
+                .'|/user/([^/]++)(*:518)'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
@@ -92,16 +93,16 @@ return [
         351 => [[['_route' => 'app_dashboard_answer_help', '_controller' => 'App\\Controller\\DashboardController::answerHelp'], ['id'], null, null, false, true, null]],
         378 => [[['_route' => 'app_dashboard_private_help', '_controller' => 'App\\Controller\\DashboardController::privateHelp'], ['id'], null, null, false, true, null]],
         400 => [[['_route' => 'app_dashboard_public_help', '_controller' => 'App\\Controller\\DashboardController::publicHelp'], ['id'], null, null, false, true, null]],
-        432 => [
-            [['_route' => 'app_post_like', '_controller' => 'App\\Controller\\DefaultController::postLike'], ['id'], ['POST' => 0], null, false, true, null],
-            [['_route' => 'app_post_detail', '_controller' => 'App\\Controller\\DefaultController::postDetail'], ['id'], null, null, false, true, null],
+        432 => [[['_route' => 'app_post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        445 => [[['_route' => 'app_post_edit', '_controller' => 'App\\Controller\\PostController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        453 => [[['_route' => 'app_post_delete', '_controller' => 'App\\Controller\\PostController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
+        478 => [
+            [['_route' => 'app_post_actions', '_controller' => 'App\\Controller\\PostController::postActions'], ['id'], ['POST' => 0], null, false, true, null],
+            [['_route' => 'app_post_detail', '_controller' => 'App\\Controller\\PostController::postDetail'], ['id'], null, null, false, true, null],
         ],
-        444 => [[['_route' => 'app_post_new', '_controller' => 'App\\Controller\\PostController::new'], [], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        463 => [[['_route' => 'app_post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        476 => [[['_route' => 'app_post_edit', '_controller' => 'App\\Controller\\PostController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        484 => [
-            [['_route' => 'app_post_delete', '_controller' => 'App\\Controller\\PostController::delete'], ['id'], ['POST' => 0], null, false, true, null],
-            [['_route' => 'post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], null, null, false, true, null],
+        495 => [[['_route' => 'post_show', '_controller' => 'App\\Controller\\PostController::show'], ['id'], null, null, false, true, null]],
+        518 => [
+            [['_route' => 'app_other_user', '_controller' => 'App\\Controller\\UserController::otherUser'], ['id'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],
     ],
