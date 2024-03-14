@@ -1,9 +1,9 @@
 <?php
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class Password extends TestCase
+class Password extends WebTestCase
 {
     public function isPasswordValid(string $password): bool
     {

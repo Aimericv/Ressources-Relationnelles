@@ -2,11 +2,11 @@
 
 namespace App\Tests;
 
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Email;
 
-class EmailValidationTest extends TestCase
+class EmailValidationTest extends WebTestCase
 {
     public function testValidEmailFormat()
     {
