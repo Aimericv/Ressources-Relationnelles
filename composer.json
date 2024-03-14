@@ -27,7 +27,8 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "symfony/maker-bundle": "*"
+        "phpunit/phpunit": "^11.0",
+        "symfony/maker-bundle": "^1.53"
     },
     "config": {
         "allow-plugins": {

@@ -155,6 +155,29 @@ a:hover {
     color: black;
 }
 
+.like-link{
+    background-color: transparent;
+    border: 0;
+}
+
+.favorite-link{
+    background-color: transparent;
+    border: 0;
+}
+
+
+.repost-link{
+    background-color: transparent;
+    border: 0;
+}
+
+
+.exploited-link{
+    background-color: transparent;
+    border: 0;
+}
+
+
 @media (min-width: 768px) {
     .container {
         width: 720px;
