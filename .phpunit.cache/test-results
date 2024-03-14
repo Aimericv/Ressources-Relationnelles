@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\PostTest::testCreatePost":7,"Tests\\LikeTest::testCreateLike":8},"times":{"Tests\\PostTest::testCreatePost":0.005,"Tests\\LikeTest::testCreateLike":0.011}}
