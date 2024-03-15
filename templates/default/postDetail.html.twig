@@ -16,7 +16,7 @@
             <h2>Type :</h2>
             <p> {{ post.getType().name }}</p>
         </section>
-        <section style="position: relative;min-height: 70vh; margin-top:40px">
+        <section style="position: relative;min-height: 90vh; margin-top:40px">
             {% for img in images %}
                 <img src="{{ img.src }}" alt="Rencontre" style="position: absolute; top:{{ img.y }}px; left:{{ img.x }}px; width: {{ img.width }}px; height: {{ img.height }}px; z-index:-1;">
             {% endfor %}
