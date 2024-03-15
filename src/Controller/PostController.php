@@ -9,6 +9,7 @@ use App\Entity\Repost;
 use App\Entity\UserParticipation;
 use App\Form\PostType;
 use App\Repository\FavoriteRepository;
+use App\Repository\UserParticipationRepository;
 use App\Repository\ImagesRepository;
 use App\Repository\LikeRepository;
 use App\Repository\ParagraphesRepository;
@@ -207,7 +208,7 @@ class PostController extends AbstractController
 
     #[Route("/post/{id}", name: "app_post_detail")]
 
-    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request, EntityManagerInterface $entityManager, UserParticipationRepository $userPartRepo): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
@@ -215,23 +216,23 @@ class PostController extends AbstractController
         // Récupérer les commentaires du post
         $comments = $post->getComments();
 
-        $existingLike = $entityManager->getRepository(Like::class)->findOneBy([
+        $existingLike = $likeRepository->findOneBy([
             'user' => $this->getUser(),
             'post' => $post,
         ]);
 
 
-        $existingFavorite = $entityManager->getRepository(Favorite::class)->findOneBy([
+        $existingFavorite = $favoriteRepository->findOneBy([
             'user' => $this->getUser(),
             'post' => $post,
         ]);
 
-        $existingRepost = $entityManager->getRepository(Post::class)->findOneBy([
+        $existingRepost = $repostyRepository->findOneBy([
             'user' => $this->getUser(),
             'post' => $post,
         ]);
 
-        $existingExploited = $entityManager->getRepository(UserParticipation::class)->findOneBy([
+        $existingExploited = $userPartRepo->findOneBy([
             'user' => $this->getUser(),
             'post' => $post,
         ]);
