@@ -66,6 +66,9 @@ class UserController extends AbstractCrudController
     {
         // Récupérer l'utilisateur connecté
         $utilisateur = $this->getUser();
+        if (!isset($utilisateur)) {
+            return $this->redirectToRoute('app_login');
+        }
         $id = $this->getUser()->getId();
         $posts = $postRepo->findBy(['user' => $id]);
         foreach ($posts as $post) {
@@ -110,6 +113,7 @@ class UserController extends AbstractCrudController
         ]);
     }
 
+    #[Route('/register', name: 'app_register')]
     public function register(Request $request): Response
     {
         // Handle user registration form submission
