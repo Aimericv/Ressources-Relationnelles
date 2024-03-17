@@ -35,24 +35,7 @@ class HelpController extends AbstractController
 
         return $this->render('help/index.html.twig', [
             'helpEntities' => $helpEntities,
-        ]);
-        // $pageSize = 2;
-
-        // $questions = $helpEntityRepository->findByStatus(2, $page, )
-
-        // $data = [];
-        // foreach ($questions as $question) {
-        //     $data[] = [
-        //         'id' => $question->getId(),
-        //         'category' => $question->getCatégorie(),
-        //         'question' => $question->getQuestions(),
-        //         'answer' => $question->getAnswer(),
-        //     ];
-        // }
-
-        // return $this->render('help/index.html.twig', [
-        //     'questions' => $data
-        // ]);        
+        ]);     
     }
 
     #[Route('/help/add', name: 'app_help_add')]

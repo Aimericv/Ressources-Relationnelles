@@ -28,6 +28,9 @@
                 position: static;
             }
         }
+        p {
+            font-size: {{ utilisateur.police is defined ? utilisateur.police ~ 'px' : '16px' }};
+        }
     </style>
 </head>
 <body>
@@ -39,7 +42,15 @@
             <a href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
             <a href="{{ path('app_creation_posts') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
             <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
-            <a href="{{ path('app_user') }}"><li><img src="{{ asset('medias/user-white.png') }}"></li></a>
+            <a href="{{ path('app_user') }}">
+                <li id="avatar-img">
+                    {% if utilisateur.getAvatarImg() is not null %}
+                        <img src="{{ asset('profiles/' ~ utilisateur.getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                    {% else %}
+                        <img src="{{ asset('medias/user-white.png') }}">
+                    {% endif %}
+                </li>
+            </a>
         </ul>
         <a id="searchIcon"><img src={{ asset('medias/search-white.png') }}></a>
 

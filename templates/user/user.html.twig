@@ -30,7 +30,13 @@
             <link rel="stylesheet" href={{ asset('css/user.css') }}>
     <section id="user-section">
         <article id="avatar-section">
-            <div class="autor"> <img src="{{ asset('profiles/user1_avatar.j&pg') }}"></div>
+            <div class="autor"> 
+                {% if utilisateur.getAvatarImg() is not null %}
+                    <img src="{{ asset('profiles/' ~ utilisateur.getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                {% else %}
+                    <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                {% endif %}
+            </div>
             <h1>{{ utilisateur.firstName }} {{ utilisateur.lastName }}</h1>
             <p>{{ utilisateur.getRoles[0] }}</p>
         </article>
@@ -72,7 +78,7 @@
             </div>
         </article>
         <article class="container" id="adaptation-user">
-            <input type="range" id="police" name="police" min="10" max="26" step="2" value="16"/>
+            <input type="range" id="police" name="police" min="10" max="26" step="2" value="{{utilisateur.police}}"/>
             <p>Police :<output id="value"></output></p>
             <div id="reglementation-user">
                 <a href="#">MENTIONS LÉGALES</a>
@@ -117,7 +123,22 @@
         const input = document.querySelector("#police");
         value.textContent = input.value;
         input.addEventListener("input", (event) => {
-            value.textContent = event.target.value;
+            let newPolice = event.target.value;
+            value.textContent = newPolice;
+            const data = {
+                police: newPolice
+            };
+
+            fetch('/police', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'envoi de la requête:', error);
+            });
         })
     </script>
 

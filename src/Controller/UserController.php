@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use http\Client\Request;
+// use http\Client\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,6 +12,8 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\PostRepository;
 use App\Repository\ImagesRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends AbstractCrudController
 {
@@ -64,7 +66,6 @@ class UserController extends AbstractCrudController
     #[Route('/user', name: 'app_user')]
     public function monCompte(UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
     {
-        // Récupérer l'utilisateur connecté
         $utilisateur = $this->getUser();
         if (!isset($utilisateur)) {
             return $this->redirectToRoute('app_login');
@@ -113,31 +114,15 @@ class UserController extends AbstractCrudController
         ]);
     }
 
-    #[Route('/register', name: 'app_register')]
-    public function register(Request $request): Response
+    #[Route('/police', name: 'app_police')]
+    public function changePolice(Request $request, UserRepository $userRepo, EntityManagerInterface $entityManager): void
     {
-        // Handle user registration form submission
+        $donnees = json_decode($request->getContent(), true);
+        $valeurPolice = $donnees['police'];
 
-        // Create a new User entity
-        $user = new User();
-        $user->setRoles(['ROLE_USER']);
-
-        // ... other code to handle form submission and persist the user
-
-        return $this->redirectToRoute('registration_success');
-    }
-
-    // Ajoutez d'autres méthodes pour gérer les actions CRUD supplémentaires si nécessaire
-}
-/*
-class UserController extends AbstractController
-{
-    #[Route('/user', name: 'app_user')]
-    public function index(): Response
-    {
-        return $this->render('user/index.html.twig', [
-            'controller_name' => 'UserController',
-        ]);
+        $user = $this->getUser();
+        $user->setPolice($valeurPolice);
+        $entityManager->persist($user);
+        $entityManager->flush();
     }
 }
-*/

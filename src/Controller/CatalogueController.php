@@ -16,10 +16,6 @@ class CatalogueController extends AbstractController
     #[Route("/catalogue", name:"app_catalogue")]
     public function catalogue(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
-        $visitDate = new \DateTime();
-        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
-
-
         $posts = $postRepository->findAll();
         $images = $imagesRepository->findAll();
         $imagesPosts = [];

@@ -16,14 +16,16 @@ class HomeController extends AbstractController
     #[Route("/base", name:"app_base")]
     public function base(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
     {
-        $posts = $postRepository->findAll();
         $utilisateur = $this->getUser();
-        return $this->render('base.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur]);
+        return $this->render('base.html.twig', ['utilisateur' => $utilisateur]);
     }
 
     #[Route("/", name:"app_homepage")]
     public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
     {
+        $visitDate = new \DateTime();
+        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
+
         $images = $imagesRepository->findAll();
         $imagesPosts = [];
         $utilisateur = $this->getUser();

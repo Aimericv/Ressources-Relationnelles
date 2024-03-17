@@ -11,9 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-// Importez le gestionnaire d'entité
-
-
 class SearchController extends AbstractController
 {
     private $entityManager;
@@ -27,8 +24,6 @@ class SearchController extends AbstractController
     public function search(Request $request, ImagesRepository $imagesRepository): Response
     {
         $term = $request->query->get('term');
-
-        // Récupérer les posts correspondant au terme de recherche
         $posts = $this->entityManager->getRepository(Post::class)->findByTitle($term);
 
         $images = $imagesRepository->findAll();

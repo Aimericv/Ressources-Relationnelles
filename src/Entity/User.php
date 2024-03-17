@@ -74,6 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'reposted_by', targetEntity: Post::class)]
     private Collection $reposted;
 
+    #[ORM\Column(length: 10)]
+    private ?string $police = null;
+
 
     public function __construct()
     {
@@ -411,6 +414,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roleConverter = new RoleConverter();
         $this->role = $roleConverter->roleToInt([$role], $roleRepo);
+        return $this;
+    }
+
+    public function getPolice(): ?string
+    {
+        return $this->police;
+    }
+
+    public function setPolice(string $police): static
+    {
+        $this->police = $police;
+
         return $this;
     }
 }
