@@ -13,6 +13,15 @@ main img {
     margin: auto;
 }
 
+.post-title {
+    text-decoration: none;
+    color: black;
+}
+
+.post-title:hover {
+    color: #03989e;
+}
+
 select, input {
     width: 150px;
     text-align: center;

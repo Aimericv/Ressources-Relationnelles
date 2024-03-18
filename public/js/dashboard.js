@@ -98,6 +98,7 @@ document.querySelectorAll('.compte').forEach(item => {
             </select>
             <a href="#" id="valid-account" data-user-id="${userId}" data-role-id="${roleId}">Valider</a>
         `;
+        document.getElementById('account-form').style.display = "flex";
 
         document.getElementById('role-select').addEventListener('change', event => {
             const selectedRoleId = event.target.value;

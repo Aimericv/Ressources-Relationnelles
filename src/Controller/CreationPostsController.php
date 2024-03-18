@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Security;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\ImagesRepository;
+use App\Repository\PostRepository;
 use App\Repository\CategoryRepository;
 
 
@@ -219,9 +220,9 @@ class CreationPostsController extends AbstractController
 
 
     #[Route('/delete-posts/{id}', name: 'app_delete_posts')]
-    public function delete($id, EntityManagerInterface $entityManager): Response
+    public function delete($id, Request $request, EntityManagerInterface $entityManager, PostRepository $postRepo): Response
     {
-        $post = $entityManager->getRepository(Post::class)->find($id);
+        $post = $postRepo->find($id);
 
         if (!$post) {
             throw new \Exception('Post non trouvé');
@@ -244,7 +245,11 @@ class CreationPostsController extends AbstractController
         $entityManager->remove($post);
         $entityManager->flush();
 
-        return new Response('Post et ses éléments associés supprimés avec succès', Response::HTTP_OK);
+        if ($request->headers->get('referer') === $this->generateUrl('dashboard')) {
+            return $this->redirectToRoute('app_dashboard');
+        } else {
+            return $this->redirectToRoute('app_user');
+        }
     }
 
 

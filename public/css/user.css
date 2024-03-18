@@ -45,6 +45,20 @@ h1 {
     gap: 10px;
 }
 
+.btn {
+    color: black;
+    text-decoration: none;
+    text-align: center;
+}
+
+.button-more-ressource {
+    background-color: #03989e;
+    color: white;
+    padding: 10px 2px;
+    border-radius: 20px;
+    border: 2px solid #03989e;
+}
+
 .data-user {
     font-size: 4rem;
 }
@@ -154,7 +168,7 @@ main {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 50px;
 }
 
 #post-section img{
@@ -204,7 +218,7 @@ main {
         width: 720px;
     }
     #post-section>div {
-        width: 48%;
+        width: 46%;
     }
 }
 
@@ -225,7 +239,7 @@ main {
         width: 50% !important;
     }
     #post-section>div {
-        width: 31%;
+        width: 29%;
     }
     #data-user {
         flex-direction: row;

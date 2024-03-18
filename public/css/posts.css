@@ -73,6 +73,16 @@
     height: 250px;
 }
 
+.button-more-ressource a {
+    text-decoration: none;
+    color: white;
+}
+
+.button-more-ressource:hover a {
+    text-decoration: none;
+    color: #03989e;
+}
+
 .button-more-ressource {
     width: 50%;
     margin: 10px auto;

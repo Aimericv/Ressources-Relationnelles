@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\PostRepository;
+use App\Repository\PostStatusRepository;
 use App\Repository\ImagesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,7 +95,8 @@ class UserController extends AbstractCrudController
     #[Route('/user/{id}', name: 'app_other_user')]
     public function otherUser($id, UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
     {
-        $utilisateur = $userRepo->find($id);
+        $utilisateur = $this->getUser();
+        $user = $userRepo->find($id);
         $posts = $postRepo->findBy(['user' => $id]);
         foreach ($posts as $post) {
             $postId = $post->getId();
@@ -109,6 +111,7 @@ class UserController extends AbstractCrudController
 
         return $this->render('user/otherUser.html.twig', [
             'utilisateur' => $utilisateur,
+            'user' => $user,
             'posts' => $posts,
             'imageSrc' => $imageSrc,
         ]);

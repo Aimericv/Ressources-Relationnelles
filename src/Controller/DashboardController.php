@@ -163,7 +163,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/valid-post/{id}/{status}', name: 'app_dashboard_valid_ressource')]
-    public function validRessource($id, $status, PostRepository $postRepo, PostStatusRepository $postStatusRepo, EntityManagerInterface $entityManager): Response
+    public function validRessource($id, $status, Request $request, PostRepository $postRepo, PostStatusRepository $postStatusRepo, EntityManagerInterface $entityManager): Response
     {
         $post = $postRepo->find($id);
 
@@ -177,7 +177,11 @@ class DashboardController extends AbstractController
 
         $entityManager->persist($post);
         $entityManager->flush();
-        return $this->redirectToRoute('app_dashboard');
+        if ($request->headers->get('referer') === $this->generateUrl('dashboard')) {
+            return $this->redirectToRoute('app_dashboard');
+        } else {
+            return $this->redirectToRoute('app_user');
+        }
     }
 
     #[Route('/dashboard/role-user/{id}/{role}', name: 'app_dashboard_role_user')]

@@ -16,7 +16,7 @@ class CatalogueController extends AbstractController
     #[Route("/catalogue", name:"app_catalogue")]
     public function catalogue(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, RepostRepository $repostRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
-        $posts = $postRepository->findAll();
+        $posts = $postRepository->findBy(['status' => 3]);
         $images = $imagesRepository->findAll();
         $imagesPosts = [];
         $utilisateur = $this->getUser();

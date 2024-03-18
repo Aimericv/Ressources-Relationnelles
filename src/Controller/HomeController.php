@@ -52,7 +52,7 @@ class HomeController extends AbstractController
         }
 
 
-        $allposts = $postRepository->findAll();
+        $allposts = $postRepository->findBy(['status' => 3]);
 
 
         return $this->render('default/index.html.twig', ['user' => $this->getUser(),'posts' => $posts, 'allposts'=>$allposts,  'repostPosts' => $repostPosts,

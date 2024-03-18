@@ -30,9 +30,15 @@
             <link rel="stylesheet" href={{ asset('css/user.css') }}>
     <section id="data-user">
         <article id="avatar-section">
-            <div class="autor"> <img src="{{ asset('profiles/user1_avatar.j&pg') }}"></div>
-            <h1>{{ utilisateur.firstName }} {{ utilisateur.lastName }}</h1>
-            <p>{{ utilisateur.getRoles[0] }}</p>
+            <div class="autor"> 
+                {% if user.getAvatarImg() is not null %}
+                    <img src="{{ asset('profiles/' ~ user.getAvatarImg()) }}" alt="Avatar de l'user">
+                {% else %}
+                    <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                {% endif %}
+            </div>
+            <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+            <p>{{ user.getRoles[0] }}</p>
         </article>
 
         <article class="container" id="stats-section">
@@ -52,8 +58,9 @@
             </div>
         </article>
     </section>
-    <section id="post-section">
-        {% for post in posts %}
+    <section id="post-section" style="margin-top: 50px;">
+        {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
+        {% for post in sortedPosts %}
         <div>
             {% if imageSrc[post.id] is not null %}
                 <div class="img-ressource">

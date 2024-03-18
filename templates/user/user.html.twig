@@ -88,7 +88,8 @@
         </article>
     </section>
     <section id="post-section">
-        {% for post in posts %}
+        {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
+        {% for post in sortedPosts %}
         <div>
             {% if imageSrc[post.id] is not null %}
                 <div class="img-ressource">
@@ -97,7 +98,13 @@
             {% endif %}
             <h2 class="title-ressource">{{ post.title }}</h2>
             <p class="description-ressource">{{ post.description }}</p>
-            <button class="button-more-ressource" type="button"><a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>
+            {% if post.status.getId() == 3 %}
+                <a class="btn" href="{{ path('app_dashboard_valid_ressource', {'id': post.id, 'status': 4}) }}">Privatiser</a>
+            {% elseif post.status.getId() == 1 or post.status.getId() == 4 %}
+                <a class="btn" href="{{ path('app_dashboard_valid_ressource', {'id': post.id, 'status': 2}) }}">Publier</a>
+            {% endif %}
+            <a class="button-more-ressource btn" href="{{ path('app_modification_posts', {'id': post.id}) }}">Modifier</a>
+            <a class="button-more-ressource btn" href="{{ path('app_delete_posts', {'id': post.id}) }}">Supprimer</a>
         </div>
         {% endfor %}
     </section>
