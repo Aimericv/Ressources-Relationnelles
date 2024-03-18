@@ -30,8 +30,10 @@ class DashboardController extends AbstractController
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        $connectUser = $this->getUser()->getRoles();
-        $roleUser = $connectUser[0];
+        $utilisateur = $this->getUser();
+        $rolesUser = $utilisateur->getRoles();
+        $roleUser = $rolesUser[0];
+
         if ($roleUser == "ROLE_USER"){
             return $this->redirectToRoute('app_homepage');
         } 
@@ -64,6 +66,7 @@ class DashboardController extends AbstractController
         $category = $catRepo->findAll();
 
         return $this->render('dashboard/index.html.twig', [
+            'utilisateur' => $utilisateur,
             'roleUser' => $roleUser,
             'statistiques' => $statistiques,
             'ressources' => $ressources,

@@ -44,7 +44,7 @@
             <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
             <a href="{{ path('app_user') }}">
                 <li id="avatar-img">
-                    {% if utilisateur.getAvatarImg() is not null %}
+                    {% if utilisateur is defined and utilisateur.getAvatarImg() is not null %}
                         <img src="{{ asset('profiles/' ~ utilisateur.getAvatarImg()) }}" alt="Avatar de l'utilisateur">
                     {% else %}
                         <img src="{{ asset('medias/user-white.png') }}">
