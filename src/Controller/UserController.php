@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManager;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 // use http\Client\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Entity\User;
@@ -16,7 +18,7 @@ use App\Repository\ImagesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class UserController extends AbstractCrudController
+class UserController extends AbstractController
 {
     public static function getEntityFqcn(): string
     {
@@ -55,13 +57,24 @@ class UserController extends AbstractCrudController
     }
 
     // Méthode pour personnaliser l'action de suppression d'un utilisateur
-    public function delete(AdminContext $context)
+    #[Route('/delete-user', name: 'app_delete_user')]
+    public function delete(EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $response = parent::delete($context);
+        $utilisateur = $this->getUser();
+        $session->invalidate();
+
+        $entityManager->remove($utilisateur);
+        $entityManager->flush();
 
         // Ajoutez ici des actions supplémentaires après la suppression de l'utilisateur si nécessaire
+        return $this->redirectToRoute("app_complete_user_deletion");
+    }
 
-        return $response;
+    #[Route('/complete-user-deletion', name: 'app_complete_user_deletion')]
+    public function completeDeletion(EntityManagerInterface $entityManager): Response
+    {
+        return $this->render('user/complete-deletion.html.twig', [
+        ]);
     }
 
     #[Route('/user', name: 'app_user')]
