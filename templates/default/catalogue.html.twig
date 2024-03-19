@@ -21,7 +21,7 @@
                             <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                         {% endif %}
 
-                        <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
+                        <a class="link-name" href="{{ path('app_other_user', {'id': post.getUser().getId()}) }}">{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</a>
                     </div>
                     {% set postImages = images[post.id] %}
                     {% if postImages is not empty %}

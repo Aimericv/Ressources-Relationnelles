@@ -8,6 +8,15 @@
     width: 30px;
 }
 
+.link-name {
+    text-decoration: none;
+    color: black;
+}
+
+.link-name:hover {
+    color: #03989e;
+}
+
 #filter-section {
     display: flex;
     flex-direction: row-reverse;

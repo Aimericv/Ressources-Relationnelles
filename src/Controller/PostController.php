@@ -15,6 +15,7 @@ use App\Repository\LikeRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
 use App\Repository\RepostRepository;
+use App\Repository\CommentResponseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -208,7 +209,7 @@ class PostController extends AbstractController
 
     #[Route("/post/{id}", name: "app_post_detail")]
 
-    public function postDetail($id, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request, EntityManagerInterface $entityManager, UserParticipationRepository $userPartRepo): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, CommentResponseRepository $commentRespRepo, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request, EntityManagerInterface $entityManager, UserParticipationRepository $userPartRepo): \Symfony\Component\HttpFoundation\Response
     {
         $user = $this->getUser();
         $post = $postRepository->find($id);
@@ -216,6 +217,7 @@ class PostController extends AbstractController
         $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
         // Récupérer les commentaires du post
         $comments = $post->getComments();
+        $commentResponse = $commentRespRepo->findAll();
 
         $existingLike = $likeRepository->findOneBy([
             'user' => $this->getUser(),
@@ -239,6 +241,6 @@ class PostController extends AbstractController
         ]);
 
 
-        return $this->render('default/postDetail.html.twig', ['utilisateur' => $user, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes, 'existingExploited' => $existingExploited, 'comments' => $comments]);
+        return $this->render('default/postDetail.html.twig', ['utilisateur' => $user, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes, 'existingExploited' => $existingExploited, 'comments' => $comments, 'commentResponse' => $commentResponse]);
     }
 }

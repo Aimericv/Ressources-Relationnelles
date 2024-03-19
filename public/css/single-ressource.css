@@ -146,6 +146,34 @@ p, h1, h2, h3, h4, h5, h6 {
     width: 25px;
 }
 
+.comment-form {
+    display: flex;
+    width: 100%;
+    margin-top: 40px;
+}
+
+.comment-input {
+    border: 2px solid #03989e;
+    padding: 10px 20px;
+    border-radius: 20px 0 0 20px;
+    width: 80%;
+}
+
+.comment-btn {
+    background-color: #03989e;
+    border: 2px solid #03989e;
+    color: white;
+    padding: 3px 20px;
+    border-radius: 0px 20px 20px 0px;
+    width: 20%;
+    cursor: pointer;
+}
+
+.comment-btn:hover {
+    background-color: white;
+    color: #03989e;
+}
+
 a {
     text-decoration: none;
     color: #03989e;

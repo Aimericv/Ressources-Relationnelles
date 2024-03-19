@@ -111,50 +111,6 @@
         <div class="line"></div>
     </article>
 </section>
-
-
-        <section class="comment-section">
-            <article class="comment">
-                <div class="comment-user">
-                    <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
-                    <a href="#">User 1</a>
-                </div>
-                <div>
-                    <p>Aenean dapibus consectetur urna eget hendrerit. Nulla fringilla, dolor vitae consectetur sodales, nulla quam tristique mauris, vel tempor quam nisl blandit magna.</p>
-                </div>
-                <div class="comment-actions">
-                    <img src="{{ asset('medias/like-green.png')}}" alt="like">
-                    <a href="#add-comment">Répondre</a>
-                </div>
-            </article>
-            <article class="answer-comment comment">
-                <div class="comment-user">
-                    <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
-                    <a href="#">User 2</a>
-                </div>
-                <div>
-                    <p><a href="#">@user1</a> Aenean dapibus consectetur urna eget hendrerit. Nulla fringilla, dolor vitae consectetur sodales, nulla quam tristique mauris, vel tempor quam nisl blandit magna.</p>
-                </div>
-                <div class="comment-actions">
-                    <img src="{{ asset('medias/like-green.png')}}" alt="like">
-                    <a href="#add-comment">Répondre</a>
-                </div>
-            </article>
-            <article class="comment">
-                <div class="comment-user">
-                    <img src="{{ asset('medias/user-green.png')}}" alt="Avatar user">
-                    <a href="#">User 3</a>
-                </div>
-                <div>
-                    <p>Aenean dapibus consectetur urna eget hendrerit. Nulla fringilla, dolor vitae consectetur sodales, nulla quam tristique mauris, vel tempor quam nisl blandit magna.</p>
-                </div>
-                <div class="comment-actions">
-                    <img src="{{ asset('medias/like-green.png')}}" alt="like">
-                    <a href="#add-comment">Répondre</a>
-                </div>
-            </article>
-        </section>
-        {# Afficher les commentaires existants #}
         <section class="comment-section">
             {# colonnne que t'as rajouté est égal à zero #}
             {% for comment in comments %}
@@ -166,7 +122,7 @@
                         {% else %}
                             <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                         {% endif %}
-                        <a href="#">{{ comment.getUser().getFirstName() }} {{ comment.getUser().getLastName() }}</a>
+                        <a href="{{ path('app_other_user', {'id': comment.getUser().getId()}) }}">{{ comment.getUser().getFirstName() }} {{ comment.getUser().getLastName() }}</a>
                     </div>
                     <div>
                         <p>{{ comment.getContent() }}</p>
@@ -175,19 +131,18 @@
                         <a href="#reply" class="buttomResponse" data-target="responseForm{{ comment.id }}">Répondre</a>
                     </div>
                     <div id="responseForm{{ comment.id }}">
-                        <form action="/comment/response/{{ post.id }}" method="post" style="display: none">
+                        <form class="comment-form" action="/comment/response/{{ post.id }}" method="post" style="display: none">
                             <input type="hidden" name="comment-id" value="{{ comment.id }}">
-                            <div>
-                                <label for="response-comment">Répondre au commentaire</label>
-                                <input id="response-comment" name="response-comment">
-                            </div>
-                            <button type="submit">Répondre</button>
+                            <input class="comment-input" placeholder="Répondre au commentaire" id="response-comment" name="response-comment">
+                            <button class="comment-btn" type="submit">Répondre</button>
                         </form>
                     </div>
                 </article>
                 {% endif %}
                 {# Afficher les réponses aux commentaires s'il y en a #}
-                {% for response in comment.getCommentResponses() %}
+                {% for response in commentResponse %}
+                {# <p>{{response.getCommentToComment().getId()}} == {{comment.getId()}}</p> #}
+                {% if response.getCommentToComment().getId() == comment.getId() %}
                     {# if getcommentResponses.getCommenttoComment == comment.id #}
                     <article class="answer-comment comment">
                         <div class="comment-user">
@@ -196,24 +151,21 @@
                             {% else %}
                                 <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                             {% endif %}
-                            <a href="#">{{ response.getCommentToComment().getUser().getFirstName() }} {{ response.getCommentToComment().getUser().getLastName() }}</a>
+                            <a href="{{ path('app_other_user', {'id': response.getCommentToComment().getUser().getId()}) }}">{{ response.getCommentToComment().getUser().getFirstName() }} {{ response.getCommentToComment().getUser().getLastName() }}</a>
                         </div>
                         <div>
                             <p>{{ response.getComment().getContent() }}</p>
                         </div>
-                        <div class="comment-actions">
-                            <a href="#reply">Répondre</a>
-                        </div>
                     </article>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
         </section>
 
         <section>
-            <form action="/comment/add/{{ post.id }}" method="post">
-                <label for="comment">Ajouter un commentaire</label>
-                <input type="text" id="comment" name="comment">
-                <button type="submit">Envoyer</button>
+            <form class="comment-form" action="/comment/add/{{ post.id }}" method="post">
+                <input class="comment-input" placeholder="Ajouter un commentaire" type="text" id="comment" name="comment">
+                <button class="comment-btn" type="submit">Envoyer</button>
             </form>
         </section>
 
@@ -236,7 +188,7 @@
                         }
                     });
                     // Afficher le formulaire de réponse cible
-                    targetForm.style.display = 'block';
+                    targetForm.style.display = 'flex';
                 }
             });
         });

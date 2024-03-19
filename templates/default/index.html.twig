@@ -40,7 +40,7 @@
                             <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                         {% endif %}
 
-                        <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
+                        <a class="link-name" href="{{ path('app_other_user', {'id': post.getUser().getId()}) }}">{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</a>
                     </div>
                     {% set postImages = images[post.id] %}
                     {% if postImages is not empty %}
@@ -60,7 +60,7 @@
 
                     <article class="post">
                         {# Assuming you have properties like 'author', 'category', 'title', etc., adjust accordingly #}
-                            <p>Reposted by: {{ repostUser.getFirstName() }} {{ repostUser.getLastName() }}</p>
+                            <p>Reposted by: <a class="link-name" href="{{ path('app_other_user', {'id': repostUser.getId()}) }}">{{ repostUser.getFirstName() }} {{ repostUser.getLastName() }}</a></p>
 
 
                         <div class="autor">
@@ -70,7 +70,7 @@
                         <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                     {% endif %}
 
-                    <p>{{ repostPost.post.getUser().getFirstName() }} {{ repostPost.post.getUser().getLastName() }}</p>
+                    <a class="link-name" href="{{ path('app_other_user', {'id': repostPost.post.getUser().getId()}) }}">{{ repostPost.post.getUser().getFirstName() }} {{ repostPost.post.getUser().getLastName() }}</a>
 
                 </div>
                 {# {% set postImages = images[repostPost.post.id] %}
@@ -113,7 +113,7 @@
                 {% else %}
                     <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                 {% endif %}
-                <p>{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</p>
+                <a class="link-name" href="{{ path('app_other_user', {'id': post.getUser().getId()}) }}">{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</a>
             </div>
             {% set postImages = images[post.id] ?? [] %}
             {% if postImages|length > 0 %}
