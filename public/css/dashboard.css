@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+p {
+    margin: 0;
+}
+
 main img {
     border-radius: 50%;
 }
