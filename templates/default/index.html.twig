@@ -25,9 +25,6 @@
     </style>
     <body>
     <main class="container">
-        <section id="filter-section">
-            <img src={{ asset('medias/filter-green.png') }}>
-        </section>
         <section class="posts">
         {% if app.user %}
             {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}

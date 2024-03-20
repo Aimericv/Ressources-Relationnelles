@@ -64,28 +64,29 @@
                 </a>
             {% endif %}
         </ul>
-        <a id="searchIcon"><img src={{ asset('medias/search-white.png') }}></a>
 
-        <!-- Ajoutez une classe à votre barre de recherche pour la manipuler avec JavaScript -->
-        <form id="searchForm" class="hidden" action="{{ path('app_post_search') }}" method="GET">
-            <input type="text" name="term" placeholder="Rechercher par titre...">
-            <button type="submit">Rechercher</button>
+        <form id="searchForm" action="{{ path('app_post_search') }}" method="get">
+            <input style="display: none;" id="searchInput" type="text" name="term" placeholder="Rechercher par titre...">
+            <label for="searchInput"><img src={{ asset('medias/search-white.png') }}></label>
+            <button id="searchIcon" type="submit" style="display: none;"><img src={{ asset('medias/search-white.png') }}></button>
         </form>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchIcon = document.getElementById('searchIcon');
-                const searchForm = document.getElementById('searchForm');
-
-                searchIcon.addEventListener('click', function() {
-                    // Si la classe "hidden" est présente, la barre de recherche est cachée,
-                    // nous devons la montrer et vice versa.
-                    if (searchForm.classList.contains('hidden')) {
-                        searchForm.classList.remove('hidden');
-                    } else {
-                        searchForm.classList.add('hidden');
-                    }
-                });
+            const searchForm = document.querySelector('#searchForm');
+            const searchInput = searchForm.querySelector('input');
+            const searchLabel = searchForm.querySelector('label');
+            const searchIcon = searchForm.querySelector('#searchIcon');
+            searchForm.addEventListener('click', function() {
+                searchLabel.style.display = "none";
+                searchIcon.style.display = "block";
+                searchInput.style.display = "block";
+            });
+            document.addEventListener('click', function(event) {
+                if (event.target !== searchInput && event.target !== searchIcon) {
+                    searchLabel.style.display = "block";
+                    searchIcon.style.display = "none";
+                    searchInput.style.display = "none";
+                }
             });
         </script>
     </div>
