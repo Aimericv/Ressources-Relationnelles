@@ -12,6 +12,8 @@ use App\Entity\Category;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
 use App\Repository\PostRepository;
+use App\Repository\CommentRepository;
+use App\Repository\CommentResponseRepository;
 use App\Repository\PostStatusRepository;
 use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +27,7 @@ class DashboardController extends AbstractController
 {
     
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
+    public function index(Request $request, CommentRepository $commentRepo, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -59,6 +61,8 @@ class DashboardController extends AbstractController
             'posts' => $posts,
         ];
 
+        $comment = $commentRepo->findAll();
+
         $comptes = $userRepository->findAll();
 
         $questions = $helpRepository->findAll();
@@ -73,6 +77,7 @@ class DashboardController extends AbstractController
             'comptes' => $comptes,
             'questions' => $questions,
             'categories' => $category,
+            'comments' => $comment,
         ]);
     }
 
@@ -270,4 +275,28 @@ class DashboardController extends AbstractController
 
         return $this->redirectToRoute('app_dashboard');
     }
+
+    #[Route('/dashboard/comment/delete/{id}', name: 'app_dashboard_delete_comment')]
+    public function deleteComment($id, CommentRepository $commentRepo, EntityManagerInterface $entityManager, CommentResponseRepository $commentRespRepo): Response
+    {
+        $comment = $commentRepo->find($id);
+        
+        if ($comment->getIsResponse() == 1) {
+            $commentResp = $commentRespRepo->findBy(['comment' => $id]);
+        } elseif ($comment->getIsResponse() == 0) {
+            $commentResp = $commentRespRepo->findBy(['commentToComment' => $id]);
+        }
+
+        if (isset($commentResp)) {
+            foreach ($commentResp as $response) {
+                $entityManager->remove($response);
+            }
+        }
+
+        $entityManager->remove($comment);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
 }

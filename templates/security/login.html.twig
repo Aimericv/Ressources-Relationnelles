@@ -19,13 +19,13 @@
         </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <h1 class="h3 mb-3 font-weight-normal">Connectez vous</h1>
     <section>
         <label for="inputEmail">Email</label>
         <input id="email" type="email" value="{{ last_username }}" name="email" placeholder="john.doe@exemple.com" class="form-control" autocomplete="email" required autofocus>
     </section>
     <section>
-        <label for="inputPassword">Password</label>
+        <label for="inputPassword">Mot de passe</label>
         <input type="password" name="password" id="password" class="form-control" autocomplete="current-password" required>
     </section>
 
@@ -33,8 +33,8 @@
            value="{{ csrf_token('authenticate') }}"
     >
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
+    <button type="submit">
+        Connectez vous
     </button>
         <section id="options-account">
             <a href="#">Mot de passe oublié</a>

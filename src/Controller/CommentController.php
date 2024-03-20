@@ -17,6 +17,9 @@ class CommentController extends AbstractController
     #[Route('/comment/add/{id}', name: 'app_comment_add')]
     public function addComment($id, Request $request, CommentRepository $commentRepository, PostRepository $postRepo, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
         $formData = $request->request->get('comment');
         $comment = new Comment();
         $user = $this->getUser();
@@ -35,6 +38,9 @@ class CommentController extends AbstractController
     #[Route('/comment/response/{id}', name: 'app_comment_response')]
     public function responseComment($id, Request $request, CommentRepository $commentRepository, PostRepository $postRepo, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
         $formData = $request->request->get('response-comment');
         $commentResponseId = $request->request->get('comment-id');
         $comment = new Comment();
