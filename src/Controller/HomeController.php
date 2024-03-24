@@ -21,7 +21,7 @@ class HomeController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
         $visitDate = new \DateTime();
         $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
@@ -45,7 +45,7 @@ class HomeController extends AbstractController
 
         $user = $this->getUser();
         if($user){
-            $repostPosts = $repostRepository->findRepostPostsByUser($user);
+            $repostPosts = $user->getReposts();
 
         }else{
             $repostPosts='null';

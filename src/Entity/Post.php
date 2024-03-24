@@ -22,10 +22,10 @@ class Post
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?User $user = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?PostStatus $status = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -33,12 +33,6 @@ class Post
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
-
-    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Favorite::class)]
-    private Collection $favorites;
-
-    #[ORM\OneToMany(targetEntity: UserParticipation::class, mappedBy: 'post')]
-    private Collection $userParticipations;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: AdminComment::class)]
     private Collection $adminComments;
@@ -59,6 +53,18 @@ class Post
      * @ORM\Column(type="string")
      */
     private $category;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favorites')]
+    private Collection $usersFavorite;
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'postsParticipation')]
+    private Collection $usersParticipation;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'likes')]
+    private Collection $usersLike;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'reposts')]
+    private Collection $usersRepost;
     
 
     public function getAuthor(): ?string
@@ -74,9 +80,13 @@ class Post
     public function __construct()
     {
         $this->favorites = new ArrayCollection();
-        $this->userParticipations = new ArrayCollection();
+        $this->postsParticipation = new ArrayCollection();
         $this->adminComments = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->usersFavorite = new ArrayCollection();
+        $this->usersParticipation = new ArrayCollection();
+        $this->usersLike = new ArrayCollection();
+        $this->usersRepost = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,63 +174,6 @@ class Post
     }
 
     /**
-     * @return Collection<int, Favorite>
-     */
-    public function getFavorites(): Collection
-    {
-        return $this->favorites;
-    }
-
-    public function addFavorite(Favorite $favorite): static
-    {
-        if (!$this->favorites->contains($favorite)) {
-            $this->favorites->add($favorite);
-            $favorite->setPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(Favorite $favorite): static
-    {
-        if ($this->favorites->removeElement($favorite)) {
-            // set the owning side to null (unless already changed)
-            if ($favorite->getPost() === $this) {
-                $favorite->setPost(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UserParticipation>
-     */
-    public function getUserParticipations(): Collection
-    {
-        return $this->userParticipations;
-    }
-
-    public function addUserParticipation(UserParticipation $userParticipation): static
-    {
-        if (!$this->userParticipations->contains($userParticipation)) {
-            $this->userParticipations->add($userParticipation);
-            $userParticipation->addPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserParticipation(UserParticipation $userParticipation): static
-    {
-        if ($this->userParticipations->removeElement($userParticipation)) {
-            $userParticipation->removePost($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, AdminComment>
      */
     public function getAdminComments(): Collection
@@ -288,6 +241,111 @@ class Post
     public function setType(?Category $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersFavorite(): Collection
+    {
+        return $this->usersFavorite;
+    }
+
+    public function addUsersFavorite(User $usersFavorite): static
+    {
+        if (!$this->usersFavorite->contains($usersFavorite)) {
+            $this->usersFavorite->add($usersFavorite);
+            $usersFavorite->addFavorite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersFavorite(User $usersFavorite): static
+    {
+        if ($this->usersFavorite->removeElement($usersFavorite)) {
+            $usersFavorite->removeFavorite($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersParticipation(): Collection
+    {
+        return $this->usersParticipation;
+    }
+
+    public function addUsersParticipation(User $usersParticipation): static
+    {
+        if (!$this->usersParticipation->contains($usersParticipation)) {
+            $this->usersParticipation->add($usersParticipation);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersParticipation(User $usersParticipation): static
+    {
+        $this->usersParticipation->removeElement($usersParticipation);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersLike(): Collection
+    {
+        return $this->usersLike;
+    }
+
+    public function addUsersLike(User $usersLike): static
+    {
+        if (!$this->usersLike->contains($usersLike)) {
+            $this->usersLike->add($usersLike);
+            $usersLike->addLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersLike(User $usersLike): static
+    {
+        if ($this->usersLike->removeElement($usersLike)) {
+            $usersLike->removeLike($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersRepost(): Collection
+    {
+        return $this->usersRepost;
+    }
+
+    public function addUsersRepost(User $usersRepost): static
+    {
+        if (!$this->usersRepost->contains($usersRepost)) {
+            $this->usersRepost->add($usersRepost);
+            $usersRepost->addRepost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersRepost(User $usersRepost): static
+    {
+        if ($this->usersRepost->removeElement($usersRepost)) {
+            $usersRepost->removeRepost($this);
+        }
 
         return $this;
     }

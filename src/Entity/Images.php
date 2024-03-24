@@ -16,7 +16,7 @@ class Images
     #[ORM\Column(length: 255)]
     private ?string $src = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Post $post_id = null;
 

@@ -46,22 +46,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
-    #[ORM\ManyToMany(targetEntity: Favorite::class, mappedBy: 'user')]
-    private Collection $post;
-
-    #[ORM\ManyToMany(targetEntity: UserParticipation::class, mappedBy: 'user')]
-    private Collection $userParticipations;
-
-    #[ORM\OneToMany(mappedBy: 'admin', targetEntity: AdminComment::class)]
+    #[ORM\OneToMany(mappedBy: 'admin', targetEntity: AdminComment::class, cascade: ['remove'])]
     private Collection $adminComments;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, cascade: ['remove'])]
     private Collection $comments;
 
-    #[ORM\OneToMany(mappedBy: 'follower', targetEntity: Follow::class)]
+    #[ORM\OneToMany(mappedBy: 'follower', targetEntity: Follow::class, cascade: ['remove'])]
     private Collection $follows;
 
-    #[ORM\OneToMany(mappedBy: 'following', targetEntity: Follow::class)]
+    #[ORM\OneToMany(mappedBy: 'following', targetEntity: Follow::class, cascade: ['remove'])]
     private Collection $following;
 
     #[ORM\Column(length: 255)]
@@ -71,22 +65,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
 
-    #[ORM\OneToMany(mappedBy: 'reposted_by', targetEntity: Post::class)]
-    private Collection $reposted;
-
     #[ORM\Column(length: 10)]
     private ?string $police = null;
+
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersFavorite')]
+    #[ORM\JoinTable(name: 'user_post_favorite')]
+    private Collection $favorites;
+
+    #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'usersParticipation')]
+    #[ORM\JoinTable(name: 'user_post_participation')]
+    private Collection $postsParticipation;
+
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersLike')]
+    #[ORM\JoinTable(name: 'user_post_like')]
+    private Collection $likes;
+
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersRepost')]
+    #[ORM\JoinTable(name: 'user_post_repost')]
+    private Collection $reposts;
 
 
     public function __construct()
     {
-        $this->post = new ArrayCollection();
-        $this->userParticipations = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
         $this->adminComments = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->follows = new ArrayCollection();
         $this->following = new ArrayCollection();
         $this->reposted = new ArrayCollection();
+        $this->postsParticipation = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->reposts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,7 +190,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
+        $newPassword = password_hash($password, PASSWORD_BCRYPT, $cost = [15]);
+        $this->password = $newPassword;
 
         return $this;
     }
@@ -214,60 +224,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeInterface $created_at): static
     {
         $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Favorite>
-     */
-    public function getPost(): Collection
-    {
-        return $this->post;
-    }
-
-    public function addFavorite(Favorite $favorite): static
-    {
-        if (!$this->favorite->contains($favorite)) {
-            $this->favorite->add($favorite);
-            $favorite->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(Favorite $favorite): static
-    {
-        if ($this->favorite->removeElement($favorite)) {
-            $favorite->removeUser($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UserParticipation>
-     */
-    public function getUserParticipations(): Collection
-    {
-        return $this->userParticipations;
-    }
-
-    public function addUserParticipation(UserParticipation $userParticipation): static
-    {
-        if (!$this->userParticipations->contains($userParticipation)) {
-            $this->userParticipations->add($userParticipation);
-            $userParticipation->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserParticipation(UserParticipation $userParticipation): static
-    {
-        if ($this->userParticipations->removeElement($userParticipation)) {
-            $userParticipation->removeUser($this);
-        }
 
         return $this;
     }
@@ -425,6 +381,105 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPolice(string $police): static
     {
         $this->police = $police;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Post $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Post $favorite): static
+    {
+        $this->favorites->removeElement($favorite);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPostsParticipation(): Collection
+    {
+        return $this->postsParticipation;
+    }
+
+    public function addPostsParticipation(Post $postsParticipation): static
+    {
+        if (!$this->postsParticipation->contains($postsParticipation)) {
+            $this->postsParticipation->add($postsParticipation);
+            $postsParticipation->addUsersParticipation($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostsParticipation(Post $postsParticipation): static
+    {
+        if ($this->postsParticipation->removeElement($postsParticipation)) {
+            $postsParticipation->removeUsersParticipation($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Post $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Post $like): static
+    {
+        $this->likes->removeElement($like);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getReposts(): Collection
+    {
+        return $this->reposts;
+    }
+
+    public function addRepost(Post $repost): static
+    {
+        if (!$this->reposts->contains($repost)) {
+            $this->reposts->add($repost);
+        }
+
+        return $this;
+    }
+
+    public function removeRepost(Post $repost): static
+    {
+        $this->reposts->removeElement($repost);
 
         return $this;
     }

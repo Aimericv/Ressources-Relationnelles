@@ -90,8 +90,105 @@ class PostController extends AbstractController
         return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route("/post/actions/{id}", name: "app_post_actions", methods: ['POST'])]
+    #[Route("/post/actions/{id}", name: "app_post_like_action", methods: ['POST'])]
     public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    {
+        $post = $postRepository->find($id);
+        $images = $imagesRepository->findBy(['post_id' => $id]);
+        $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
+
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        if (!$post) {
+            throw $this->createNotFoundException('Post not found');
+        }
+
+        $action = $request->request->get('action');
+
+        $existingLike = $entityManager->getRepository(Like::class)->findOneBy([
+            'user' => $this->getUser(),
+            'post' => $post,
+        ]);
+
+        $existingRepost = $entityManager->getRepository(Repost::class)->findOneBy([
+            'user' => $this->getUser(),
+            'post' => $post,
+        ]);
+
+        $existingExploited = $entityManager->getRepository(UserParticipation::class)->findOneBy([
+            'user' => $this->getUser(),
+            'post' => $post,
+        ]);
+
+        if ($action === 'like') {
+            if (!$post->getUsersLike()->contains($this->getUser())) {
+
+                $post->addUsersLike($this->getUser());
+
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+            }else{
+                $post->removeUsersLike($this->getUser());
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+            }
+        } elseif ($action === 'favorite') {
+            if (!$post->getUsersFavorite()->contains($this->getUser())) {
+
+                $post->addUsersFavorite($this->getUser());
+
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+            }else{
+
+                $post->removeUsersFavorite($this->getUser());
+                $entityManager->persist($post);
+                $entityManager->flush();
+            }
+        } elseif ($action === 'repost') {
+            if (!$post->getUsersRepost()->contains($this->getUser())) {
+
+                $post->addUsersRepost($this->getUser());
+
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+            }else{
+                $post->removeUsersRepost($this->getUser());
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+            }
+        }
+        elseif ($action === 'exploited') {
+            if (!$post->getUsersParticipation()->contains($this->getUser())) {
+
+                $post->addUsersParticipation($this->getUser());
+
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+            }else{
+                $post->removeUsersParticipation($this->getUser());
+
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+            }
+        }
+
+        // ... existing logic
+
+        return $this->redirectToRoute('app_post_detail', ['id' => $id]);
+    }
+
+    //#[Route("/post/actions/{id}", name: "app_post_actions", methods: ['POST'])]
+    /*public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
@@ -203,7 +300,7 @@ class PostController extends AbstractController
         // ... existing logic
 
         return $this->redirectToRoute('app_post_detail', ['id' => $id]);
-    }
+    }*/
 
 
 

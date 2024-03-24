@@ -2,7 +2,6 @@
 /vendor
 /.idea
 /public/bundles/
-/.idea
 composer.lock
 
 ###> phpunit/phpunit ###

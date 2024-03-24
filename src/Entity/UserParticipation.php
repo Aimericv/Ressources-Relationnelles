@@ -6,8 +6,6 @@ use App\Repository\UserParticipationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserParticipationRepository::class)]
-#[ORM\Table(name: '`user_participation`')]
-
 class UserParticipation
 {
     #[ORM\Id]
@@ -15,11 +13,11 @@ class UserParticipation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'userParticipations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?post $post = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'userParticipations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?user $user = null;
 

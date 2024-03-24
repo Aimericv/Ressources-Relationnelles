@@ -17,7 +17,7 @@ class Paragraphes
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'paragraphes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Post $post_id = null;
 
