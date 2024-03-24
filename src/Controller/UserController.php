@@ -153,6 +153,7 @@ class UserController extends AbstractController
         $utilisateur = $this->getUser();
         $user = $userRepo->find($id);
         $posts = $postRepo->findBy(['user' => $id]);
+        $imageSrc = null;
         foreach ($posts as $post) {
             $postId = $post->getId();
             $images = $imageRepo->findBy(['post' => $postId]);
