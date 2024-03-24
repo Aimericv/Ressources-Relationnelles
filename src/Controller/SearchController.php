@@ -1,5 +1,4 @@
 <?php
-// src/Controller/DefaultController.php
 
 namespace App\Controller;
 
@@ -46,4 +45,3 @@ class SearchController extends AbstractController
         ]);
     }
 }
-?>

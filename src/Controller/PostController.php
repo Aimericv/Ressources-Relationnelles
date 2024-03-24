@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Images;
+use App\Entity\Paragraphes;
 use App\Entity\Post;
+use App\Entity\User;
 use App\Entity\UserParticipation;
 use App\Form\PostType;
+use App\Repository\CategoryRepository;
 use App\Repository\UserParticipationRepository;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
@@ -166,122 +170,235 @@ class PostController extends AbstractController
         return $this->redirectToRoute('app_post_detail', ['id' => $id]);
     }
 
-    //#[Route("/post/actions/{id}", name: "app_post_actions", methods: ['POST'])]
-    /*public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    #[Route('/creation-posts', name: 'app_creation_posts')]
+    public function creationPosts(CategoryRepository $catRepo): Response
     {
-        $post = $postRepository->find($id);
-        $images = $imagesRepository->findBy(['post_id' => $id]);
-        $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
-
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
+        $categories = $catRepo->findAll();
+
+        return $this->render('creation_posts/index.html.twig', [
+            'categories' => $categories,
+        ]);
+    }
+
+    #[Route('/creation-posts/add', name: 'app_creation_posts_add')]
+    public function add(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $userId = $this->getUser()->getId();
+        $jsonData = json_decode($request->request->get('json_data'), true);
+
+        $post = new Post();
+        $post->setTitle($jsonData[0]['title']); // Récupérer le titre du premier élément du tableau JSON
+        $post->setDescription($jsonData[0]['description']); // Récupérer la description du premier élément du tableau JSON
+        $category_id = $jsonData[0]['category'];
+        $category = $entityManager->getReference('App\Entity\Category', $category_id);
+        $post->setType($category);
+        $post->setCreatedAt(new \DateTime());
+        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
+        $userRepository = $entityManager->getRepository(User::class);
+        $user = $userRepository->find($userId);
+        $post->setUser($user);
+        $post->setAddress($jsonData[0]['address']);
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        foreach ($jsonData as $key => $element) {
+            if ($element['type'] == 'paragraph') {
+                $paragraph = new Paragraphes();
+                $paragraph->setContent($element['content']);
+                $paragraph->setWidth($element['width']);
+                $paragraph->setHeight($element['height']);
+                $paragraph->setX($element['x']);
+                $paragraph->setY($element['y']);
+                $paragraph->setPostId($post);
+                $entityManager->persist($paragraph);
+                $entityManager->flush();
+            } elseif ($element['type'] == 'image') {
+                $image = new Images();
+                $image->setSrc($element['src']);
+                $image->setWidth($element['width']);
+                $image->setHeight($element['height']);
+                $image->setX($element['x']);
+                $image->setY($element['y']);
+                $image->setPostId($post);
+                $entityManager->persist($image);
+                $entityManager->flush();
+            }
+        }
+
+        return new Response('Post ajouté avec succès', Response::HTTP_OK);
+    }
+
+
+    #[Route('/modification-posts/{id}', name: 'app_modification_posts')]
+    public function modify(Request $request, $id, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
+    {
+        $userId = $this->getUser()->getId();
+
+        $post = $entityManager->getRepository(Post::class)->find($id);
+        $paragraphs = $entityManager->getRepository(Paragraphes::class)->findByPostId($id);
+        $images = $entityManager->getRepository(Images::class)->findByPostId($id);
+        $categorie = $catRepo->findAll();
+
+        if (!$post) {
+            throw new \Exception('Post non trouvé');
+        }
+        return $this->render('creation_posts/index.html.twig', [
+            'categories' => $categorie,
+            'post' => $post,
+            'images' => $images,
+            'paragraphes' => $paragraphs
+        ]);
+    }
+
+
+    #[Route('/modification-posts/{id}/edit', name: 'app_modification_posts_edit')]
+    public function editPosts(Request $request, $id, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
+    {
+        $jsonData = json_decode($request->request->get('json_data'), true);
+        var_dump($jsonData);
 
         $post = $entityManager->getRepository(Post::class)->find($id);
 
         if (!$post) {
-            throw $this->createNotFoundException('Post not found');
+            throw new \Exception('Post non trouvé');
         }
 
-        $action = $request->request->get('action');
+        $post->setTitle($jsonData[0]['title']);
+        $post->setDescription($jsonData[0]['description']);
+        $category = $catRepo->find((int) $jsonData[0]['category']);
+        $post->setType($category);
+        $post->setCreatedAt(new \DateTime());
+        $post->setAddress($jsonData[0]['address']);
+        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
 
-        $existingLike = $entityManager->getRepository(Like::class)->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
+        $entityManager->persist($post);
+        $entityManager->flush();
 
-        $existingFavorite = $entityManager->getRepository(Favorite::class)->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
-
-        $existingRepost = $entityManager->getRepository(Repost::class)->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
-
-        $existingExploited = $entityManager->getRepository(UserParticipation::class)->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
-
-        if ($action === 'like') {
-            if (!$existingLike) {
-
-                $like = new Like();
-                $like->setUser($this->getUser());
-                $like->setPost($post);
-
-                $entityManager->persist($like);
+        foreach ($jsonData as $key => $element) {
+            if ($element['type'] == "image") {
+                if ($element['id'] != "") {
+                    $imageId = $element['id'];
+                    $imageRepository = $entityManager->getRepository(Images::class);
+                    $image = $imageRepository->find($imageId);
+                }
+                else {
+                    $image = new Images();
+                }
+                $image->setWidth($element['width']);
+                $image->setHeight($element['height']);
+                $image->setX($element['x']);
+                $image->setY($element['y']);
+                $image->setPostId($post);
+                $image->setSrc($element['src']);
+                $entityManager->persist($image);
                 $entityManager->flush();
-
-                $existingLike=true;
-            }else{
-                $entityManager->remove($existingLike);
-                $entityManager->flush();
-                $existingLike=false;
-
             }
-        } elseif ($action === 'favorite') {
-            if (!$existingFavorite) {
 
-                $favorite = new Favorite();
-                $favorite->setUser($this->getUser());
-                $favorite->setPost($post);
-
-                $entityManager->persist($favorite);
+            if ($element['type'] == 'paragraph') {
+                if (!isset($element['id']) || $element['id'] == "") {
+                    $paragraph = new Paragraphes();
+                } else {
+                    $paragraphId = $element['id'];
+                    $paragraphRepository = $entityManager->getRepository(Paragraphes::class);
+                    $paragraph = $paragraphRepository->find($paragraphId);
+                }
+                if($element['content'] == "" || $element['content'] == null) {
+                    $paragraph->setContent("");
+                }else{
+                    $paragraph->setContent($element['content']);
+                }
+                $paragraph->setWidth($element['width']);
+                $paragraph->setHeight($element['height']);
+                $paragraph->setX($element['x']);
+                $paragraph->setY($element['y']);
+                $paragraph->setPostId($post);
+                $entityManager->persist($paragraph);
                 $entityManager->flush();
-
-                $existingFavorite=true;
-            }else{
-                $entityManager->remove($existingFavorite);
-                $entityManager->flush();
-                $existingFavorite=false;
-
-            }
-        } elseif ($action === 'repost') {
-            if (!$existingRepost) {
-
-                $repost = new Repost();
-                $repost->setUser($this->getUser());
-                $repost->setPost($post);
-
-                $entityManager->persist($repost);
-                $entityManager->flush();
-
-                $existingRepost=true;
-            }else{
-                $entityManager->remove($existingRepost);
-                $entityManager->flush();
-                $existingRepost=false;
-
-            }
-        }
-        elseif ($action === 'exploited') {
-            if (!$existingExploited) {
-
-                $exploited = new UserParticipation();
-                $exploited->setUser($this->getUser());
-                $exploited->setPost($post);
-
-                $entityManager->persist($exploited);
-                $entityManager->flush();
-
-                $existingExploited=true;
-            }else{
-                $entityManager->remove($existingExploited);
-                $entityManager->flush();
-                $existingExploited=false;
-
             }
         }
 
-        // ... existing logic
-
-        return $this->redirectToRoute('app_post_detail', ['id' => $id]);
-    }*/
+        return new Response('Post modifié avec succès', Response::HTTP_OK);
+    }
 
 
+    #[Route('/modification-post/upload', name: 'app_modification_posts_upload')]
+    public function upload(Request $request)
+    {
+        $uploadedFile = $request->files->get('file'); // Récupérer le fichier
+        $imageName = $request->request->get('image-name'); // Récupérer le nom de l'image
+
+        if ($imageName !== null && $uploadedFile !== null) {
+            $directory = $this->getParameter('kernel.project_dir') . '/public/images/post/';
+            $uploadedFile->move($directory, $imageName);
+            return new Response('Image uploaded successfully', Response::HTTP_OK);
+        }
+
+        return new Response('No file uploaded or invalid request', Response::HTTP_BAD_REQUEST);
+    }
+
+
+    #[Route('/modification-post/delete', name: 'app_modification_post_delete')]
+    public function deleteImage(Request $request, EntityManagerInterface $entityManager, ImagesRepository $imageRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $imageName = $data['imageName'];
+
+        $filePath = $this->getParameter('kernel.project_dir') . '/public' . $imageName;
+
+        if (file_exists($filePath)) {
+            unlink($filePath);
+
+            $image = $imageRepository->findOneBySrc($imageName);
+
+            if ($image != null) {
+                $entityManager->remove($image);
+                $entityManager->flush();
+            }
+
+            return new Response('Image deleted successfully', Response::HTTP_OK);
+        } else {
+            return new Response('File not found: ' . $filePath, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+
+
+
+    #[Route('/delete-posts/{id}', name: 'app_delete_posts')]
+    public function deletePosts($id, Request $request, EntityManagerInterface $entityManager, PostRepository $postRepo): Response
+    {
+        $post = $postRepo->find($id);
+
+        if (!$post) {
+            throw new \Exception('Post non trouvé');
+        }
+
+        $images = $entityManager->getRepository(Images::class)->findByPostId($id);
+        foreach ($images as $image) {
+            $imagePath = $this->getParameter('kernel.project_dir') . '/public' . $image->getSrc();
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+            $entityManager->remove($image);
+        }
+
+        $paragraphs = $entityManager->getRepository(Paragraphes::class)->findByPostId($id);
+        foreach ($paragraphs as $paragraph) {
+            $entityManager->remove($paragraph);
+        }
+
+        $entityManager->remove($post);
+        $entityManager->flush();
+
+        if ($request->headers->get('referer') === $this->generateUrl('dashboard')) {
+            return $this->redirectToRoute('app_dashboard');
+        } else {
+            return $this->redirectToRoute('app_user');
+        }
+    }
 
     #[Route("/post/{id}", name: "app_post_detail")]
 
