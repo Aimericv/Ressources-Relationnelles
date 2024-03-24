@@ -18,7 +18,7 @@ class Images
 
     #[ORM\ManyToOne(inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Post $post_id = null;
+    private ?Post $post = null;
 
     #[ORM\Column(length: 50)]
     private ?string $width = null;
@@ -51,12 +51,12 @@ class Images
 
     public function getPostId(): ?Post
     {
-        return $this->post_id;
+        return $this->post;
     }
 
-    public function setPostId(?Post $post_id): static
+    public function setPostId(?Post $post): static
     {
-        $this->post_id = $post_id;
+        $this->post = $post;
 
         return $this;
     }

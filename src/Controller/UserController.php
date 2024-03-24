@@ -109,7 +109,7 @@ class UserController extends AbstractController
         $imageSrc = null;
         foreach ($posts as $post) {
             $postId = $post->getId();
-            $images = $imageRepo->findBy(['post_id' => $postId]);
+            $images = $imageRepo->findBy(['post' => $postId]);
             if (!empty($images)) {
                 $image = $images[0];
                 $imageSrc[$postId] = $image->getSrc();
@@ -155,7 +155,7 @@ class UserController extends AbstractController
         $posts = $postRepo->findBy(['user' => $id]);
         foreach ($posts as $post) {
             $postId = $post->getId();
-            $images = $imageRepo->findBy(['post_id' => $postId]);
+            $images = $imageRepo->findBy(['post' => $postId]);
             if (!empty($images)) {
                 $image = $images[0];
                 $imageSrc[$postId] = $image->getSrc();

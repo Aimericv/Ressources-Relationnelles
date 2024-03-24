@@ -61,13 +61,13 @@
 
 
                         <div class="autor">
-                    {% if repostPost.post.getUser().getAvatarImg() is not null %}
-                        <img src="{{ asset('profiles/' ~ repostPost.post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                    {% if repostPost.getUser().getAvatarImg() is not null %}
+                        <img src="{{ asset('profiles/' ~ repostPost.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
                     {% else %}
                         <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                     {% endif %}
 
-                    <a class="link-name" href="{{ path('app_other_user', {'id': repostPost.post.getUser().getId()}) }}">{{ repostPost.post.getUser().getFirstName() }} {{ repostPost.post.getUser().getLastName() }}</a>
+                    <a class="link-name" href="{{ path('app_other_user', {'id': repostPost.getUser().getId()}) }}">{{ repostPost.getUser().getFirstName() }} {{ repostPost.getUser().getLastName() }}</a>
 
                 </div>
                 {# {% set postImages = images[repostPost.post.id] %}
@@ -77,12 +77,12 @@
                         </div>
                     {% endif %} #}
                         
-                        <p class="category">Catégorie : {{ repostPost.post.getType().name }}</p>
-                        <h2 class="title-ressource">{{ repostPost.post.title }}</h2>
-                        <p class="description-ressource">{{ repostPost.post.description }}</p>
+                        <p class="category">Catégorie : {{ repostPost.getType().name }}</p>
+                        <h2 class="title-ressource">{{ repostPost.title }}</h2>
+                        <p class="description-ressource">{{ repostPost.description }}</p>
 
 
-<button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': repostPost.post.id}) }}';">En savoir plus</button>                        
+<button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': repostPost.id}) }}';">En savoir plus</button>
 
                
 

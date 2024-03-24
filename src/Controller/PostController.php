@@ -2,19 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Favorite;
-use App\Entity\Like;
 use App\Entity\Post;
-use App\Entity\Repost;
 use App\Entity\UserParticipation;
 use App\Form\PostType;
-use App\Repository\FavoriteRepository;
 use App\Repository\UserParticipationRepository;
 use App\Repository\ImagesRepository;
-use App\Repository\LikeRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
-use App\Repository\RepostRepository;
 use App\Repository\CommentResponseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -94,8 +88,8 @@ class PostController extends AbstractController
     public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
-        $images = $imagesRepository->findBy(['post_id' => $id]);
-        $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
+        $images = $imagesRepository->findBy(['post' => $id]);
+        $paragraphes = $paragraphesRepository->findBy(['post' => $id]);
 
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -300,8 +294,8 @@ class PostController extends AbstractController
         }
 
         $post = $postRepository->find($id);
-        $images = $imagesRepository->findBy(['post_id' => $id]);
-        $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
+        $images = $imagesRepository->findBy(['post' => $id]);
+        $paragraphes = $paragraphesRepository->findBy(['post' => $id]);
         // Récupérer les commentaires du post
         $comments = $post->getComments();
         $commentResponse = $commentRespRepo->findAll();
