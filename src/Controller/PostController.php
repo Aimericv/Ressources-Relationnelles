@@ -90,8 +90,8 @@ class PostController extends AbstractController
         return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route("/post/actions/{id}", name: "app_post_like_action", methods: ['POST'])]
-    public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    #[Route("/post/actions/{id}", name: "app_post_actions", methods: ['POST'])]
+    public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
@@ -106,21 +106,6 @@ class PostController extends AbstractController
         }
 
         $action = $request->request->get('action');
-
-        $existingLike = $entityManager->getRepository(Like::class)->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
-
-        $existingRepost = $entityManager->getRepository(Repost::class)->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
-
-        $existingExploited = $entityManager->getRepository(UserParticipation::class)->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
 
         if ($action === 'like') {
             if (!$post->getUsersLike()->contains($this->getUser())) {
@@ -306,9 +291,14 @@ class PostController extends AbstractController
 
     #[Route("/post/{id}", name: "app_post_detail")]
 
-    public function postDetail($id, CommentResponseRepository $commentRespRepo, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, LikeRepository $likeRepository, FavoriteRepository $favoriteRepository, RepostRepository $repostyRepository, Request $request, EntityManagerInterface $entityManager, UserParticipationRepository $userPartRepo): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, CommentResponseRepository $commentRespRepo, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, Request $request, EntityManagerInterface $entityManager, UserParticipationRepository $userPartRepo): \Symfony\Component\HttpFoundation\Response
     {
         $user = $this->getUser();
+
+        if(!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post_id' => $id]);
         $paragraphes = $paragraphesRepository->findBy(['post_id' => $id]);
@@ -316,26 +306,14 @@ class PostController extends AbstractController
         $comments = $post->getComments();
         $commentResponse = $commentRespRepo->findAll();
 
-        $existingLike = $likeRepository->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
+        $existingLike = $user->getLikes()->contains($post);
 
 
-        $existingFavorite = $favoriteRepository->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
+        $existingFavorite = $user->getFavorites()->contains($post);
 
-        $existingRepost = $repostyRepository->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
+        $existingRepost = $user->getReposts()->contains($post);
 
-        $existingExploited = $userPartRepo->findOneBy([
-            'user' => $this->getUser(),
-            'post' => $post,
-        ]);
+        $existingExploited = $user->getPostsParticipation()->contains($post);
 
 
         return $this->render('default/postDetail.html.twig', ['utilisateur' => $user, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes, 'existingExploited' => $existingExploited, 'comments' => $comments, 'commentResponse' => $commentResponse]);

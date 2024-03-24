@@ -92,7 +92,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->follows = new ArrayCollection();
         $this->following = new ArrayCollection();
-        $this->reposted = new ArrayCollection();
         $this->postsParticipation = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->reposts = new ArrayCollection();

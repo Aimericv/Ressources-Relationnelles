@@ -82,6 +82,21 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/favorite', name: 'app_favorite')]
+    public function favorite(): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+        $user = $this->getUser();
+        $favoritePosts = $user->getFavorites();
+
+        return $this->render('favorite/index.html.twig', [
+            'utilisateur' => $user,
+            'favoritePosts' => $favoritePosts,
+        ]);
+    }
+
     #[Route('/user', name: 'app_user')]
     public function monCompte(UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
     {
