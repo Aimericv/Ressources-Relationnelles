@@ -69,13 +69,15 @@ class UserController extends AbstractController
     {
         $utilisateur = $this->getUser();
 
-        // Deconnecte l'utilisateur avant de le supprimer
-        $security->logout(false);
+        if ($utilisateur) {
+            $security->logout(false);
 
-        // Dispatcher l'événement de déconnexion
-
-        $entityManager->remove($utilisateur);
-        $entityManager->flush();
+            $entityManager->remove($utilisateur);
+            $entityManager->flush();
+        }
+        else {
+            $this->addFlash('error', 'Vous devez être connecté pour supprimer votre compte.');
+        }
 
         // Ajoutez ici des actions supplémentaires après la suppression de l'utilisateur si nécessaire
         return $this->render('user/complete-deletion.html.twig', [

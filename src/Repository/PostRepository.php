@@ -23,16 +23,16 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    public function findPostsByUser($userId)
+    /*public function findPostsByUser($userId)
     {
         return $this->createQueryBuilder('p')
             ->join('p.user', 'u')
-            ->join('u.following', 'f')
+            ->join('u.follows', 'f')
             ->andWhere('f.follower = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getResult();
-    }
+    }*/
 
     public function findByStatsForLatestMonth(?int $userId = null): int
 {

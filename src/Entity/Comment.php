@@ -27,14 +27,11 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Post $post = null;
 
-    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: CommentResponse::class)]
-    private Collection $commentResponses;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $isResponse = false;
+    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: CommentResponse::class, cascade: ['remove'])]
+    private Collection $commentResponses;
 
     public function __construct()
     {
@@ -82,17 +79,24 @@ class Comment
         return $this;
     }
 
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, CommentResponse>
      */
     public function getCommentResponses(): Collection
     {
         return $this->commentResponses;
-    }
-
-    public function getIsResponse(): bool
-    {
-        return $this->isResponse;
     }
 
     public function addCommentResponse(CommentResponse $commentResponse): static
@@ -113,25 +117,6 @@ class Comment
                 $commentResponse->setComment(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): static
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    public function setIsResponse(bool $isResponse): static
-    {
-        $this->isResponse = $isResponse;
 
         return $this;
     }

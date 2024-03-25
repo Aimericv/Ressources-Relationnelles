@@ -62,28 +62,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 10)]
     private ?string $police = null;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersFavorite')]
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersFavorite', cascade: ['remove'])]
     #[ORM\JoinTable(name: 'user_post_favorite')]
     private Collection $favorites;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'usersParticipation')]
+    #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'usersParticipation', cascade: ['remove'])]
     #[ORM\JoinTable(name: 'user_post_participation')]
     private Collection $postsParticipation;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersLike')]
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersLike', cascade: ['remove'])]
     #[ORM\JoinTable(name: 'user_post_like')]
     private Collection $likes;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersRepost')]
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersRepost', cascade: ['remove'])]
     #[ORM\JoinTable(name: 'user_post_repost')]
     private Collection $reposts;
 
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'following')]
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'following', cascade: ['remove'])]
     #[ORM\JoinTable(name: 'user_follow')]
     private Collection $follows;
 
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follows')]
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follows', cascade: ['remove'])]
     private Collection $following;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, cascade: ['remove'])]
+    private Collection $posts;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CommentResponse::class, cascade: ['remove'])]
+    private Collection $commentResponses;
 
 
     public function __construct()
@@ -96,6 +102,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->reposts = new ArrayCollection();
         $this->follows = new ArrayCollection();
         $this->following = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->commentResponses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -470,6 +478,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->following->removeElement($following)) {
             $following->removeFollow($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): static
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): static
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CommentResponse>
+     */
+    public function getCommentResponses(): Collection
+    {
+        return $this->commentResponses;
+    }
+
+    public function addCommentResponse(CommentResponse $commentResponse): static
+    {
+        if (!$this->commentResponses->contains($commentResponse)) {
+            $this->commentResponses->add($commentResponse);
+            $commentResponse->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentResponse(CommentResponse $commentResponse): static
+    {
+        if ($this->commentResponses->removeElement($commentResponse)) {
+            // set the owning side to null (unless already changed)
+            if ($commentResponse->getUser() === $this) {
+                $commentResponse->setUser(null);
+            }
         }
 
         return $this;

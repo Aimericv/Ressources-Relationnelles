@@ -23,9 +23,6 @@ class Post
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    private ?User $user = null;
-
-    #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?PostStatus $status = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -65,6 +62,9 @@ class Post
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'reposts')]
     private Collection $usersRepost;
+
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    private ?User $user = null;
     
 
     public function getAuthor(): ?string
@@ -121,18 +121,6 @@ class Post
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
 
         return $this;
     }
@@ -346,6 +334,18 @@ class Post
         if ($this->usersRepost->removeElement($usersRepost)) {
             $usersRepost->removeRepost($this);
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

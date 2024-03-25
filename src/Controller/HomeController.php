@@ -22,37 +22,39 @@ class HomeController extends AbstractController
     #[Route("/", name:"app_homepage")]
     public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
+
         $visitDate = new \DateTime();
         $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
 
         $images = $imagesRepository->findAll();
         $imagesPosts = [];
         $utilisateur = $this->getUser();
-        $posts = $postRepository->findPostsByUser($utilisateur);
 
-        foreach ($posts as $post) {
-            $post_id = $post->getId();
-            $imagesPostId = [];
-            foreach ($images as $image) {
-                if ($post_id == $image->getPostId()->getId()) {
-                    $imagesPostId[] = $image;
-                }
+        $posts = [];
+
+        $repostPosts = [];
+
+        if ($utilisateur) {
+            $follows = $utilisateur->getFollows();
+
+            foreach ($follows as $follow) {
+                $posts[] = $follow->getPosts();
             }
-            $imagesPosts[$post_id] = $imagesPostId;
+
+            foreach ($posts as $post) {
+                $post_id = $post->getId();
+                $imagesPostId = [];
+                foreach ($images as $image) {
+                    if ($post_id == $image->getPostId()->getId()) {
+                        $imagesPostId[] = $image;
+                    }
+                }
+                $imagesPosts[$post_id] = $imagesPostId;
+            }
+            $repostPosts = $utilisateur->getReposts();
         }
-
-
-        $user = $this->getUser();
-        if($user){
-            $repostPosts = $user->getReposts();
-
-        }else{
-            $repostPosts='null';
-        }
-
 
         $allposts = $postRepository->findBy(['status' => 3]);
-
 
         return $this->render('default/index.html.twig', ['user' => $this->getUser(),'posts' => $posts, 'allposts'=>$allposts,  'repostPosts' => $repostPosts,
             'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
