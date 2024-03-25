@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/register/add', name: 'app_register_add')]
     public function registerAdd(Request $request, UserRepository $userRepo): Response
     {
-        $formData = $request->request->getAll()
+        $formData = $request->request->getAll();
 
         return $this->render('registration/register.html.twig');
     }
