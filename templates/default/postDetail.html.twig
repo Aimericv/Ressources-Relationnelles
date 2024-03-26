@@ -114,7 +114,6 @@
         <section class="comment-section">
             {# colonnne que t'as rajouté est égal à zero #}
             {% for comment in comments %}
-                {% if comment.getIsResponse() == 0 %}
                 <article class="comment">
                     <div class="comment-user">
                         {% if comment.getUser().getAvatarImg() is not null %}
@@ -131,30 +130,28 @@
                         <a href="#reply" class="buttomResponse" data-target="responseForm{{ comment.id }}">Répondre</a>
                     </div>
                     <div id="responseForm{{ comment.id }}">
-                        <form class="comment-form" action="/comment/response/{{ post.id }}" method="post" style="display: none">
-                            <input type="hidden" name="comment-id" value="{{ comment.id }}">
+                        <form class="comment-form" action="/comment/response/{{ comment.id }}" method="post" style="display: none">
                             <input class="comment-input" placeholder="Répondre au commentaire" id="response-comment" name="response-comment">
                             <button class="comment-btn" type="submit">Répondre</button>
                         </form>
                     </div>
                 </article>
-                {% endif %}
                 {# Afficher les réponses aux commentaires s'il y en a #}
                 {% for response in commentResponse %}
                 {# <p>{{response.getCommentToComment().getId()}} == {{comment.getId()}}</p> #}
-                {% if response.getCommentToComment().getId() == comment.getId() %}
+                {% if response.getComment().getId() == comment.getId() %}
                     {# if getcommentResponses.getCommenttoComment == comment.id #}
                     <article class="answer-comment comment">
                         <div class="comment-user">
-                            {% if response.getCommentToComment().getUser().getAvatarImg() is not null %}
-                                <img src="{{ asset('profiles/' ~ response.getCommentToComment().getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                            {% if response.getUser().getAvatarImg() is not null %}
+                                <img src="{{ asset('profiles/' ~ response.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
                             {% else %}
                                 <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
                             {% endif %}
-                            <a href="{{ path('app_other_user', {'id': response.getCommentToComment().getUser().getId()}) }}">{{ response.getCommentToComment().getUser().getFirstName() }} {{ response.getCommentToComment().getUser().getLastName() }}</a>
+                            <a href="{{ path('app_other_user', {'id': response.getUser().getId()}) }}">{{ response.getUser().getFirstName() }} {{ response.getUser().getLastName() }}</a>
                         </div>
                         <div>
-                            <p>{{ response.getComment().getContent() }}</p>
+                            <p>{{ response.getContent() }}</p>
                         </div>
                     </article>
                     {% endif %}

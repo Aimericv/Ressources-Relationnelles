@@ -42,30 +42,20 @@ class CommentController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         $formData = $request->request->get('response-comment');
-        $commentResponseId = $request->request->get('comment-id');
-        $comment = new Comment();
-        $user = $this->getUser();
-        $comment->setUser($user);
-        $post = $postRepo->find($id);
-        $comment->setPost($post);
-        $comment->setContent($formData);
-        $comment->setDate(new \DateTime());
-        $comment->setIsResponse(true);
-        $entityManager->persist($comment);
-        $entityManager->flush();
 
         $commentResponse = new CommentResponse();
-        $commentId = $comment->getId();
-        $commentObj = $commentRepository->find($commentId);
-        $commentResponseObj = $commentRepository->find($commentResponseId);
-        $commentResponse->setComment($commentObj);
-        $commentResponse->setCommentToComment($commentResponseObj);
+        $comment = $commentRepository->find($id);
+        $commentResponse->setComment($comment);
         $commentResponse->setDate(new \DateTime());
+        $commentResponse->setContent($formData);
+        $user = $this->getUser();
+        $commentResponse->setUser($user);
         $entityManager->persist($commentResponse);
         $entityManager->flush();
+        $postId = $comment->getPost()->getId();
 
 
-        return $this->redirectToRoute('app_post_detail', ['id' => $id]);
+        return $this->redirectToRoute('app_post_detail', ['id' => $postId]);
 
     }
 }

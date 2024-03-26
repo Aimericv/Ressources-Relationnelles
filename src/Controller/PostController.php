@@ -413,7 +413,6 @@ class PostController extends AbstractController
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post' => $id]);
         $paragraphes = $paragraphesRepository->findBy(['post' => $id]);
-        // Récupérer les commentaires du post
         $comments = $post->getComments();
         $commentResponse = $commentRespRepo->findAll();
 
