@@ -10,28 +10,18 @@
 <main class="container">
     <h1>Register</h1>
 
-    {{ form(form) }}
-
-    {# {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.firstName) }}
-        {{ form_row(registrationForm.lastName) }}
-        {{ form_row(registrationForm.avatarImg) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }} #}
-
-    <form method="post" action="#">
+    <form method="post" action="{{ path('app_register') }}" enctype="multipart/form-data">
         <section id="avatar-section">
-            <div id="avatar"></div>
-            <label for="name">Saisissez votre prénom et votre nom</label>
-            <input type="name" id="name" name="name" placeholder="John Doe"/>
+            <div>
+                <label id="avatar" for="avatarImg">
+                    <img id="preview" src="#" alt="Aperçu de l'image" style="display: none;">
+                </label>
+                <input type="file" id="avatarImg" name="avatarImg" onchange="previewImage(event)">
+            </div>
+            <label for="firstname">Saisissez votre prénom</label>
+            <input type="text" id="firstname" name="firstname" placeholder="John"/>
+            <label for="name">Saisissez votre nom</label>
+            <input type="text" id="name" name="name" placeholder="Doe"/>
         </section>
 
         <section id="info-account-section">
@@ -40,8 +30,8 @@
                 <input type="text" id="address" name="address" placeholder="13 rue de la route"/>
             </div>
             <div id="city-div">
-                <label for="postal-code" class="postal-code">Saisissez votre code postal</label>
-                <input type="number" class="postal-code" name="postal-code" placeholder="75000" maxlength="5"/>
+                <label for="postalCode" class="postal-code">Saisissez votre code postal</label>
+                <input type="number" class="postal-code" id="postalCode" name="postalCode" placeholder="75000" maxlength="5"/>
                 <label for="city" class="city">Saisissez votre ville</label>
                 <input type="text" class="city" name="city" placeholder="Paris"/>
             </div>
@@ -56,8 +46,24 @@
         </section>
 
         <section id="submit-button">
-            <button type="submit">Créer votre compte</button>
+            <button type="submit" name="submit">Créer votre compte</button>
         </section>
     </form>
 </main>
+<script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                const preview = document.getElementById('preview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 {% endblock %}

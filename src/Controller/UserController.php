@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
@@ -132,13 +133,34 @@ class UserController extends AbstractController
     {
         $roleRepo = $entityManager->getRepository(Role::class);
         $user = new User();
-        $form = $this->createForm(UserAddType::class, $user);
-        $form->handleRequest($request);
+        $form = $request->request->get('submit');
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if (isset($form)) {
+            $avatar = $request->files->get('avatarImg');
+            if ($avatar) {
+                $newFilename = uniqid().'.'.$avatar->guessExtension();
+                $directory = $this->getParameter('kernel.project_dir') . '/public/profiles/';
+                $avatar->move($directory, $newFilename);
+                $user->setAvatarImg($newFilename);
+            }
+
+            $firstName = $request->request->get('firstname');
+            $name = $request->request->get('name');
+            $formAddress = $request->request->get('address');
+            $postalCode = strval($request->request->get('postalCode'));
+            $city = $request->request->get('city');
+            $address = $formAddress . ', ' . $postalCode . ' ' . $city;
+            $email = $request->request->get('email');
+            $password = $request->request->get('password');
+
             $user->setRoles(['ROLE_USER'], $roleRepo);
-            $user->setPolice('Arial');
+            $user->setEmail($email);
+            $user->setPassword($password);
+            $user->setFirstName($firstName);
+            $user->setLastName($name);
+            $user->setAddress($address);
             $user->setCreatedAt(new \DateTime());
+            $user->setPolice('16');
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -146,7 +168,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('registration/register.html.twig', ['form' => $form->createView()]);
+        return $this->render('registration/register.html.twig');
     }
 
     #[Route('/user/{id}', name: 'app_other_user')]
