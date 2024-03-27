@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Images;
 use App\Entity\Paragraphes;
+use App\Entity\PostStatus;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -117,14 +118,19 @@ public function findByAllStats(?int $userId = null): int
 }
 
     //Search barre
+
     public function findByTitle($term)
     {
         return $this->createQueryBuilder('p')
+            ->join('p.status', 's')
             ->where('p.title LIKE :term')
+            ->andWhere('s.id = :statusId')
             ->setParameter('term', '%' . $term . '%')
+            ->setParameter('statusId', 3)
             ->getQuery()
             ->getResult();
     }
+    
     
 
 //    /**
