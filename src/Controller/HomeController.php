@@ -37,26 +37,34 @@ class HomeController extends AbstractController
         if ($utilisateur) {
             $follows = $utilisateur->getFollows();
 
+            $imagesPosts = [];
+
             foreach ($follows as $follow) {
-                $posts[] = $follow->getPosts();
+                $posts = array_merge($posts, $follow->getPosts()->toArray());
+                foreach ($posts as $post) {
+                    var_dump($post->getId());
+                    $post_id = $post->getId();
+                    $imagesPostId = [];
+                    foreach ($images as $image) {
+                        if ($post_id == $image->getPostId()->getId()) {
+                            $imagesPostId[] = $image;
+                        }
+                    }
+                    $imagesPosts[$post_id] = $imagesPostId;
+                }
             }
 
-            foreach ($posts as $post) {
-                $post_id = $post->getId();
-                $imagesPostId = [];
-                foreach ($images as $image) {
-                    if ($post_id == $image->getPostId()->getId()) {
-                        $imagesPostId[] = $image;
-                    }
-                }
-                $imagesPosts[$post_id] = $imagesPostId;
-            }
             $repostPosts = $utilisateur->getReposts();
         }
-
         $allposts = $postRepository->findBy(['status' => 3]);
 
-        return $this->render('default/index.html.twig', ['user' => $this->getUser(),'posts' => $posts, 'allposts'=>$allposts,  'repostPosts' => $repostPosts,
-            'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
+        return $this->render('default/index.html.twig', [
+            'user' => $this->getUser(),
+            'posts' => $posts, 
+            'allposts'=>$allposts,  
+            'repostPosts' => $repostPosts,
+            'utilisateur' => $utilisateur, 
+            'images' => $imagesPosts,
+        ]);
     }
 }

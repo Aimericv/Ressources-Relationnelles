@@ -24,8 +24,6 @@
     <body>
     <main class="container">
 
-        {% if app.user %}
-    <!--Connnected-->
         {% block stylesheetsConnected %}
             <link rel="stylesheet" href={{ asset('css/user.css') }}>
     <section id="data-user">
@@ -39,6 +37,13 @@
             </div>
             <h1>{{ user.firstName }} {{ user.lastName }}</h1>
             <p>{{ user.getRoles[0] }}</p>
+            <a href="{{ path('app_user_subscribe', {'id': user.id}) }}" id="subscribe">
+                {% if follow == true %}
+                    Se désabonner
+                {% else %}
+                    S'abonner
+                {% endif %}
+            </a>
         </article>
 
         <article class="container" id="stats-section">
@@ -74,7 +79,6 @@
         {% endfor %}
     </section>
         {%  endblock %}
-        {% endif %}
 </main>
 
     </body>

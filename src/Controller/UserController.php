@@ -174,9 +174,16 @@ class UserController extends AbstractController
     #[Route('/user/{id}', name: 'app_other_user')]
     public function otherUser($id, UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
     {
-        $utilisateur = $this->getUser();
+        $utilisateur = $this->getUser();   
         $user = $userRepo->find($id);
-        $posts = $postRepo->findBy(['user' => $id]);
+
+        if ($utilisateur) {
+            $follow = $user->isFollowing($utilisateur);
+        } else {
+            $follow = false;
+        }
+
+        $posts = $postRepo->findBy(['user' => $id, 'status' => 3]);
         $imageSrc = null;
         foreach ($posts as $post) {
             $postId = $post->getId();
@@ -194,6 +201,7 @@ class UserController extends AbstractController
             'user' => $user,
             'posts' => $posts,
             'imageSrc' => $imageSrc,
+            'follow' => $follow,
         ]);
     }
 
@@ -208,4 +216,29 @@ class UserController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
     }
+
+    #[Route('/user/{id}/subscribe', name: 'app_user_subscribe')]
+public function subscribe($id, UserRepository $userRepo, EntityManagerInterface $entityManager): Response
+{
+    $follower = $this->getUser();
+    $following = $userRepo->find($id);
+
+    if (!$follower) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    if (!$following) {
+        throw $this->createNotFoundException('Utilisateur non trouvé');
+    }
+
+    if ($following->isFollowing($follower)) {
+        $follower->removeFollow($following);
+    } else {
+        $follower->addFollow($following);
+    }
+
+    $entityManager->flush();
+
+    return $this->redirectToRoute('app_other_user', ['id' => $following->getId()]);
+}
 }
