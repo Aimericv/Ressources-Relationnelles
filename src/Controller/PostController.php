@@ -6,7 +6,6 @@ use App\Entity\Images;
 use App\Entity\Paragraphes;
 use App\Entity\Post;
 use App\Entity\User;
-use App\Entity\UserParticipation;
 use App\Form\PostType;
 use App\Repository\CategoryRepository;
 use App\Repository\UserParticipationRepository;

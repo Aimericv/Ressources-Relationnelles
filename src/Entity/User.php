@@ -67,7 +67,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $favorites;
 
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'usersParticipation', cascade: ['remove'])]
-    #[ORM\JoinTable(name: 'user_post_participation')]
     private Collection $postsParticipation;
 
     #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'usersLike', cascade: ['remove'])]

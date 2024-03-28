@@ -45,6 +45,7 @@ class Post
     private Collection $usersFavorite;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'postsParticipation')]
+    #[ORM\JoinTable(name: 'user_post_participation')]
     private Collection $usersParticipation;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'likes')]
