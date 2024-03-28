@@ -9,12 +9,6 @@
     <main class="container">
         <section class="ressources">
             <h1>{{ post.getTitle() }}</h1>
-            <article>
-                <h2>Lieu d'activité : </h2>
-                <p>{{ post.getAddress() }}</p>
-            </article>
-            <h2>Type :</h2>
-            <p> {{ post.getType().name }}</p>
         </section>
         <section style="position: relative;min-height: 90vh; margin-top:40px">
             {% for img in images %}

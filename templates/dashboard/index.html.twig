@@ -79,7 +79,7 @@
                                 {% endif %}
                                 <p>{{ ressources.users[post.id].firstName ~ ' ' ~ ressources.users[post.id].lastName }}</p>
                             </div>
-                            <a href="/post/{{ post.id }}" class="post-title">{{ post.title }}</a>
+                            <a href="{{ path('app_post_detail', {'id': post.id}) }}" class="post-title">{{ post.title }}</a>
                         </div>
                         <div>
                             <a href="{{ path('app_dashboard_valid_ressource', {'id': post.id, 'status': 3}) }}">Valider</a>

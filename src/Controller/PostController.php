@@ -129,7 +129,7 @@ class PostController extends AbstractController
         $category = $entityManager->getReference('App\Entity\Category', $category_id);
         $post->setType($category);
         $post->setCreatedAt(new \DateTime());
-        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
+        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 2));
         $userRepository = $entityManager->getRepository(User::class);
         $user = $userRepository->find($userId);
         $post->setUser($user);
@@ -335,7 +335,7 @@ class PostController extends AbstractController
 
     #[Route("/post/{id}", name: "app_post_detail")]
 
-    public function postDetail($id, CommentResponseRepository $commentRespRepo, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, Request $request, EntityManagerInterface $entityManager, UserParticipationRepository $userPartRepo): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, CommentResponseRepository $commentRespRepo, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $user = $this->getUser();
 
