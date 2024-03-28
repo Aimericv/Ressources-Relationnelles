@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
+use App\Repository\RoleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -20,7 +21,7 @@ class HomeController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session, RoleRepository $roleRepo): \Symfony\Component\HttpFoundation\Response
     {
 
         $visitDate = new \DateTime();
@@ -40,19 +41,24 @@ class HomeController extends AbstractController
             $imagesPosts = [];
 
             foreach ($follows as $follow) {
-                $posts = array_merge($posts, $follow->getPosts()->toArray());
-                foreach ($posts as $post) {
-                    var_dump($post->getId());
-                    $post_id = $post->getId();
-                    $imagesPostId = [];
-                    foreach ($images as $image) {
-                        if ($post_id == $image->getPostId()->getId()) {
-                            $imagesPostId[] = $image;
+                $followPosts = $follow->getPosts()->toArray();
+            
+                foreach ($followPosts as $post) {
+                    if ($post->getStatus()->getId() == 3) { // Vérifiez si le statut du post est égal à 3
+                        $posts[] = $post; // Ajoutez le post au tableau $posts
+            
+                        $post_id = $post->getId();
+                        $imagesPostId = [];
+                        foreach ($images as $image) {
+                            if ($post_id == $image->getPostId()->getId()) {
+                                $imagesPostId[] = $image;
+                            }
                         }
+                        $imagesPosts[$post_id] = $imagesPostId;
                     }
-                    $imagesPosts[$post_id] = $imagesPostId;
                 }
             }
+            
 
             $repostPosts = $utilisateur->getReposts();
         }
