@@ -8,7 +8,6 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Form\PostType;
 use App\Repository\CategoryRepository;
-use App\Repository\UserParticipationRepository;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
