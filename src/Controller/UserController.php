@@ -24,45 +24,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
-    public static function getEntityFqcn(): string
-    {
-        return User::class;
-    }
-
-    // Méthode pour personnaliser les actions de liste
-    // Par exemple, pour filtrer les utilisateurs actifs uniquement
-    public function index(AdminContext $context)
-    {
-        $response = parent::index($context);
-
-        // Personnalisez ici la liste des utilisateurs si nécessaire
-
-        return $response;
-    }
-
-    // Méthode pour personnaliser l'affichage d'un utilisateur spécifique
-    public function show(AdminContext $context)
-    {
-        $response = parent::show($context);
-
-        // Personnalisez ici l'affichage de l'utilisateur si nécessaire
-
-        return $response;
-    }
-
-    // Méthode pour personnaliser le formulaire d'édition d'un utilisateur
-    public function edit(AdminContext $context)
-    {
-        $response = parent::edit($context);
-
-        // Personnalisez ici le formulaire d'édition de l'utilisateur si nécessaire
-
-        return $response;
-    }
 
     // Méthode pour personnaliser l'action de suppression d'un utilisateur
     #[Route('/delete-user', name: 'app_delete_user')]

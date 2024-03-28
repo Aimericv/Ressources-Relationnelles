@@ -38,18 +38,8 @@ class Post
     private Collection $comments;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[ORM\JoinColumn(nullable: false)]
+    //#[ORM\JoinColumn(nullable: false)]
     private ?Category $type = null;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $author;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $category;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favorites')]
     private Collection $usersFavorite;
@@ -65,17 +55,6 @@ class Post
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?User $user = null;
-    
-
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
 
     public function __construct()
     {
