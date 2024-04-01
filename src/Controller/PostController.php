@@ -161,7 +161,7 @@ class PostController extends AbstractController
             }
         }
 
-        return new Response('Post ajouté avec succès', Response::HTTP_OK);
+        return $this->redirectToRoute('app_user');
     }
 
 
@@ -205,7 +205,7 @@ class PostController extends AbstractController
         $post->setType($category);
         $post->setCreatedAt(new \DateTime());
         $post->setAddress($jsonData[0]['address']);
-        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 4));
+        $post->setStatus($entityManager->getReference('App\Entity\PostStatus', 2));
 
         $entityManager->persist($post);
         $entityManager->flush();
@@ -253,7 +253,7 @@ class PostController extends AbstractController
             }
         }
 
-        return new Response('Post modifié avec succès', Response::HTTP_OK);
+        return $this->redirectToRoute('app_user');
     }
 
 

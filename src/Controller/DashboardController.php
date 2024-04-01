@@ -182,11 +182,8 @@ class DashboardController extends AbstractController
 
         $entityManager->persist($post);
         $entityManager->flush();
-        if ($request->headers->get('referer') === $this->generateUrl('dashboard')) {
-            return $this->redirectToRoute('app_dashboard');
-        } else {
-            return $this->redirectToRoute('app_user');
-        }
+        
+        return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/role-user/{id}/{role}', name: 'app_dashboard_role_user')]
