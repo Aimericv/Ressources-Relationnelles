@@ -41,9 +41,9 @@
                     </div>
                     {% set postImages = images[post.id] %}
                     {% if postImages is not empty %}
-                        <div class="img-ressource">
-                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
-                        </div>
+                    <div class="img-ressource">
+                        <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                    </div>
                     {% endif %}
                     <p class="category">{{ post.getType().getName() }}</p>
                     <h2 class="title-ressource">{{ post.title }}</h2>
@@ -52,7 +52,6 @@
                 </div>
             {% endfor %}
             {% for repostPost in repostPosts %}
-            {% set repostUser = repostPost.getUser() %}
                 <article class="post">
                     <p>Reposted by: <a class="link-name" href="{{ path('app_other_user', {'id': repostUser.getId()}) }}">{{ repostUser.getFirstName() }} {{ repostUser.getLastName() }}</a></p>
                     <div class="autor">
@@ -64,7 +63,12 @@
 
                         <a class="link-name" href="{{ path('app_other_user', {'id': repostPost.getUser().getId()}) }}">{{ repostPost.getUser().getFirstName() }} {{ repostPost.getUser().getLastName() }}</a>
                     </div>   
-
+                    {% set imagesRepost = repostImage[repostPost.id] %}
+                    {% if imagesRepost is not empty %}
+                        <div class="img-ressource">
+                            <img class="img-ressource" src="{{ asset(imagesRepost.getSrc()) }}" alt="Image du Post">
+                        </div>
+                    {% endif %}
                     <p class="category">Catégorie : {{ repostPost.getType().name }}</p>
                     <h2 class="title-ressource">{{ repostPost.title }}</h2>
                     <p class="description-ressource">{{ repostPost.description }}</p>
@@ -93,12 +97,14 @@
                         {% endif %}
                         <a class="link-name" href="{{ path('app_other_user', {'id': post.getUser().getId()}) }}">{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</a>
                     </div>
-                    {% set postImages = images[post.id] ?? [] %}
-                    {% if postImages|length > 0 %}
+                    {% set sugPostImages = images[post.id - 1] %}
+                    {% for postImage in sugPostImages %}              
+                        {% if postImage is not empty %}
                         <div class="img-ressource">
-                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                            <img class="img-ressource" src="{{ asset(postImage.getSrc()) }}" alt="Image du Post">
                         </div>
-                    {% endif %}
+                        {% endif %}
+                    {% endfor %}
                     <p class="category">Catégorie : {{ post.getType().name }}</p>
                     <h2 class="title-ressource">{{ post.title }}</h2>
                     <p class="description-ressource">{{ post.description }}</p>

@@ -30,6 +30,10 @@ class CatalogueController extends AbstractController
             $imagesPosts[$post_id] = $imagesPostId;
             $catId = $post->getType();
         }
-        return $this->render('default/catalogue.html.twig', ['posts' => $posts, 'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
+        return $this->render('default/catalogue.html.twig', [
+            'posts' => $posts, 
+            'utilisateur' => $utilisateur, 
+            'images' => $imagesPosts
+        ]);
     }
 }

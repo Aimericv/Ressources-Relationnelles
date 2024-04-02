@@ -59,10 +59,29 @@ class HomeController extends AbstractController
                 }
             }
             
+            $abonnees = $utilisateur->getFollows();
+            $imagesReposts = [];
 
-            $repostPosts = $utilisateur->getReposts();
+            foreach ($abonnees as $repostUser) {
+                $repostPosts = $repostUser->getReposts();
+
+                foreach ($repostPosts as $repost) {
+                    $repost_id = $repost->getId();
+                    $imagesRepostId = [];
+
+                    foreach ($images as $image) {
+                        if ($repost_id == $image->getPostId()->getId()) {
+                            $imagesRepostId = $image;
+                        }
+                    }
+                    $imagesReposts[$repost_id] = $imagesRepostId;
+                }
+            }
+
         }
         $allposts = $postRepository->findBy(['status' => 3]);
+
+        dd($imagesPosts);
 
         return $this->render('default/index.html.twig', [
             'user' => $this->getUser(),
@@ -71,6 +90,8 @@ class HomeController extends AbstractController
             'repostPosts' => $repostPosts,
             'utilisateur' => $utilisateur, 
             'images' => $imagesPosts,
+            'repostImage' => $imagesReposts,
+            'repostUser' => $repostUser,
         ]);
     }
 }
