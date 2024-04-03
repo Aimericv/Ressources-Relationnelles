@@ -106,13 +106,15 @@ class PostController extends AbstractController
     #[Route('/creation-posts', name: 'app_creation_posts')]
     public function creationPosts(CategoryRepository $catRepo): Response
     {
-        if (!$this->getUser()) {
+        $utilisateur = $this->getUser();
+        if (!$utilisateur) {
             return $this->redirectToRoute('app_login');
         }
         $categories = $catRepo->findAll();
 
         return $this->render('creation_posts/index.html.twig', [
             'categories' => $categories,
+            'utilisateur' => $utilisateur,
         ]);
     }
 
@@ -155,7 +157,7 @@ class PostController extends AbstractController
                 $image->setHeight($element['height']);
                 $image->setX($element['x']);
                 $image->setY($element['y']);
-                $image->setPostId($post);
+                $image->setPost($post);
                 $entityManager->persist($image);
                 $entityManager->flush();
             }
@@ -224,7 +226,7 @@ class PostController extends AbstractController
                 $image->setHeight($element['height']);
                 $image->setX($element['x']);
                 $image->setY($element['y']);
-                $image->setPostId($post);
+                $image->setPost($post);
                 $image->setSrc($element['src']);
                 $entityManager->persist($image);
                 $entityManager->flush();

@@ -13,27 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class CatalogueController extends AbstractController
 {
     #[Route("/catalogue", name:"app_catalogue")]
-    public function catalogue(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
+    public function catalogue(PostRepository $postRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
         $posts = $postRepository->findBy(['status' => 3]);
-        $images = $imagesRepository->findAll();
-        $imagesPosts = [];
         $utilisateur = $this->getUser();
-        foreach ($posts as $post) {
-            $post_id = $post->getId();
-            $imagesPostId = [];
-            foreach ($images as $image) {
-                if ($post_id == $image->getPostId()->getId()) {
-                    $imagesPostId[] = $image;
-                }
-            }
-            $imagesPosts[$post_id] = $imagesPostId;
-            $catId = $post->getType();
-        }
+        
         return $this->render('default/catalogue.html.twig', [
             'posts' => $posts, 
-            'utilisateur' => $utilisateur, 
-            'images' => $imagesPosts
+            'utilisateur' => $utilisateur,
         ]);
     }
 }

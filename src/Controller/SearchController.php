@@ -21,28 +21,15 @@ class SearchController extends AbstractController
     }
 
     #[Route("/search", name:"app_post_search")]
-    public function search(Request $request, ImagesRepository $imagesRepository, PostStatusRepository $postStatusRepo): Response
+    public function search(Request $request): Response
     {
         $term = $request->query->get('term');
         $posts = $this->entityManager->getRepository(Post::class)->findByTitle($term);
-
-        $images = $imagesRepository->findAll();
-        $imagesPosts = [];
         $utilisateur = $this->getUser();
-        foreach ($posts as $post) {
-            $post_id = $post->getId();
-            $imagesPostId = [];
-            foreach ($images as $image) {
-                if ($post_id == $image->getPostId()->getId()) {
-                    $imagesPostId[] = $image;
-                }
-            }
-            $imagesPosts[$post_id] = $imagesPostId;
-        }
+
         return $this->render('post/search.html.twig', [
             'posts' => $posts,
             'utilisateur' => $utilisateur,
-            'images' => $imagesPosts
         ]);
     }
 }

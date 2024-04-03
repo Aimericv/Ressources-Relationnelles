@@ -25,17 +25,13 @@
                                 {{ favoritePost.getUser().getFirstName() }} {{ favoritePost.getUser().getLastName() }}
                             </a>                            
                         </div>
-                        
-                        {# 
-                            {% set postImages = images[favoritePost.post.id] %}
-                            {% if postImages is not empty %}
-                                <div class="img-ressource">
-                                    <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
-                                </div>
-                            {% endif %} 
-                        #}
-                        
-                        <p class="category">Catégorie : {{ favoritePost.getType().name }}</p>
+                        {% set postImages = favoritePost.getImages() %}
+                        {% if postImages is not empty %}
+                            <div class="img-ressource">
+                                <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                            </div>
+                        {% endif %} 
+                        <p class="category">{{ favoritePost.getType().name }}</p>
                         <h2 class="title-ressource">{{ favoritePost.title }}</h2>
                         <p class="description-ressource">{{ favoritePost.description }}</p>
                         <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': favoritePost.id}) }}';">En savoir plus</button>

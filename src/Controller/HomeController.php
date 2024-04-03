@@ -21,7 +21,7 @@ class HomeController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session, RoleRepository $roleRepo): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
 
         $visitDate = new \DateTime();
@@ -35,7 +35,7 @@ class HomeController extends AbstractController
         $allposts = $postRepository->findBy(['status' => 3]);
 
         return $this->render('default/index.html.twig', [
-            'user' => $utilisateur,
+            'utilisateur' => $utilisateur,
             'posts'=>$allposts,
         ]);
     }
