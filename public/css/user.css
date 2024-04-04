@@ -214,7 +214,7 @@ a:hover {
 #post-section button {
     background-color: white;
     border: 2px solid #03989e;
-    padding: 5px 20px;
+    padding: 5px 15px;
     border-radius: 20px;
     cursor: pointer;
 }
@@ -236,6 +236,14 @@ a:hover {
     font-style: italic !important;
     font-size: 14px !important;
     margin: 0 !important;
+}
+
+#subscribe {
+    color: #03989e;
+}
+
+#subscribe:hover {
+    text-decoration: underline;
 }
 
 @media (min-width: 768px) {

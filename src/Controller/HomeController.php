@@ -25,7 +25,9 @@ class HomeController extends AbstractController
     {
 
         $visitDate = new \DateTime();
-        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
+        $visitDates = $session->get('visitDates', []);
+        $visitDates[] = $visitDate->format('Y-m-d H:i:s');
+        $session->set('visitDates', $visitDates);
 
         $utilisateur = $this->getUser();
 

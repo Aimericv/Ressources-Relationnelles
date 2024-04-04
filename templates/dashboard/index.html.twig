@@ -35,7 +35,7 @@
                     <p>Création de comptes</p>
                 </div>
                 <div>
-                    <p>249</p>
+                    <p>{{ statistiques.comment }}</p>
                     <p>Commentaires</p>
                 </div>
             </article>
@@ -48,22 +48,6 @@
                 <span></span>
                 <h2>Ressources</h2>
                 <span></span>
-            </article>
-            <article class="search">
-                <div>
-                    <label for="posts-search">
-                        <img src="medias/search-green.png" alt="search">
-                    </label>
-                    <input data-filter="posts" type="text" id="posts-search" name="posts-search" class="searchbar">
-                </div>
-                <div>
-                    <select name="posts" id="posts-select">
-                        <option value="">Sans filtre</option>
-                        <option value="games">Jeux</option>
-                        <option value="events">Évènements</option>
-                        <option value="well-being">Bien être</option>
-                    </select>
-                </div>
             </article>
             <article id="posts-value">
                 <!-- IL FAUT COUPER LES TITRES SI ILS SONT TROP LONG -->
@@ -187,13 +171,6 @@
                 <h2>Commentaires</h2>
                 <span></span>
             </article>
-            <article>
-                <select name="comments" id="comments-select">
-                    <option value="to-valid">À valider</option>
-                    <option value="valid">Valider</option>
-                    <option value="all">Tout</option>
-                </select>
-            </article>
             <article id="comments-value">
                 {% set lastFiveComments = comments|sort((a, b) => b.id - a.id)|slice(0, 5) %}
                 {% for comment in lastFiveComments %}     
@@ -227,25 +204,6 @@
                 <span></span>
                 <h2>SAV</h2>
                 <span></span>
-            </article>
-            <article>
-                <div>
-                    <select name="sav-cat" id="sav-cat-select">
-                        <option value="">Tout</option>
-                        <option value="game">Jeux</option>
-                        <option value="event">Évènements</option>
-                        <option value="well-being">Bien-être</option>
-                    </select>
-                </div>
-                <div>
-                    <select name="sav-etat" id="sav-etat-select">
-                        <option value="">Tout</option>
-                        <option value="game">À traiter</option>
-                        <option value="event">Répondu</option>
-                        <option value="well-being">Publique</option>
-                        <option value="well-being">Privé</option>
-                    </select>
-                </div>
             </article>
             <article id="sav-value">
                 {% for question in questions %}

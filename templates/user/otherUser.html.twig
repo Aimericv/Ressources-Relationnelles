@@ -26,6 +26,7 @@
 
         {% block stylesheetsConnected %}
             <link rel="stylesheet" href={{ asset('css/user.css') }}>
+            <link rel="stylesheet" href={{ asset('css/posts.css')}}>
     <section id="data-user">
         <article id="avatar-section">
             <div class="autor"> 
@@ -49,15 +50,18 @@
         <article class="container" id="stats-section">
             <div class="stats-section">
                 <div>
-                    <p class="data-user">7</p>
+                    {% set nmbRessources = user.getPosts() | length %}
+                    <p class="data-user">{{nmbRessources}}</p>
                     <p>Ressources</p>
                 </div>
                 <div>
-                    <p class="data-user">75</p>
+                    {% set nmbFollow = user.getFollows() | length %}
+                    <p class="data-user">{{nmbFollow}}</p>
                     <p>Abonnements</p>
                 </div>
                 <div>
-                    <p class="data-user">52</p>
+                    {% set nmbFollowing = user.getFollowing() | length %}
+                    <p class="data-user">{{nmbFollowing}}</p>
                     <p>Abonnés</p>
                 </div>
             </div>

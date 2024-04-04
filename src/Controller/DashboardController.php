@@ -44,10 +44,12 @@ class DashboardController extends AbstractController
         $visits = $this->calculateVisits($session, $stats_filter);
         $userStats = $userRepository->findByStatsForLatestMonth();
         $postStats = $postRepository->findByStatsForLatestMonth();
+        $commentStats = $commentRepo->findByStatsForLatestMonth();
         $statistiques = [
             'userStats' => $userStats,
             'postStats' => $postStats,
-            'visits' => $visits
+            'visits' => $visits,
+            'comment' => $commentStats
         ];
 
         $posts = $postRepository->findAll();
