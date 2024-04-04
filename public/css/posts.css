@@ -55,22 +55,12 @@
 
 .title-ressource, .description-ressource {
     text-align: center;
-    height: 50px;
-    overflow: hidden;
-    /* position: relative; */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Définissez le nombre de lignes à afficher */
+    -webkit-box-orient: vertical;
+    overflow: hidden; /* Cache le texte qui dépasse */
+    text-overflow: ellipsis;
 }
-
-/* .title-ressource::after, .description-ressource::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 5px; 
-    backdrop-filter: blur(1px); 
-} */
-
-
 
 .autor img {
     width: 40px;
@@ -80,7 +70,7 @@
 .img-ressource {
     background-color: grey;
     width: 100%;
-    height: 250px;
+    object-fit: cover;
 }
 
 .button-more-ressource a {

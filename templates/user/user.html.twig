@@ -1,7 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <!--balise pour inclure le script de suppression d'un utilisateur-->
-    <script src="{{ asset('js/delete-user.js') }}"></script>
+    {% block stylesheetsConnected %}
+        <link rel="stylesheet" href={{ asset('css/user.css') }}>
+        <link rel="stylesheet" href={{ asset('css/posts.css')}}>
+        <script src="{{ asset('js/delete-user.js') }}"></script>
+    {%  endblock %}
 
     <style>
         .footer{
@@ -28,8 +31,6 @@
 
         {% if app.user %}
     <!--Connnected-->
-        {% block stylesheetsConnected %}
-            <link rel="stylesheet" href={{ asset('css/user.css') }}>
     <section id="user-section">
         <article id="avatar-section">
             <div class="autor"> 
@@ -112,7 +113,6 @@
         </div>
         {% endfor %}
     </section>
-        {%  endblock %}
         {% else %}
         <!--Non connnected-->
         {% block stylesheetsNonConnected %}
