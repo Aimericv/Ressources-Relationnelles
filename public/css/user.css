@@ -232,6 +232,12 @@ a:hover {
     color: white;
 }
 
+.status {
+    font-style: italic !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+}
+
 @media (min-width: 768px) {
     .container {
         width: 720px;
