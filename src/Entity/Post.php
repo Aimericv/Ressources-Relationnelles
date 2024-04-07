@@ -60,6 +60,9 @@ class Post
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Images::class)]
     private Collection $images;
 
+    #[ORM\ManyToOne(inversedBy: 'post')]
+    private ?Folder $folder = null;
+
     public function __construct()
     {
         $this->favorites = new ArrayCollection();
@@ -360,6 +363,18 @@ class Post
                 $image->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFolder(): ?Folder
+    {
+        return $this->folder;
+    }
+
+    public function setFolder(?Folder $folder): static
+    {
+        $this->folder = $folder;
 
         return $this;
     }

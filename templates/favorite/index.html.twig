@@ -7,38 +7,53 @@
     {% endblock %}
 
     <body>
-        <main class="container">
+        <main class="container reset">
             <h1>Favorite</h1>
 
             <section class="posts">
-                {% for favoritePost in favoritePosts %}
-                    <article class="post">
-                        {# Assuming you have properties like 'author', 'category', 'title', etc., adjust accordingly #}
-                        <div class="autor">
-                            {% if favoritePost.getUser().getAvatarImg() is not null %}
-                                <img src="{{ asset('profiles/' ~ favoritePost.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
-                            {% else %}
-                                <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
-                            {% endif %}
+                {% if folders is defined %}
+                    {% for folder in folders %}
+                        <article class="folder-article post dropzone" data-id="{{ folder.id }}">
+                            <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    viewBox="0 0 841.9 595.3" xml:space="preserve">
+                            <path class="st0" d="M709.2,217.6v224.6c0,33.3-27,60.3-60.3,60.3h-456c-33.3,0-60.3-27-60.3-60.3V153c0-33.3,27-60.3,60.3-60.3h149
+                                c29.3,0,56,16.9,68.4,43.5l0,0c11.2,23.8,35.1,21.1,61.4,21.1h177.1C682.2,157.3,709.2,184.3,709.2,217.6z"/>
+                            </svg>
+                            <a href="{{ path('app_favorite_folder_detail', {'id': folder.id}) }}">{{ folder.name }}</a>
+                        </article>
+                    {% endfor %}
+                {% endif %}
+                {% if favoritePosts is defined %}
+                    {% for favoritePost in favoritePosts %}
+                        <article class="post drag" data-id="{{ favoritePost.id }}">
+                            <div class="autor">
+                                {% if favoritePost.getUser().getAvatarImg() is not null %}
+                                    <img src="{{ asset('profiles/' ~ favoritePost.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                                {% else %}
+                                    <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                                {% endif %}
 
-                            <a class="link-name" href="{{ path('app_other_user', {'id': favoritePost.getUser().getId()}) }}">
-                                {{ favoritePost.getUser().getFirstName() }} {{ favoritePost.getUser().getLastName() }}
-                            </a>                            
-                        </div>
-                        {% set postImages = favoritePost.getImages() %}
-                        {% if postImages is not empty %}
-                            <div class="img-ressource">
-                                <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                                <a class="link-name" href="{{ path('app_other_user', {'id': favoritePost.getUser().getId()}) }}">
+                                    {{ favoritePost.getUser().getFirstName() }} {{ favoritePost.getUser().getLastName() }}
+                                </a>                            
                             </div>
-                        {% endif %} 
-                        <p class="category">{{ favoritePost.getType().name }}</p>
-                        <h2 class="title-ressource">{{ favoritePost.title }}</h2>
-                        <p class="description-ressource">{{ favoritePost.description }}</p>
-                        <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': favoritePost.id}) }}';">En savoir plus</button>
+                            {% set postImages = favoritePost.getImages() %}
+                            {% if postImages is not empty %}
+                                <div class="img-ressource">
+                                    <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                                </div>
+                            {% endif %} 
+                            <p class="category">{{ favoritePost.getType().name }}</p>
+                            <h2 class="title-ressource">{{ favoritePost.title }}</h2>
+                            <p class="description-ressource">{{ favoritePost.description }}</p>
+                            <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': favoritePost.id}) }}';">En savoir plus</button>
 
-                    </article>
-                {% endfor %}
+                        </article>
+                    {% endfor %}
+                {% endif %}
             </section>
         </main>
+        <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+        <script src="{{ asset('JS/favorite.js') }}"></script>
     </body>
 {% endblock %}

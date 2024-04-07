@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\PostRepository;
+use App\Repository\FolderRepository;
 use App\Repository\PostStatusRepository;
 use App\Repository\ImagesRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,18 +51,58 @@ class UserController extends AbstractController
     }
 
     #[Route('/favorite', name: 'app_favorite')]
-    public function favorite(): Response
+    public function favorite(PostRepository $postRepo): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
         $user = $this->getUser();
         $favoritePosts = $user->getFavorites();
+        $posts = [];
+        foreach ($favoritePosts as $favoritePost) {
+            if ($favoritePost->getFolder() == null) {
+                $posts[] = $favoritePost;
+            }
+        }
+        $folders = $user->getFolders();
 
         return $this->render('favorite/index.html.twig', [
             'utilisateur' => $user,
-            'favoritePosts' => $favoritePosts,
+            'favoritePosts' => $posts,
+            'folders' => $folders,
         ]);
+    }
+
+    #[Route('/favorite/folder/{id}', name: 'app_favorite_folder_detail')]
+    public function folderDetail($id, PostRepository $postRepo, FolderRepository $folderRepo)
+    {
+        $user = $this->getUser();
+        $folder = $folderRepo->find($id);
+        $posts = $postRepo->findBy(['folder' => $folder]);
+
+        return $this->render('favorite/index.html.twig', [
+            'utilisateur' => $user,
+            'favoritePosts' => $posts,
+        ]);
+    }
+
+    #[Route('/favorite/post-folder', name: 'app_favorite_post_folder')]
+    public function postFolder(Request $request, EntityManagerInterface $entityManager, PostRepository $postRepo, FolderRepository $folderRepo)
+    {
+        $data = json_decode($request->getContent(), true);
+        $postId = $data['element'];
+        $folderId = $data['folder'];
+        
+        $post = $postRepo->find($postId);
+        $folder = $folderRepo->find($folderId);
+
+        if ($post !== null && $folder !== null) {
+            $post->setFolder($folder);
+            $entityManager->flush();
+            return new Response('Image uploaded successfully', Response::HTTP_OK);
+        }
+
+        return new Response('Erreur', Response::HTTP_BAD_REQUEST);
     }
 
     #[Route('/user', name: 'app_user')]
