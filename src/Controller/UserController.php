@@ -20,6 +20,7 @@ use App\Repository\PostRepository;
 use App\Repository\FolderRepository;
 use App\Repository\PostStatusRepository;
 use App\Repository\ImagesRepository;
+use App\Entity\Folder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -83,6 +84,7 @@ class UserController extends AbstractController
         return $this->render('favorite/index.html.twig', [
             'utilisateur' => $user,
             'favoritePosts' => $posts,
+            'folderDetail' => $folder,
         ]);
     }
 
@@ -103,6 +105,71 @@ class UserController extends AbstractController
         }
 
         return new Response('Erreur', Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/favorite/post-exit-folder', name: 'app_favorite_post_exit_folder')]
+    public function postExitFolder(Request $request, EntityManagerInterface $entityManager, PostRepository $postRepo, FolderRepository $folderRepo)
+    {
+        $data = json_decode($request->getContent(), true);
+        $postId = $data['element'];
+        $post = $postRepo->find($postId);
+
+        if ($post !== null) {
+            $post->setFolder(null);
+            $entityManager->flush();
+            return new Response('Image uploaded successfully', Response::HTTP_OK);
+        }
+
+        return new Response('Erreur', Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/favorite/folder-name', name: 'app_favorite_folder_name')]
+    public function folderName(Request $request, EntityManagerInterface $entityManager, FolderRepository $folderRepo)
+    {
+        $data = json_decode($request->getContent(), true);
+        $folderId = $data['folder'];
+        $name = $data['name'];
+        $folder = $folderRepo->find($folderId);
+
+        if ($folder !== null) {
+            $folder->setName($name);
+            $entityManager->flush();
+            return new Response('Image uploaded successfully', Response::HTTP_OK);
+        }
+
+        return new Response('Erreur', Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/favorite/remove-folder', name: 'app_favorite_remove_folder')]
+    public function removeFolder(Request $request, EntityManagerInterface $entityManager, FolderRepository $folderRepo)
+    {
+        $data = json_decode($request->getContent(), true);
+        $folderId = $data['folder'];
+        $folder = $folderRepo->find($folderId);
+
+        if ($folder !== null) {
+            $entityManager->remove($folder);
+            $entityManager->flush();
+            return new Response('Image uploaded successfully', Response::HTTP_OK);
+        }
+
+        return new Response('Erreur', Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/favorite/add-folder', name: 'app_favorite_add_folder')]
+    public function addFolder(Request $request, EntityManagerInterface $entityManager, FolderRepository $folderRepo)
+    {
+        $data = json_decode($request->getContent(), true);
+        $name = $data['name'];
+        $user = $this->getUser();
+
+        $folder = new Folder();
+        $folder->setName($name);
+        $folder->setUser($user);
+        $entityManager->persist($folder);
+        $entityManager->flush();
+
+        return new Response('Image uploaded successfully', Response::HTTP_OK);
     }
 
     #[Route('/user', name: 'app_user')]
