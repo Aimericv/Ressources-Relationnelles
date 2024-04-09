@@ -34,6 +34,7 @@
                 {% for post in followPosts %}
                     {% if post.getStatus().getId() == 3 %}
                     <div class="post">
+<a style="visibility: hidden;">a</a>
                         <div class="autor">
                             {% if post.getUser().getAvatarImg() is not null %}
                                 <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
@@ -60,6 +61,8 @@
                 {% set followReposts = follow.getReposts() %}
                 {% for repostPost in followReposts %}
                     <article class="post">
+                                            <p class="category">Reposted by: <a class="link-name" href="{{ path('app_other_user', {'id': follow.getId()}) }}">{{ follow.getFirstName() }} {{ follow.getLastName() }}</a></p>
+
                         <div class="autor">
                             {% if repostPost.getUser().getAvatarImg() is not null %}
                                 <img src="{{ asset('profiles/' ~ repostPost.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
@@ -75,7 +78,8 @@
                                 <img class="img-ressource" src="{{ asset(repostImages[0].getSrc()) }}" alt="Image du Post">
                             </div>
                         {% endif %}
-                        <p class="category">Reposted by: <a class="link-name" href="{{ path('app_other_user', {'id': follow.getId()}) }}">{{ follow.getFirstName() }} {{ follow.getLastName() }}</a></p>
+                                                <p class="category">{{ repostPost.getType().getName() }}</p>
+
                         <h2 class="title-ressource">{{ repostPost.title }}</h2>
                         <p class="description-ressource">{{ repostPost.description }}</p>
                         <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': repostPost.id}) }}';">En savoir plus</button>
