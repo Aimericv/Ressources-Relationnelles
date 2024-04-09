@@ -53,7 +53,11 @@
     gap: 15px;
 }
 
-.title-ressource, .description-ressource {
+.title-ressource {
+height: 75px;
+}
+
+.description-ressource{
     text-align: center;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* Définissez le nombre de lignes à afficher */

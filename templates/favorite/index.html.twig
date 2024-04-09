@@ -11,7 +11,7 @@
             <h1>Favorite</h1>
             {% if folderDetail is not defined %}
                 <section id="selectFolder">
-                    <article class="removeFolder">
+                    <article id="removeFolder" class="removeFolder">
                         <p>Suppimer un dossier</p>
                     </article>
                     <article id="addFolder">
@@ -53,7 +53,7 @@
                 {% if folders is defined %}
                     {% for folder in folders %}
                         <article class="folder-article drag post dropzone" data-id="{{ folder.id }}">
-                            <a href="{{ path('app_favorite_folder_detail', {'id': folder.id}) }}">
+                            <a id="linkID" href="{{ path('app_favorite_folder_detail', {'id': folder.id}) }}">
                                 <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         viewBox="0 0 841.9 595.3" xml:space="preserve">
                                 <path class="st0" d="M709.2,217.6v224.6c0,33.3-27,60.3-60.3,60.3h-456c-33.3,0-60.3-27-60.3-60.3V153c0-33.3,27-60.3,60.3-60.3h149
@@ -95,6 +95,6 @@
             </section>
         </main>
         <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-        <script src="{{ asset('JS/favorite.js') }}"></script>
+        <script src="{{ asset('js/favorite.js') }}"></script>
     </body>
 {% endblock %}

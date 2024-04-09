@@ -17,6 +17,7 @@
             padding-top: 90px;
             padding-bottom: 100px;
         }
+
         @media (min-width: 768px){
             .footer{
                 position: static;
@@ -34,7 +35,7 @@
                 {% for post in followPosts %}
                     {% if post.getStatus().getId() == 3 %}
                     <div class="post">
-<a style="visibility: hidden;">a</a>
+                        <p><a style="visibility: hidden;">a</a></p>
                         <div class="autor">
                             {% if post.getUser().getAvatarImg() is not null %}
                                 <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
@@ -61,7 +62,7 @@
                 {% set followReposts = follow.getReposts() %}
                 {% for repostPost in followReposts %}
                     <article class="post">
-                                            <p class="category">Reposted by: <a class="link-name" href="{{ path('app_other_user', {'id': follow.getId()}) }}">{{ follow.getFirstName() }} {{ follow.getLastName() }}</a></p>
+                                            <p class="category">Reposté par : <a class="link-name" href="{{ path('app_other_user', {'id': follow.getId()}) }}">{{ follow.getFirstName() }} {{ follow.getLastName() }}</a></p>
 
                         <div class="autor">
                             {% if repostPost.getUser().getAvatarImg() is not null %}

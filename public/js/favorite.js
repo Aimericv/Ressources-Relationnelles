@@ -4,6 +4,7 @@ let addFolderBtn = document.querySelector('#addFolder p');
 let sectionFolder = document.querySelector('.posts');
 
 function dragMoveListener(event) {
+
     let target = event.target;
     let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
     let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
@@ -16,18 +17,37 @@ function dragMoveListener(event) {
 
 window.dragMoveListener = dragMoveListener;
 
-interact('.drag')
-    .draggable({
-        inertia: true,
-        modifiers: [
-          interact.modifiers.restrictRect({
-            restriction: main,
-            endOnly: true
-          })
-        ],
-        autoScroll: true,
-        listeners: { move: dragMoveListener }
-    });
+
+    interact('.drag')
+        .draggable({
+            inertia: true,
+            modifiers: [
+                interact.modifiers.restrictRect({
+                    restriction: main,
+                    endOnly: true
+                })
+            ],
+            autoScroll: true,
+            listeners: {
+                move: function(event) {
+                    // Empêche les clics sur les éléments <a> pendant le drag
+                    $('.drag a').css('pointer-events', 'none');
+                    // Appelle votre fonction de déplacement
+                    dragMoveListener(event);
+                },
+                end: function(event) {
+                    // Réactive les clics sur les éléments <a> après le drag
+                    $('.drag a').css('pointer-events', 'auto');
+                }
+            }
+        });
+
+// Fonction pour empêcher le comportement par défaut des liens
+function preventDefaultAction(event) {
+  event.preventDefault();
+}
+
+
 
 interact('.dropzone').dropzone({
     accept: '.intoFolder',
