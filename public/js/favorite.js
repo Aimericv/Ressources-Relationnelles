@@ -30,19 +30,15 @@ window.dragMoveListener = dragMoveListener;
             autoScroll: true,
             listeners: {
                 move: function(event) {
-                    // Empêche les clics sur les éléments <a> pendant le drag
                     $('.drag a').css('pointer-events', 'none');
-                    // Appelle votre fonction de déplacement
                     dragMoveListener(event);
                 },
                 end: function(event) {
-                    // Réactive les clics sur les éléments <a> après le drag
                     $('.drag a').css('pointer-events', 'auto');
                 }
             }
         });
 
-// Fonction pour empêcher le comportement par défaut des liens
 function preventDefaultAction(event) {
   event.preventDefault();
 }
