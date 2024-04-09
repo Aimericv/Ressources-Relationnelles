@@ -7,7 +7,7 @@ function redirectToHome() {
 
 var interval = setInterval(() => {
     var timer = document.getElementById('timer');
-    if (temps === 0) {
+    if (temps === -1) {
         redirectToHome();
         clearInterval(interval);
     }
