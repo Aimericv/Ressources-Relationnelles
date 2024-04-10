@@ -29,10 +29,7 @@ class PostCreationType extends AbstractType
                 'class' => PostStatus::class,
 'choice_label' => 'id',
             ])
-            ->add('address', EntityType::class, [
-                'class' => Address::class,
-'choice_label' => 'id',
-            ])
+            ->add('address')
         ;
     }
 

@@ -242,7 +242,7 @@ function uploadImage(file, imageName) {
     console.log("file",file);
 
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/modification-post/upload', true);
+    xhr.open('POST', '/post/modification-post/upload', true);
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -259,7 +259,7 @@ function uploadImage(file, imageName) {
 
 function deleteImage(imageName) {
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/modification-post/delete', true);
+    xhr.open('POST', '/post/modification-post/delete', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {

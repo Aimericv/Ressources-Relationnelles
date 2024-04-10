@@ -16,10 +16,6 @@ class Images
     #[ORM\Column(length: 255)]
     private ?string $src = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Post $post_id = null;
-
     #[ORM\Column(length: 50)]
     private ?string $width = null;
 
@@ -31,6 +27,9 @@ class Images
 
     #[ORM\Column(length: 50)]
     private ?string $y = null;
+
+    #[ORM\ManyToOne(inversedBy: 'images')]
+    private ?Post $post = null;
 
     public function getId(): ?int
     {
@@ -45,18 +44,6 @@ class Images
     public function setSrc(string $src): static
     {
         $this->src = $src;
-
-        return $this;
-    }
-
-    public function getPostId(): ?Post
-    {
-        return $this->post_id;
-    }
-
-    public function setPostId(?Post $post_id): static
-    {
-        $this->post_id = $post_id;
 
         return $this;
     }
@@ -105,6 +92,18 @@ class Images
     public function setY(string $y): static
     {
         $this->y = $y;
+
+        return $this;
+    }
+
+    public function getPost(): ?Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(?Post $post): static
+    {
+        $this->post = $post;
 
         return $this;
     }

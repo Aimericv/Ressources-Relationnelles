@@ -108,6 +108,21 @@ img {
     background-color: #00585b;
 }
 
+#submit_button {
+    padding: 5px 15px;
+    outline: none;
+    border: 2px solid #03989e;
+    background-color: #03989e;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#submit_button:hover {
+    background-color: white;
+    color: #03989e;
+}
+
 @media (min-width: 768px) {
     .container {
         width: 720px;

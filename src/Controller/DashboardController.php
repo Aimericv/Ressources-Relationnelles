@@ -44,10 +44,12 @@ class DashboardController extends AbstractController
         $visits = $this->calculateVisits($session, $stats_filter);
         $userStats = $userRepository->findByStatsForLatestMonth();
         $postStats = $postRepository->findByStatsForLatestMonth();
+        $commentStats = $commentRepo->findByStatsForLatestMonth();
         $statistiques = [
             'userStats' => $userStats,
             'postStats' => $postStats,
-            'visits' => $visits
+            'visits' => $visits,
+            'comment' => $commentStats
         ];
 
         $posts = $postRepository->findAll();
@@ -182,11 +184,8 @@ class DashboardController extends AbstractController
 
         $entityManager->persist($post);
         $entityManager->flush();
-        if ($request->headers->get('referer') === $this->generateUrl('dashboard')) {
-            return $this->redirectToRoute('app_dashboard');
-        } else {
-            return $this->redirectToRoute('app_user');
-        }
+        
+        return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/role-user/{id}/{role}', name: 'app_dashboard_role_user')]

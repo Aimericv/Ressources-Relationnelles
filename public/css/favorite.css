@@ -3,6 +3,39 @@
     fill: #989898;
 }
 
+.posts input {
+    text-align: center;
+    border: 0;
+}
+
+.posts input:focus {
+    outline: none;
+}
+
+#selectFolder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 150px;
+}
+
+#selectFolder article {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#addFolder p {
+    text-align: end;
+    width: 100%;
+}
+
+#addFolder p:hover {
+    color: #03989e;
+    cursor: pointer;
+}
+
 .folder-article {
     padding-top: 20px;
     align-items: center;

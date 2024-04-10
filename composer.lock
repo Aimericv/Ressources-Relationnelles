@@ -438,16 +438,16 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "2.11.3",
+            "version": "2.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "492725310ae9a1b5b20d6ae09fb5ae6404616e68"
+                "reference": "5418e811a14724068e95e0ba43353b903ada530f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/492725310ae9a1b5b20d6ae09fb5ae6404616e68",
-                "reference": "492725310ae9a1b5b20d6ae09fb5ae6404616e68",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/5418e811a14724068e95e0ba43353b903ada530f",
+                "reference": "5418e811a14724068e95e0ba43353b903ada530f",
                 "shasum": ""
             },
             "require": {
@@ -485,6 +485,7 @@
                 "symfony/property-info": "^5.4 || ^6.0 || ^7.0",
                 "symfony/proxy-manager-bridge": "^5.4 || ^6.0 || ^7.0",
                 "symfony/security-bundle": "^5.4 || ^6.0 || ^7.0",
+                "symfony/stopwatch": "^5.4 || ^6.0 || ^7.0",
                 "symfony/string": "^5.4 || ^6.0 || ^7.0",
                 "symfony/twig-bridge": "^5.4 || ^6.0 || ^7.0",
                 "symfony/validator": "^5.4 || ^6.0 || ^7.0",
@@ -502,7 +503,7 @@
             "type": "symfony-bundle",
             "autoload": {
                 "psr-4": {
-                    "Doctrine\\Bundle\\DoctrineBundle\\": ""
+                    "Doctrine\\Bundle\\DoctrineBundle\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -537,7 +538,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/DoctrineBundle/issues",
-                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.11.3"
+                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.12.0"
             },
             "funding": [
                 {
@@ -553,7 +554,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-10T20:56:20+00:00"
+            "time": "2024-03-19T07:20:37+00:00"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -1079,16 +1080,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "2.19.0",
+            "version": "2.19.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "a809a71aa6a233a6c82e68ebaaf8954adc4998dc"
+                "reference": "1a5a4c674a416b4fdf76833c627c5e7f58bbb890"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/a809a71aa6a233a6c82e68ebaaf8954adc4998dc",
-                "reference": "a809a71aa6a233a6c82e68ebaaf8954adc4998dc",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/1a5a4c674a416b4fdf76833c627c5e7f58bbb890",
+                "reference": "1a5a4c674a416b4fdf76833c627c5e7f58bbb890",
                 "shasum": ""
             },
             "require": {
@@ -1174,9 +1175,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.19.0"
+                "source": "https://github.com/doctrine/orm/tree/2.19.3"
             },
-            "time": "2024-03-03T17:43:41+00:00"
+            "time": "2024-03-21T11:01:42+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -7065,16 +7066,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.0.6",
+            "version": "11.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "6af32d7938fc366f86e49a5f5ebb314018d1b1fb"
+                "reference": "591bbfe416400385527d5086b346b92c06de404b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6af32d7938fc366f86e49a5f5ebb314018d1b1fb",
-                "reference": "6af32d7938fc366f86e49a5f5ebb314018d1b1fb",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/591bbfe416400385527d5086b346b92c06de404b",
+                "reference": "591bbfe416400385527d5086b346b92c06de404b",
                 "shasum": ""
             },
             "require": {
@@ -7145,7 +7146,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.0.6"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.0.9"
             },
             "funding": [
                 {
@@ -7161,7 +7162,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-12T15:40:01+00:00"
+            "time": "2024-03-28T10:09:42+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -7537,16 +7538,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "7.0.0",
+            "version": "7.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "100d8b855d7180f79f9a9a5c483f2d960581c3ea"
+                "reference": "4eb3a442574d0e9d141aab209cd4aaf25701b09a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/100d8b855d7180f79f9a9a5c483f2d960581c3ea",
-                "reference": "100d8b855d7180f79f9a9a5c483f2d960581c3ea",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/4eb3a442574d0e9d141aab209cd4aaf25701b09a",
+                "reference": "4eb3a442574d0e9d141aab209cd4aaf25701b09a",
                 "shasum": ""
             },
             "require": {
@@ -7561,7 +7562,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "7.0-dev"
+                    "dev-main": "7.1-dev"
                 }
             },
             "autoload": {
@@ -7589,7 +7590,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/environment/issues",
                 "security": "https://github.com/sebastianbergmann/environment/security/policy",
-                "source": "https://github.com/sebastianbergmann/environment/tree/7.0.0"
+                "source": "https://github.com/sebastianbergmann/environment/tree/7.1.0"
             },
             "funding": [
                 {
@@ -7597,7 +7598,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-02-02T05:57:54+00:00"
+            "time": "2024-03-23T08:56:34+00:00"
         },
         {
             "name": "sebastian/exporter",

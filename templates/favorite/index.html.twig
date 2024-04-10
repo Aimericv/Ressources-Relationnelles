@@ -7,42 +7,94 @@
     {% endblock %}
 
     <body>
-        <main class="container">
+        <main class="container reset">
             <h1>Favorite</h1>
+            {% if folderDetail is not defined %}
+                <section id="selectFolder">
+                    <article id="removeFolder" class="removeFolder">
+                        <p>Suppimer un dossier</p>
+                    </article>
+                    <article id="addFolder">
+                        <p>Ajouter un dossier</p>
+                    </article>
+                </section>
+            {% endif %}
 
             <section class="posts">
-                {% for favoritePost in favoritePosts %}
-                    <article class="post">
-                        {# Assuming you have properties like 'author', 'category', 'title', etc., adjust accordingly #}
-                        <div class="autor">
-                            {% if favoritePost.post.getUser().getAvatarImg() is not null %}
-                                <img src="{{ asset('profiles/' ~ favoritePost.post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
-                            {% else %}
-                                <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
-                            {% endif %}
+                {% if folderDetail is defined %}
+                    <article class="folder-article post dropzoneFolder" data-id="{{ folderDetail.id }}">
+                        <a href="{{ path('app_favorite') }}">
+                            <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                viewBox="0 0 247.8 176.3" style="enable-background:new 0 0 247.8 176.3;" xml:space="preserve">
+                            <style type="text/css">
+                                .st0{fill:#727272;}
+                                .st1{fill:#979797;}
+                            </style>
+                            <g>
+                                <path class="st0" d="M121.7,152.5c-25.4,0-50.8-0.1-76.2,0c-8.4,0-16.6-7.2-18.5-14.7c-0.4-1.4-0.5-2.9-0.5-4.4
+                                    c0-32.8,0-65.7,0-98.5c0-6.3,6.5-15,12.6-16.6c2.3-0.6,4.7-1.1,7.1-1.1c17.1-0.1,34.2-0.2,51.2,0.2c8.8,0.2,15.7,4.6,20.1,12.5
+                                    c2.1,3.7,4.4,7,8.9,8c0.9,0.2,1.8,0.4,2.7,0.4c22,0,44,0.1,66,0.1c4.5,0,8.8,0.7,12.6,3c5.4,3.2,9.3,7.8,9.3,14.2
+                                    c0.4,23.5,0.5,47,0.5,70.5c0,4.5-0.4,9.1-1.5,13.4c-1.7,7.1-10.7,13.1-17.8,13.1C172.7,152.4,147.2,152.5,121.7,152.5
+                                    C121.7,152.5,121.7,152.5,121.7,152.5z"/>
+                            </g>
+                            <g>
+                                <path class="st1" d="M119.3,152.5c-25.4,0-50.8-0.1-76.2,0c-8.4,0-15-7.4-15.3-15.1c-0.1-1.5,0.1-3,0.4-4.5
+                                    c7-33.9,13.9-67.8,20.9-101.7c1.3-6.5,9.7-15.5,16.2-17.1c2.4-0.6,4.9-1.2,7.3-1.2c17.1-0.1,34.2-0.2,51.2,0.2
+                                    c8.8,0.2,14.7,4.8,17.4,12.9c1.3,3.8,2.9,7.2,7.2,8.3c0.8,0.2,1.7,0.4,2.6,0.4c22,0,44,0.1,66,0.1c4.5,0,8.6,0.8,12,3.1
+                                    c4.7,3.3,7.6,8,6.3,14.7c-4.7,24.2-9.5,48.5-14.5,72.7c-1,4.6-2.4,9.4-4.3,13.9c-3.2,7.3-13.5,13.5-20.5,13.5
+                                    C170.3,152.4,144.8,152.5,119.3,152.5C119.3,152.5,119.3,152.5,119.3,152.5z"/>
+                            </g>
+                            </svg>
+                        </a>
+                        <p>Sortir du dossier</p>
+                    </article>
+                {% endif %}
 
-                            <a class="link-name" href="{{ path('app_other_user', {'id': favoritePost.post.getUser().getId()}) }}">
-                                {{ favoritePost.post.getUser().getFirstName() }} {{ favoritePost.post.getUser().getLastName() }}
-                            </a>                            
-                        </div>
-                        
-                        {# 
-                            {% set postImages = images[favoritePost.post.id] %}
+                {% if folders is defined %}
+                    {% for folder in folders %}
+                        <article class="folder-article drag post dropzone" data-id="{{ folder.id }}">
+                            <a id="linkID" href="{{ path('app_favorite_folder_detail', {'id': folder.id}) }}">
+                                <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        viewBox="0 0 841.9 595.3" xml:space="preserve">
+                                <path class="st0" d="M709.2,217.6v224.6c0,33.3-27,60.3-60.3,60.3h-456c-33.3,0-60.3-27-60.3-60.3V153c0-33.3,27-60.3,60.3-60.3h149
+                                    c29.3,0,56,16.9,68.4,43.5l0,0c11.2,23.8,35.1,21.1,61.4,21.1h177.1C682.2,157.3,709.2,184.3,709.2,217.6z"/>
+                                </svg>
+                            </a>
+                            <input type="text" class="folderName" value="{{ folder.name }}">
+                        </article>
+                    {% endfor %}
+                {% endif %}
+                {% if favoritePosts is defined %}
+                    {% for favoritePost in favoritePosts %}
+                        <article class="post drag {% if folderDetail is defined %}exitFolder {% else %}intoFolder{% endif %}" data-id="{{ favoritePost.id }}">
+                            <div class="autor">
+                                {% if favoritePost.getUser().getAvatarImg() is not null %}
+                                    <img src="{{ asset('profiles/' ~ favoritePost.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                                {% else %}
+                                    <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                                {% endif %}
+
+                                <a class="link-name" href="{{ path('app_other_user', {'id': favoritePost.getUser().getId()}) }}">
+                                    {{ favoritePost.getUser().getFirstName() }} {{ favoritePost.getUser().getLastName() }}
+                                </a>                            
+                            </div>
+                            {% set postImages = favoritePost.getImages() %}
                             {% if postImages is not empty %}
                                 <div class="img-ressource">
                                     <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
                                 </div>
                             {% endif %} 
-                        #}
-                        
-                        <p class="category">Catégorie : {{ favoritePost.post.getType().name }}</p>
-                        <h2 class="title-ressource">{{ favoritePost.post.title }}</h2>
-                        <p class="description-ressource">{{ favoritePost.post.description }}</p>
-                        <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': favoritePost.post.id}) }}';">En savoir plus</button>               
+                            <p class="category">{{ favoritePost.getType().name }}</p>
+                            <h2 class="title-ressource">{{ favoritePost.title }}</h2>
+                            <p class="description-ressource">{{ favoritePost.description }}</p>
+                            <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': favoritePost.id}) }}';">En savoir plus</button>
 
-                    </article>
-                {% endfor %}
+                        </article>
+                    {% endfor %}
+                {% endif %}
             </section>
         </main>
+        <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+        <script src="{{ asset('js/favorite.js') }}"></script>
     </body>
 {% endblock %}

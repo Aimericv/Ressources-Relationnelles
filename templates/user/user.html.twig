@@ -1,7 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    // balise pour inclure le script de suppression d'un utilisateur
-    <script src="{{ asset('js/delete-user.js') }}"></script>
+    {% block stylesheetsConnected %}
+        <link rel="stylesheet" href={{ asset('css/user.css') }}>
+        <link rel="stylesheet" href={{ asset('css/posts.css')}}>
+        <script src="{{ asset('js/delete-user.js') }}"></script>
+    {%  endblock %}
 
     <style>
         .footer{
@@ -28,8 +31,6 @@
 
         {% if app.user %}
     <!--Connnected-->
-        {% block stylesheetsConnected %}
-            <link rel="stylesheet" href={{ asset('css/user.css') }}>
     <section id="user-section">
         <article id="avatar-section">
             <div class="autor"> 
@@ -45,15 +46,18 @@
         <article class="container" id="stats-section">
             <div class="stats-section">
                 <div>
-                    <p class="data-user">7</p>
+                    {% set nmbRessources = utilisateur.getPosts() | length %}
+                    <p class="data-user">{{nmbRessources}}</p>
                     <p>Ressources</p>
                 </div>
                 <div>
-                    <p class="data-user">75</p>
+                    {% set nmbFollow = utilisateur.getFollows() | length %}
+                    <p class="data-user">{{nmbFollow}}</p>
                     <p>Abonnements</p>
                 </div>
                 <div>
-                    <p class="data-user">52</p>
+                    {% set nmbFollowing = utilisateur.getFollowing() | length %}
+                    <p class="data-user">{{nmbFollowing}}</p>
                     <p>Abonnés</p>
                 </div>
             </div>
@@ -66,15 +70,27 @@
     
             <div class="stats-section">
                 <div>
-                    <p class="data-user">30</p>
-                    <p>Vues</p>
+                    {% set nmbRepost = 0 %}
+                    {% for post in posts %}
+                        {% set nmbRepost = nmbRepost + post.getUsersRepost() | length %}
+                    {% endfor %}
+                    <p class="data-user">{{nmbRepost}}</p>
+                    <p>Repost</p>
                 </div>
                 <div>
-                    <p class="data-user">12</p>
+                    {% set nmbLike = 0 %}
+                    {% for post in posts %}
+                        {% set nmbLike = nmbLike + post.getUsersLike() | length %}
+                    {% endfor %}
+                    <p class="data-user">{{nmbLike}}</p>
                     <p>Likes</p>
                 </div>
                 <div>
-                    <p class="data-user">21</p>
+                    {% set nmbExploit = 0 %}
+                    {% for post in posts %}
+                        {% set nmbExploit = nmbExploit + post.getUsersParticipation() | length %}
+                    {% endfor %}
+                    <p class="data-user">{{nmbExploit}}</p>
                     <p>Exploités</p>
                 </div>
             </div>
@@ -95,6 +111,7 @@
         {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
         {% for post in sortedPosts %}
         <div>
+            <p class="status">{{ post.getStatus().getName() }}</p>
             {% if imageSrc[post.id] is not null %}
                 <div class="img-ressource">
                     <img class="img-ressource" src="{{ asset(imageSrc[post.id]) }}" alt="Image du Post">
@@ -112,7 +129,6 @@
         </div>
         {% endfor %}
     </section>
-        {%  endblock %}
         {% else %}
         <!--Non connnected-->
         {% block stylesheetsNonConnected %}
@@ -127,11 +143,6 @@
             </section>
         {%  endblock %}
         {% endif %}
-
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-            Launch demo modal
-        </button>
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

@@ -15,6 +15,7 @@ header {
     padding: 0 40px;
     position: fixed;
     width: 100%;
+    z-index: 50;
 }
 
 h2 {
@@ -118,6 +119,10 @@ header>div {
 
 #searchInput:focus {
     outline: none !important;
+}
+
+#searchInput::placeholder {
+    color: rgba(255, 255, 255, 0.757);
 }
 
 @media (min-width: 768px){

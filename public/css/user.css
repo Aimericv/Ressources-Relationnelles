@@ -4,6 +4,18 @@
     box-sizing: border-box;
 }
 
+.btn-danger {
+    background-color: #9E3F03 !important;
+    border: 2px solid #9E3F03 !important;
+    color: white !important;
+    border-radius: 20px;
+}
+
+.btn-danger:hover {
+    background-color: white !important;
+    color: #9E3F03 !important;
+}
+
 #avatar {
     width: 350px;
     aspect-ratio: 1/1;
@@ -30,10 +42,10 @@ h1 {
     gap: 15px;
 }
 .autor img {
-    width: 350px;
+    width: 350px !important;
     aspect-ratio: 1/1;
     background-color: gray;
-    border-radius: 50%;
+    border-radius: 50% !important;
     margin-bottom: 10px;
 }
 
@@ -107,16 +119,16 @@ input[type='range'] {
     background-color: white;
   }
   
-  input[type='range']::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
     height: 4px;
     -webkit-appearance: none;
     background: #03989e;
     margin-top: -1px;
     width: 100%;
     border-radius: 2px;
-  }
+}
   
-  input[type='range']::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
     width: 20px;
     -webkit-appearance:none;
     border-radius: 50%;
@@ -124,7 +136,7 @@ input[type='range'] {
     margin-top: -8px;
     height: 20px;
     background: #434343;
-  }
+}
 
 #adaptation-user p output{
     font-size: 3rem;
@@ -178,7 +190,6 @@ main {
 #post-section img{
     width: 100%;
     object-fit: cover;
-    height: 150px;
 }
 
 #post-section>div {
@@ -203,7 +214,7 @@ a:hover {
 #post-section button {
     background-color: white;
     border: 2px solid #03989e;
-    padding: 5px 20px;
+    padding: 5px 15px;
     border-radius: 20px;
     cursor: pointer;
 }
@@ -219,6 +230,20 @@ a:hover {
 
 #post-section button:hover a {
     color: white;
+}
+
+.status {
+    font-style: italic !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+}
+
+#subscribe {
+    color: #03989e;
+}
+
+#subscribe:hover {
+    text-decoration: underline;
 }
 
 @media (min-width: 768px) {

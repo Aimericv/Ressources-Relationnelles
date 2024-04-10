@@ -12,22 +12,35 @@ class CommentResponse
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null; 
-
-    #[ORM\ManyToOne(inversedBy: 'commentResponses')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Comment $comment = null;
-
-    #[ORM\ManyToOne(inversedBy: 'commentResponses')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Comment $commentToComment = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'commentResponses')]
+    private ?Comment $comment = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $content = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commentResponses')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
     }
 
     public function getComment(): ?Comment
@@ -42,26 +55,26 @@ class CommentResponse
         return $this;
     }
 
-    public function getCommentToComment(): ?Comment
+    public function getContent(): ?string
     {
-        return $this->commentToComment;
+        return $this->content;
     }
 
-    public function setCommentToComment(?Comment $commentToComment): static
+    public function setContent(string $content): static
     {
-        $this->commentToComment = $commentToComment;
+        $this->content = $content;
 
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getUser(): ?User
     {
-        return $this->date;
+        return $this->user;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setUser(?User $user): static
     {
-        $this->date = $date;
+        $this->user = $user;
 
         return $this;
     }

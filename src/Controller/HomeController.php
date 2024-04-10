@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
-use App\Repository\RepostRepository;
+use App\Repository\RoleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -21,41 +21,24 @@ class HomeController extends AbstractController
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, SessionInterface $session, RepostRepository $repostRepository): \Symfony\Component\HttpFoundation\Response
+    public function post(PostRepository $postRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
+
         $visitDate = new \DateTime();
-        $session->set('visitDates', [$visitDate->format('Y-m-d H:i:s')]);
+        $visitDates = $session->get('visitDates', []);
+        $visitDates[] = $visitDate->format('Y-m-d H:i:s');
+        $session->set('visitDates', $visitDates);
 
-        $images = $imagesRepository->findAll();
-        $imagesPosts = [];
         $utilisateur = $this->getUser();
-        $posts = $postRepository->findPostsByUser($utilisateur);
 
-        foreach ($posts as $post) {
-            $post_id = $post->getId();
-            $imagesPostId = [];
-            foreach ($images as $image) {
-                if ($post_id == $image->getPostId()->getId()) {
-                    $imagesPostId[] = $image;
-                }
-            }
-            $imagesPosts[$post_id] = $imagesPostId;
+        if ($utilisateur) {
+            $follows = $utilisateur->getFollows();
         }
-
-
-        $user = $this->getUser();
-        if($user){
-            $repostPosts = $repostRepository->findRepostPostsByUser($user);
-
-        }else{
-            $repostPosts='null';
-        }
-
-
         $allposts = $postRepository->findBy(['status' => 3]);
 
-
-        return $this->render('default/index.html.twig', ['user' => $this->getUser(),'posts' => $posts, 'allposts'=>$allposts,  'repostPosts' => $repostPosts,
-            'utilisateur' => $utilisateur, 'images' => $imagesPosts]);
+        return $this->render('default/index.html.twig', [
+            'utilisateur' => $utilisateur,
+            'posts'=>$allposts,
+        ]);
     }
 }

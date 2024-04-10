@@ -22,10 +22,7 @@ class Post
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne]
-    private ?User $user = null;
-
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?PostStatus $status = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -34,12 +31,6 @@ class Post
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
-    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Favorite::class)]
-    private Collection $favorites;
-
-    #[ORM\OneToMany(targetEntity: UserParticipation::class, mappedBy: 'post')]
-    private Collection $userParticipations;
-
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: AdminComment::class)]
     private Collection $adminComments;
 
@@ -47,36 +38,42 @@ class Post
     private Collection $comments;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[ORM\JoinColumn(nullable: false)]
+    //#[ORM\JoinColumn(nullable: false)]
     private ?Category $type = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $author;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favorites')]
+    private Collection $usersFavorite;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $category;
-    
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'postsParticipation')]
+    #[ORM\JoinTable(name: 'user_post_participation')]
+    private Collection $usersParticipation;
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'likes')]
+    private Collection $usersLike;
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'reposts')]
+    private Collection $usersRepost;
+
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Images::class)]
+    private Collection $images;
+
+    #[ORM\ManyToOne(inversedBy: 'post')]
+    private ?Folder $folder = null;
 
     public function __construct()
     {
         $this->favorites = new ArrayCollection();
-        $this->userParticipations = new ArrayCollection();
+        $this->postsParticipation = new ArrayCollection();
         $this->adminComments = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->usersFavorite = new ArrayCollection();
+        $this->usersParticipation = new ArrayCollection();
+        $this->usersLike = new ArrayCollection();
+        $this->usersRepost = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,18 +112,6 @@ class Post
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getStatus(): ?PostStatus
     {
         return $this->status;
@@ -159,63 +144,6 @@ class Post
     public function setAddress(?string $address): static
     {
         $this->address = $address;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Favorite>
-     */
-    public function getFavorites(): Collection
-    {
-        return $this->favorites;
-    }
-
-    public function addFavorite(Favorite $favorite): static
-    {
-        if (!$this->favorites->contains($favorite)) {
-            $this->favorites->add($favorite);
-            $favorite->setPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(Favorite $favorite): static
-    {
-        if ($this->favorites->removeElement($favorite)) {
-            // set the owning side to null (unless already changed)
-            if ($favorite->getPost() === $this) {
-                $favorite->setPost(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UserParticipation>
-     */
-    public function getUserParticipations(): Collection
-    {
-        return $this->userParticipations;
-    }
-
-    public function addUserParticipation(UserParticipation $userParticipation): static
-    {
-        if (!$this->userParticipations->contains($userParticipation)) {
-            $this->userParticipations->add($userParticipation);
-            $userParticipation->addPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserParticipation(UserParticipation $userParticipation): static
-    {
-        if ($this->userParticipations->removeElement($userParticipation)) {
-            $userParticipation->removePost($this);
-        }
 
         return $this;
     }
@@ -288,6 +216,165 @@ class Post
     public function setType(?Category $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersFavorite(): Collection
+    {
+        return $this->usersFavorite;
+    }
+
+    public function addUsersFavorite(User $usersFavorite): static
+    {
+        if (!$this->usersFavorite->contains($usersFavorite)) {
+            $this->usersFavorite->add($usersFavorite);
+            $usersFavorite->addFavorite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersFavorite(User $usersFavorite): static
+    {
+        if ($this->usersFavorite->removeElement($usersFavorite)) {
+            $usersFavorite->removeFavorite($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersParticipation(): Collection
+    {
+        return $this->usersParticipation;
+    }
+
+    public function addUsersParticipation(User $usersParticipation): static
+    {
+        if (!$this->usersParticipation->contains($usersParticipation)) {
+            $this->usersParticipation->add($usersParticipation);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersParticipation(User $usersParticipation): static
+    {
+        $this->usersParticipation->removeElement($usersParticipation);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersLike(): Collection
+    {
+        return $this->usersLike;
+    }
+
+    public function addUsersLike(User $usersLike): static
+    {
+        if (!$this->usersLike->contains($usersLike)) {
+            $this->usersLike->add($usersLike);
+            $usersLike->addLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersLike(User $usersLike): static
+    {
+        if ($this->usersLike->removeElement($usersLike)) {
+            $usersLike->removeLike($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersRepost(): Collection
+    {
+        return $this->usersRepost;
+    }
+
+    public function addUsersRepost(User $usersRepost): static
+    {
+        if (!$this->usersRepost->contains($usersRepost)) {
+            $this->usersRepost->add($usersRepost);
+            $usersRepost->addRepost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersRepost(User $usersRepost): static
+    {
+        if ($this->usersRepost->removeElement($usersRepost)) {
+            $usersRepost->removeRepost($this);
+        }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getPost() === $this) {
+                $image->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getFolder(): ?Folder
+    {
+        return $this->folder;
+    }
+
+    public function setFolder(?Folder $folder): static
+    {
+        $this->folder = $folder;
 
         return $this;
     }

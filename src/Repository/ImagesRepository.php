@@ -26,7 +26,7 @@ class ImagesRepository extends ServiceEntityRepository
     public function findByPostId(int $postId): array
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.post_id = :postId')
+            ->andWhere('p.post = :postId')
             ->setParameter('postId', $postId)
             ->getQuery()
             ->getResult();
