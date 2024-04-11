@@ -11,9 +11,11 @@ class LikeTest extends WebTestCase
 {
 
     private $client;
+    private $user;
 
     protected function setUp(): void {
         $this->client = static::createClient(['environment' => 'test']);
+        $this->user = $this->client->getContainer()->get(UserRepository::class)->findAll()[0];
     }
 
     public function isLikeValid($postId, $userId): bool
@@ -37,8 +39,8 @@ class LikeTest extends WebTestCase
     
     public function testCreateLike()
     {
-        $postId = 4;
-        $userId = 18;
+        $postId = 218;
+        $userId = 39;
 
         $this->assertTrue($this->isLikeValid($postId, $userId));
 

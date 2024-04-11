@@ -13,33 +13,29 @@ class CommentControllerTest extends WebTestCase
 {
 
     private $client;
+    private $user;
+    private $post;
 
     protected function setUp(): void {
         $this->client = static::createClient(['environment' => 'test']);
+        $this->user = static::getContainer()->get(UserRepository::class)->findAll()[0];
+        $this->post = static::getContainer()->get(PostRepository::class)->findAll()[0];
     }
 
     public function testCreateComments()
     {
         // Initialisation
-        $commentRepo = static::getContainer()->get(CommentRepository::class);
-        $userRepo = static::getContainer()->get(UserRepository::class);
         $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $postRepo = static::getContainer()->get(PostRepository::class);
 
         $result = false;
 
         $contentComment = "Test Unitaire";
-        $userId = 1;
-        $postId = 1;
-
-        $user = $userRepo->find(1);
-        $post = $postRepo->find(1);
 
         // Création d'un commentaire
 
         $comment = new Comment();
-        $comment->setUser($user);
-        $comment->setPost($post);
+        $comment->setUser($this->user);
+        $comment->setPost($this->post);
         $comment->setContent($contentComment);
         $comment->setDate(new \DateTime());
         $entityManager->persist($comment);
@@ -50,8 +46,8 @@ class CommentControllerTest extends WebTestCase
 
         $comment = $commentRepo->findBy(['content' => $contentComment]);
 
-        if ($comment[0]->getUser()->getId() == $userId) {
-            if ($comment[0]->getPost()->getId() == $postId) {
+        if ($comment[0]->getUser()->getId() == $this->user->getId()) {
+            if ($comment[0]->getPost()->getId() == $this->post->getId()) {
                 $result = true;
             }
         }

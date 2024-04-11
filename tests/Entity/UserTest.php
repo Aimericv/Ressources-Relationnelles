@@ -8,18 +8,17 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class UserTest extends WebTestCase
 {
     private $client;
+    private $user;
 
     protected function setUp(): void {
         $this->client = static::createClient(['environment' => 'test']);
+        $this->user = $this->client->getContainer()->get(UserRepository::class)->findAll()[0];
     }
 
     // Test si la méthode getEmail ressorte bien un string
     public function testGetEmail(): void
     {
-        $userRepo = static::getContainer()->get(UserRepository::class);
-
-        $user = $userRepo->find(1);
-        $email = $user->getEmail();
+        $email = $this->user->getEmail();
 
         $result = false;
 
@@ -34,10 +33,7 @@ class UserTest extends WebTestCase
 // Test si la méthode getAddress ressorte bien un string
     public function testGetAddress(): void
     {
-        $userRepo = static::getContainer()->get(UserRepository::class);
-
-        $user = $userRepo->find(1);
-        $address = $user->getAddress();
+        $address = $this->user->getAddress();
 
         $result = false;
 
@@ -52,10 +48,7 @@ class UserTest extends WebTestCase
     // Test si la méthode getAvatarImg ressorte bien un string
     public function testGetAvatarImg(): void
     {
-        $userRepo = static::getContainer()->get(UserRepository::class);
-
-        $user = $userRepo->find(1);
-        $avatarImg = $user->getAvatarImg();
+        $avatarImg = $this->user->getAvatarImg();
 
         $result = false;
 
