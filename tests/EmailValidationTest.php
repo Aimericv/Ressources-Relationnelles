@@ -9,18 +9,18 @@ class EmailValidationTest extends WebTestCase
 {
 
     private $client;
+    private $user;
 
     protected function setUp(): void {
         $this->client = static::createClient(['environment' => 'test']);
+        $this->user = $this->client->getContainer()->get(UserRepository::class)->findAll()[0];
     }
 
     public function testValidEmailFormat()
     {
 
-        $userRepo = static::getContainer()->get(UserRepository::class);
-        $user = $userRepo->find(18);
         // Définir une adresse email valide
-        $result = preg_match("/^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/", $user->getEmail());
+        $result = preg_match("/^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/", $this->user->getEmail());
 
         $bool = false;
         if ($result === 1) {
