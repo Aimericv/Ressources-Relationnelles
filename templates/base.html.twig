@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href={{ asset('css/header-footer.css') }}>
+    <link rel="icon" href={{asset('medias/favicon.png')}} />
+    <title>Ressources Relationnelles</title>
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-top: 90px;
+            padding-bottom: 100px;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (min-width: 768px){
+            .footer{
+                position: static;
+            }
+        }
+        p {
+            font-size: {{ utilisateur.police is defined ? utilisateur.police ~ 'px' : '16px' }};
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <a href="{{ path('app_homepage') }}"><img src="{{ asset('medias/logo.png') }}" id="header-logo"></a>
+        <ul>
+            <a href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
+            <a href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
+            <a href="{{ path('app_creation_posts') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
+            <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
+            {% if app.user %}
+                <a href="{{ path('app_user') }}">
+                    <li id="avatar-img">
+                        {% if utilisateur is defined and utilisateur.getAvatarImg() is not null %}
+                            <img src="{{ asset('profiles/' ~ utilisateur.getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                        {% else %}
+                            <img src="{{ asset('medias/user-white.png') }}">
+                        {% endif %}
+                    </li>
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}">
+                    <li id="avatar-img">
+                        <img src="{{ asset('medias/user-white.png') }}">
+                    </li>
+                </a>
+            {% endif %}
+        </ul>
+
+        <form id="searchForm" action="{{ path('app_post_search') }}" method="get">
+            <input style="display: none;" id="searchInput" type="text" name="term" placeholder="Rechercher par titre...">
+            <label for="searchInput"><img src={{ asset('medias/search-white.png') }}></label>
+            <button id="searchIcon" type="submit" style="display: none;"><img src={{ asset('medias/search-white.png') }}></button>
+        </form>
+
+        <script>
+            const searchForm = document.querySelector('#searchForm');
+            const searchInput = searchForm.querySelector('input');
+            const searchLabel = searchForm.querySelector('label');
+            const searchIcon = searchForm.querySelector('#searchIcon');
+            searchForm.addEventListener('click', function() {
+                searchLabel.style.display = "none";
+                searchIcon.style.display = "block";
+                searchInput.style.display = "block";
+            });
+            document.addEventListener('click', function(event) {
+                if (event.target !== searchInput && event.target !== searchIcon) {
+                    searchLabel.style.display = "block";
+                    searchIcon.style.display = "none";
+                    searchInput.style.display = "none";
+                }
+            });
+        </script>
+    </div>
+    <a href="{{ path('app_help') }}" id="help">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 161 281.5" xml:space="preserve">
+            <g>
+                <path d="M52.5,190.9c-0.2-21.4,9.5-38.7,22.8-54.4c7.7-9.2,16.4-17.5,23.9-26.9c5.9-7.3,11.6-15.1,15.5-23.6
+                    c7.6-16.4,1.7-30.5-14.7-38.4c-9.5-4.5-19.5-5.8-29.7-3.5c-14.9,3.3-24.9,16.1-26.8,33.5c-0.2,2.1-0.5,4.3-0.9,6.4
+                    c-2.1,10.6-12,18.2-22.4,17.3C8.5,100.3-0.5,91.1,0,79.7C1.8,42,22.4,11,60.7,2.4c25.7-5.8,49.8-0.8,71.2,14.6
+                    c28.8,20.7,36.9,56,21.2,89.5c-7.1,15.1-17.7,27.7-28.8,39.9c-6.8,7.5-13.6,15.1-19.8,23.1c-5.9,7.6-9.4,16.2-9.1,26.3
+                    c0.4,12-9,21.4-20.8,21.7c-11.8,0.3-21.4-8.5-22.1-20.5C52.4,194.9,52.5,192.9,52.5,190.9z"/>
+                <path d="M74.2,281.5c-14,0.1-25.2-10.9-25.2-24.8c0-13.9,11-25,24.9-25.2c13.8-0.1,25.1,11,25.3,24.9
+                    C99.3,270.1,88.1,281.5,74.2,281.5z"/>
+            </g>
+        </svg>
+    </a>
+</header>
+
+{% block body %}{% endblock %}
+<footer class="footer">
+    <section id="footer-mobile">
+        <ul>
+            <a href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
+            <a href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
+            <a href="{{ path('app_creation_posts') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
+            <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
+            <a href="{{ path('app_user') }}"><li><img src="{{ asset('medias/user-white.png') }}"></li></a>
+        </ul>
+    </section>
+    <section id="footer-computer">
+        <div><img src="{{asset('medias/logo.png')}}"></div>
+        <div>
+            <h3>Plan du site</h3>
+            <ul>
+                <a href="{{ path('app_homepage') }}"><li>Accueil</li></a>
+                <a href="{{ path('app_catalogue') }}"><li>Catalogue</li></a>
+                <a href="{{ path('app_creation_posts') }}"><li>Créer une ressource</li></a>
+                <a href="{{ path('app_favorite') }}"><li>Favorite</li></a>
+                <a href="{{ path('app_user') }}"><li>Mon compte</li></a>
+            </ul>
+        </div>
+        <p>Cette plateforme facilite la connexion entre les citoyens en mettant à leur disposition une bibliothèque de ressources liées à la culture, aux jeux et aux événements. Le projet vise à renforcer le tissu social, promouvoir l'inclusion, mettre en avant la culture locale, et contribuer au bien-être mental des citoyens. </p>
+    </section>
+
+</footer>
+
+
+
+</body>
+</html>

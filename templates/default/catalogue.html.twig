@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/posts.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/favorite.css') }}">
+    {% endblock %}
+
+    <body>
+        <main class="container">
+            <section id="filter-section">
+                <img src={{ asset('medias/filter-green.png') }}>
+            </section>
+            <h1>Catalogue</h1>
+
+           <section class="posts">
+        {% set allPosts = posts|sort((a, b) => b.id - a.id) %}
+            {% for post in allPosts %}
+                <div class="post">
+                    <div class="autor">
+                        {% if post.getUser().getAvatarImg() is not null %}
+                            <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                        {% else %}
+                            <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                        {% endif %}
+
+                        <a class="link-name" href="{{ path('app_other_user', {'id': post.getUser().getId()}) }}">{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</a>
+                    </div>
+                    {% set postImages = post.getImages() %}
+                    {% if postImages is not empty %}
+                        <div class="img-ressource">
+                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                        </div>
+                    {% endif %}
+                    <p class="category">{{ post.getType().getName() }}</p>
+                    <h2 class="title-ressource">{{ post.title }}</h2>
+                    <p class="description-ressource">{{ post.description }}</p>
+                    <button class="button-more-ressource" type="button"><a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>
+                </div>
+            {% endfor %}
+
+        </section>
+        </main>
+    </body>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% block stylesheetsConnected %}
+        <link rel="stylesheet" href={{ asset('css/user.css') }}>
+        <link rel="stylesheet" href={{ asset('css/posts.css')}}>
+        <script src="{{ asset('js/delete-user.js') }}"></script>
+    {%  endblock %}
+
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-top: 90px;
+            padding-bottom: 100px;
+        }
+        @media (min-width: 768px){
+            .footer{
+                position: static;
+            }
+        }
+    </style>
+    <body>
+    <main class="container">
+
+        {% if app.user %}
+    <!--Connnected-->
+    <section id="user-section">
+        <article id="avatar-section">
+            <div class="autor"> 
+                {% if utilisateur.getAvatarImg() is not null %}
+                    <img src="{{ asset('profiles/' ~ utilisateur.getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                {% else %}
+                    <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                {% endif %}
+            </div>
+            <h1>{{ utilisateur.firstName }} {{ utilisateur.lastName }}</h1>
+            <p>{{ utilisateur.getRoles[0] }}</p>
+        </article>
+        <article class="container" id="stats-section">
+            <div class="stats-section">
+                <div>
+                    {% set nmbRessources = utilisateur.getPosts() | length %}
+                    <p class="data-user">{{nmbRessources}}</p>
+                    <p>Ressources</p>
+                </div>
+                <div>
+                    {% set nmbFollow = utilisateur.getFollows() | length %}
+                    <p class="data-user">{{nmbFollow}}</p>
+                    <p>Abonnements</p>
+                </div>
+                <div>
+                    {% set nmbFollowing = utilisateur.getFollowing() | length %}
+                    <p class="data-user">{{nmbFollowing}}</p>
+                    <p>Abonnés</p>
+                </div>
+            </div>
+    
+            <div id="stats">
+                <div class="line"></div>
+                <p>STATISTIQUES</p>
+                <div class="line"></div>
+            </div>
+    
+            <div class="stats-section">
+                <div>
+                    {% set nmbRepost = 0 %}
+                    {% for post in posts %}
+                        {% set nmbRepost = nmbRepost + post.getUsersRepost() | length %}
+                    {% endfor %}
+                    <p class="data-user">{{nmbRepost}}</p>
+                    <p>Repost</p>
+                </div>
+                <div>
+                    {% set nmbLike = 0 %}
+                    {% for post in posts %}
+                        {% set nmbLike = nmbLike + post.getUsersLike() | length %}
+                    {% endfor %}
+                    <p class="data-user">{{nmbLike}}</p>
+                    <p>Likes</p>
+                </div>
+                <div>
+                    {% set nmbExploit = 0 %}
+                    {% for post in posts %}
+                        {% set nmbExploit = nmbExploit + post.getUsersParticipation() | length %}
+                    {% endfor %}
+                    <p class="data-user">{{nmbExploit}}</p>
+                    <p>Exploités</p>
+                </div>
+            </div>
+        </article>
+        <article class="container" id="adaptation-user">
+            <input type="range" id="police" name="police" min="10" max="26" step="2" value="{{utilisateur.police}}"/>
+            <p>Police :<output id="value"></output></p>
+            <div id="reglementation-user">
+                <a href="#">MENTIONS LÉGALES</a>
+                <a href='{{ path('app_logout') }}'>SE DÉCONNECTER</a>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
+                    SUPPRESSION DU COMPTE
+                </button>
+            </div>
+        </article>
+    </section>
+    <section id="post-section">
+        {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
+        {% for post in sortedPosts %}
+        <div>
+            <p class="status">{{ post.getStatus().getName() }}</p>
+            {% if imageSrc[post.id] is not null %}
+                <div class="img-ressource">
+                    <img class="img-ressource" src="{{ asset(imageSrc[post.id]) }}" alt="Image du Post">
+                </div>
+            {% endif %}
+            <h2 class="title-ressource">{{ post.title }}</h2>
+            <p class="description-ressource">{{ post.description }}</p>
+            {% if post.status.getId() == 3 %}
+                <a class="btn" href="{{ path('app_dashboard_valid_ressource', {'id': post.id, 'status': 4}) }}">Privatiser</a>
+            {% elseif post.status.getId() == 1 or post.status.getId() == 4 %}
+                <a class="btn" href="{{ path('app_dashboard_valid_ressource', {'id': post.id, 'status': 2}) }}">Publier</a>
+            {% endif %}
+            <a class="button-more-ressource btn" href="{{ path('app_modification_posts', {'id': post.id}) }}">Modifier</a>
+            <a class="button-more-ressource btn" href="{{ path('app_delete_posts', {'id': post.id}) }}">Supprimer</a>
+        </div>
+        {% endfor %}
+    </section>
+        {% else %}
+        <!--Non connnected-->
+        {% block stylesheetsNonConnected %}
+            <link rel="stylesheet" href={{ asset('css/account.css') }}>
+
+            <section>Cette plateforme facilite la connexion entre les citoyens en mettant à leur disposition une bibliothèque de ressources liées à la culture, aux jeux et aux événements. Le projet vise à renforcer le tissu social, promouvoir l'inclusion, mettre en avant la culture locale, et contribuer au bien-être mental des citoyens. En vous connectant vous pourrez suivre vos acteurs préférés, sauvegarder des ressources et bien d'autres fonctionnalités.</section>
+            <section>
+                <button onclick="window.location.href = '{{ path('app_login') }}';">Connectez-vous</button>
+            </section>
+            <section>
+                <button onclick="window.location.href = '{{ path('app_register') }}';">Créer un compte</button>
+            </section>
+        {%  endblock %}
+        {% endif %}
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--<h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>-->
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Voulez-vous vraiment supprimer votre compte ?</p>
+                        <p>(Votre compte sera supprimé définitivement)</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteUser()">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+
+    <script>
+        const value = document.querySelector("#value");
+        const input = document.querySelector("#police");
+        value.textContent = input.value;
+        input.addEventListener("input", (event) => {
+            let newPolice = event.target.value;
+            value.textContent = newPolice;
+            const data = {
+                police: newPolice
+            };
+
+            fetch('/police', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'envoi de la requête:', error);
+            });
+        })
+    </script>
+
+    </body>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post{% endblock %}
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/single-ressource.css') }}>
+    {% endblock %}
+    <main class="container">
+        <section class="ressources">
+            <h1>{{ post.getTitle() }}</h1>
+        </section>
+        <section style="position: relative;min-height: 90vh; margin-top:40px">
+            {% for img in images %}
+                <img src="{{ img.src }}" alt="Rencontre" style="position: absolute; top:{{ img.y }}px; left:{{ img.x }}px; width: {{ img.width }}px; height: {{ img.height }}px; z-index:-1;">
+            {% endfor %}
+            {% for paragraph in paragraphes %}
+                <div style="position: absolute; top:{{ paragraph.y }}px; left:{{ paragraph.x }}px; width: {{ paragraph.width }}px; height: {{ paragraph.height }}px; z-index:-1;">
+                    {{ paragraph.getContent()|raw }}
+                </div>
+            {% endfor %}
+        </section>
+        <section class="actions-section">
+    <article class="actions">
+
+
+
+
+
+<form id="likeForm" action="{{ path('app_post_actions', {'id': post.getId()}) }}" method="post">
+    <input type="hidden" name="_method" value="POST">
+    <p hidden>{{ csrf_token('like_form') }}<p>
+    <input type="hidden" name="action" value="like">
+    <button type="submit" class="like-link">
+        {% if existingLike %}
+            <img src="{{ asset('medias/like-yellow.png')}}" alt="Liker">
+        {% else %}
+            <img src="{{ asset('medias/like-green.png')}}" alt="Liker">
+        {% endif %}
+    </button>
+</form>
+
+<form id="favoriteForm" action="{{ path('app_post_actions', {'id': post.getId()}) }}" method="post">
+    <input type="hidden" name="_method" value="POST">
+    <p hidden>{{ csrf_token('favorite_form') }}</p>
+    <input type="hidden" name="action" value="favorite">
+    <button type="submit" class="favorite-link">
+        {% if existingFavorite %}
+            <img src="{{ asset('medias/favorite-yellow.png')}}" alt="Enregistrer">
+        {% else %}
+            <img src="{{ asset('medias/favorite-green.png')}}" alt="Enregistrer">
+        {% endif %}
+    </button>
+</form>
+
+
+
+
+        <form id="exploitedForm" action="{{ path('app_post_actions', {'id': post.getId()}) }}" method="post">
+    <input type="hidden" name="_method" value="POST">
+    <p hidden>{{ csrf_token('exploited_form') }}<p>
+    <input type="hidden" name="action" value="exploited">
+    <button type="submit" class="exploited-link">
+        {% if existingExploited %}
+            <img src="{{ asset('medias/exploited-yellow.png')}}" alt="Exploiter">
+        {% else %}
+            <img src="{{ asset('medias/exploited-green.png')}}" alt="Exploiter">
+        {% endif %}
+    </button>
+</form>
+        
+<form id="repostForm" action="{{ path('app_post_actions', {'id': post.getId()}) }}" method="post">
+    <input type="hidden" name="_method" value="POST">
+    <p hidden>{{ csrf_token('repost_form') }}</p>
+    <input type="hidden" name="action" value="repost">
+    <button type="submit" class="repost-link">
+        {% if existingRepost %}
+            <img src="{{ asset('medias/send-yellow.png')}}" alt="Enregistrer">
+        {% else %}
+            <img src="{{ asset('medias/send-green.png')}}" alt="Enregistrer">
+        {% endif %}
+    </button>
+</form>
+<script>
+    document.querySelector('.like-link').addEventListener('click', function () {
+        document.querySelector('#likeForm').submit();
+    });
+
+    document.querySelector('.favorite-link').addEventListener('click', function () {
+        document.querySelector('#favoriteForm').submit();
+    });
+
+    document.querySelector('.repost-link').addEventListener('click', function () {
+        document.querySelector('#repostForm').submit();
+    });
+
+    document.querySelector('.exploited-link').addEventListener('click', function () {
+        document.querySelector('#exploitedForm').submit();
+    });
+</script>
+    </article>
+    <article class="space">
+        <div class="line"></div>
+        <h3>Commentaires</h3>
+        <div class="line"></div>
+    </article>
+</section>
+        <section class="comment-section">
+            {# colonnne que t'as rajouté est égal à zero #}
+            {% for comment in comments %}
+                <article class="comment">
+                    <div class="comment-user">
+                        {% if comment.getUser().getAvatarImg() is not null %}
+                            <img src="{{ asset('profiles/' ~ comment.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                        {% else %}
+                            <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                        {% endif %}
+                        <a href="{{ path('app_other_user', {'id': comment.getUser().getId()}) }}">{{ comment.getUser().getFirstName() }} {{ comment.getUser().getLastName() }}</a>
+                    </div>
+                    <div>
+                        <p>{{ comment.getContent() }}</p>
+                    </div>
+                    <div class="comment-actions">
+                        <a href="#reply" class="buttomResponse" data-target="responseForm{{ comment.id }}">Répondre</a>
+                    </div>
+                    <div id="responseForm{{ comment.id }}">
+                        <form class="comment-form" action="/comment/response/{{ comment.id }}" method="post" style="display: none">
+                            <input class="comment-input" placeholder="Répondre au commentaire" id="response-comment" name="response-comment">
+                            <button class="comment-btn" type="submit">Répondre</button>
+                        </form>
+                    </div>
+                </article>
+                {# Afficher les réponses aux commentaires s'il y en a #}
+                {% for response in commentResponse %}
+                {# <p>{{response.getCommentToComment().getId()}} == {{comment.getId()}}</p> #}
+                {% if response.getComment().getId() == comment.getId() %}
+                    {# if getcommentResponses.getCommenttoComment == comment.id #}
+                    <article class="answer-comment comment">
+                        <div class="comment-user">
+                            {% if response.getUser().getAvatarImg() is not null %}
+                                <img src="{{ asset('profiles/' ~ response.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                            {% else %}
+                                <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                            {% endif %}
+                            <a href="{{ path('app_other_user', {'id': response.getUser().getId()}) }}">{{ response.getUser().getFirstName() }} {{ response.getUser().getLastName() }}</a>
+                        </div>
+                        <div>
+                            <p>{{ response.getContent() }}</p>
+                        </div>
+                    </article>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </section>
+
+        <section>
+            <form class="comment-form" action="/comment/add/{{ post.id }}" method="post">
+                <input class="comment-input" placeholder="Ajouter un commentaire" type="text" id="comment" name="comment">
+                <button class="comment-btn" type="submit">Envoyer</button>
+            </form>
+        </section>
+
+    </main>
+    <script>
+        let buttomsResponse = document.querySelectorAll('.buttomResponse');
+        const replyForms = document.querySelectorAll('.comment form');
+
+        buttomsResponse.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const targetFormDiv = document.getElementById(targetId);
+                console.log(targetFormDiv, targetId);
+                const targetForm = targetFormDiv.querySelector("form");
+                if (targetForm) {
+                    // Masquer tous les formulaires de réponse
+                    replyForms.forEach(form => {
+                        if (form !== targetForm) {
+                            form.style.display = 'none';
+                        }
+                    });
+                    // Afficher le formulaire de réponse cible
+                    targetForm.style.display = 'flex';
+                }
+            });
+        });
+    </script>
+{% endblock %}

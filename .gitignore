@@ -1,8 +1,8 @@
 /var
 /vendor
 /.idea
+/migrations/*.php
 /public/bundles/
-/.idea
 composer.lock
 
 ###> phpunit/phpunit ###

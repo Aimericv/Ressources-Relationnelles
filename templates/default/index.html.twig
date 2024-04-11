@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/posts.css') }}>
+    {%  endblock %}
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-top: 90px;
+            padding-bottom: 100px;
+        }
+
+        @media (min-width: 768px){
+            .footer{
+                position: static;
+            }
+        }
+    </style>
+    <body>
+    <main class="container">
+        <section class="posts">
+        {% if app.user %}
+
+            {% set follows = utilisateur.getFollows() %}
+            {% for follow in follows %}
+                {% set followPosts = follow.getPosts() %}
+                {% for post in followPosts %}
+                    {% if post.getStatus().getId() == 3 %}
+                    <div class="post">
+                        <p><a style="visibility: hidden;">a</a></p>
+                        <div class="autor">
+                            {% if post.getUser().getAvatarImg() is not null %}
+                                <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                            {% else %}
+                                <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                            {% endif %}
+
+                            <a class="link-name" href="{{ path('app_other_user', {'id': post.getUser().getId()}) }}">{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</a>
+                        </div>
+                        {% set images = post.getImages() %}
+                        {% if images is not empty %}
+                            <div class="img-ressource">
+                                <img class="img-ressource" src="{{ asset(images[0].getSrc()) }}" alt="Image du Post">
+                            </div>
+                        {% endif %}
+                        <p class="category">{{ post.getType().getName() }}</p>
+                        <h2 class="title-ressource">{{ post.title }}</h2>
+                        <p class="description-ressource">{{ post.description }}</p>
+                        <button class="button-more-ressource" type="button"><a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                
+                {% set followReposts = follow.getReposts() %}
+                {% for repostPost in followReposts %}
+                    <article class="post">
+                                            <p class="category">Reposté par : <a class="link-name" href="{{ path('app_other_user', {'id': follow.getId()}) }}">{{ follow.getFirstName() }} {{ follow.getLastName() }}</a></p>
+
+                        <div class="autor">
+                            {% if repostPost.getUser().getAvatarImg() is not null %}
+                                <img src="{{ asset('profiles/' ~ repostPost.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                            {% else %}
+                                <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                            {% endif %}
+    
+                            <a class="link-name" href="{{ path('app_other_user', {'id': repostPost.getUser().getId()}) }}">{{ repostPost.getUser().getFirstName() }} {{ repostPost.getUser().getLastName() }}</a>
+                        </div>   
+                        {% set repostImages = repostPost.getImages() %}
+                        {% if repostImages is not empty %}
+                            <div class="img-ressource">
+                                <img class="img-ressource" src="{{ asset(repostImages[0].getSrc()) }}" alt="Image du Post">
+                            </div>
+                        {% endif %}
+                                                <p class="category">{{ repostPost.getType().getName() }}</p>
+
+                        <h2 class="title-ressource">{{ repostPost.title }}</h2>
+                        <p class="description-ressource">{{ repostPost.description }}</p>
+                        <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': repostPost.id}) }}';">En savoir plus</button>
+                    </article>
+                {% endfor %}
+
+            {% endfor %}
+        {% endif %}
+        </section>
+        
+
+        <section class="spacer">
+            <div class="line-spacer"></div>
+            <p>SUGGESTION</p>
+            <div class="line-spacer"></div>
+        </section>
+
+        <section class="posts">
+            {% set suggestionPosts = posts|sort((a, b) => b.id - a.id) %}
+            {% for post in suggestionPosts %}
+                <div class="post">
+                    <div class="autor">
+                        {% if post.getUser().getAvatarImg() is not null %}
+                            <img src="{{ asset('profiles/' ~ post.getUser().getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                        {% else %}
+                            <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                        {% endif %}
+                        <a class="link-name" href="{{ path('app_other_user', {'id': post.getUser().getId()}) }}">{{ post.getUser().getFirstName() }} {{ post.getUser().getLastName() }}</a>
+                    </div>
+                    {% set postImages = post.getImages() %}
+                    {% if postImages is not empty %}
+                        <div class="img-ressource">
+                            <img class="img-ressource" src="{{ asset(postImages[0].getSrc()) }}" alt="Image du Post">
+                        </div>
+                    {% endif %}
+                    <p class="category">{{ post.getType().name }}</p>
+                    <h2 class="title-ressource">{{ post.title }}</h2>
+                    <p class="description-ressource">{{ post.description }}</p>
+                    <button class="button-more-ressource" type="button" onclick="window.location.href = '{{ path('app_post_detail', {'id': post.id}) }}';">En savoir plus</button>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+
+{% endblock %}

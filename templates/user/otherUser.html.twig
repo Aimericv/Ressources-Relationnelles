@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-top: 90px;
+            padding-bottom: 100px;
+        }
+        @media (min-width: 768px){
+            .footer{
+                position: static;
+            }
+        }
+    </style>
+    <body>
+    <main class="container">
+
+        {% block stylesheetsConnected %}
+            <link rel="stylesheet" href={{ asset('css/user.css') }}>
+            <link rel="stylesheet" href={{ asset('css/posts.css')}}>
+    <section id="data-user">
+        <article id="avatar-section">
+            <div class="autor"> 
+                {% if user.getAvatarImg() is not null %}
+                    <img src="{{ asset('profiles/' ~ user.getAvatarImg()) }}" alt="Avatar de l'user">
+                {% else %}
+                    <img src="{{ asset('medias/user-green.png') }}" alt="Avatar par défaut">
+                {% endif %}
+            </div>
+            <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+            <p>{{ user.getRoles[0] }}</p>
+            <a href="{{ path('app_user_subscribe', {'id': user.id}) }}" id="subscribe">
+                {% if follow == true %}
+                    Se désabonner
+                {% else %}
+                    S'abonner
+                {% endif %}
+            </a>
+        </article>
+
+        <article class="container" id="stats-section">
+            <div class="stats-section">
+                <div>
+                    {% set nmbRessources = user.getPosts() | length %}
+                    <p class="data-user">{{nmbRessources}}</p>
+                    <p>Ressources</p>
+                </div>
+                <div>
+                    {% set nmbFollow = user.getFollows() | length %}
+                    <p class="data-user">{{nmbFollow}}</p>
+                    <p>Abonnements</p>
+                </div>
+                <div>
+                    {% set nmbFollowing = user.getFollowing() | length %}
+                    <p class="data-user">{{nmbFollowing}}</p>
+                    <p>Abonnés</p>
+                </div>
+            </div>
+        </article>
+    </section>
+    <section id="post-section" style="margin-top: 50px;">
+        {% set sortedPosts = posts|sort((a, b) => b.id - a.id) %}
+        {% for post in sortedPosts %}
+        <div>
+            {% if imageSrc[post.id] is not null %}
+                <div class="img-ressource">
+                    <img class="img-ressource" src="{{ asset(imageSrc[post.id]) }}" alt="Image du Post">
+                </div>
+            {% endif %}
+            <h2 class="title-ressource">{{ post.title }}</h2>
+            <p class="description-ressource">{{ post.description }}</p>
+            <button class="button-more-ressource" type="button"><a href="{{ path('app_post_detail', {'id': post.id}) }}">En savoir plus</a></button>
+        </div>
+        {% endfor %}
+    </section>
+        {%  endblock %}
+</main>
+
+    </body>
+{% endblock %}
