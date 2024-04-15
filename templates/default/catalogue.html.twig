@@ -9,7 +9,7 @@
     <body>
         <main class="container">
             <section id="filter-section" onclick="toggleFilterForm()">
-                <img src="{{ asset('medias/filter-green.png') }}">
+                <img id="fs" src="{{ asset('medias/filter-green.png') }}">
             </section>
 
             {# Affichage des boutons de filtrage #}
@@ -75,6 +75,9 @@
 
                 #filter-form button:hover {
                     background-color: #03989e;
+                }
+                #fs {
+                    cursor: pointer;
                 }
 
             </style>
