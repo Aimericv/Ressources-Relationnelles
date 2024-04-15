@@ -7,7 +7,9 @@
 #filter-section img{
     width: 30px;
 }
-
+.post:hover{
+    transform: scale(1.05);
+}
 .link-name {
     text-decoration: none;
     color: black;
