@@ -135,9 +135,6 @@ header>div {
     transform: scale(1.1);
 }
 
-.icon-img {
-    transition: transform 0.3s ease; /* Ajoute une transition fluide */
-}
 @media (max-width: 380px){
 
     header {
