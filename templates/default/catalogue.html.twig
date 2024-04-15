@@ -8,13 +8,81 @@
 
     <body>
         <main class="container">
-            <section id="filter-section">
-                <img src={{ asset('medias/filter-green.png') }}>
+            <section id="filter-section" onclick="toggleFilterForm()">
+                <img src="{{ asset('medias/filter-green.png') }}">
             </section>
+
+            {# Affichage des boutons de filtrage #}
+            <form action="{{ path('app_catalogue') }}" method="GET" id="filter-form" style="display: none;">
+                <label for="date_order">Trier par date :</label>
+                <select id="date_order" name="date_order">
+                    <option value="desc">Plus récents en premier</option>
+                    <option value="asc">Plus anciens en premier</option>
+                </select>
+
+                <label for="category">Filtrer par catégorie :</label>
+                <select id="category" name="category">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Filtrer</button>
+            </form>
+
+            <script>
+                function toggleFilterForm() {
+                    var form = document.getElementById('filter-form');
+                    if (form.style.display === 'none') {
+                        form.style.display = 'block';
+                    } else {
+                        form.style.display = 'none';
+                    }
+                }
+            </script>
+
+            <style>
+                #filter-form {
+                    display: none;
+                    padding: 20px;
+                    background-color: #f7f7f7;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    margin-top: 20px;
+                }
+
+                #filter-form label {
+                    display: block;
+                    margin-bottom: 10px;
+                }
+
+                #filter-form select, #filter-form button {
+                    padding: 10px;
+                    width: 100%;
+                    margin-bottom: 15px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
+
+                #filter-form button {
+                    background-color: #03989e;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                }
+
+                #filter-form button:hover {
+                    background-color: #03989e;
+                }
+
+            </style>
+
             <h1>Catalogue</h1>
 
            <section class="posts">
-        {% set allPosts = posts|sort((a, b) => b.id - a.id) %}
+        {% set allPosts = posts %}
             {% for post in allPosts %}
                 <div class="post">
                     <div class="autor">

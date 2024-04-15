@@ -157,4 +157,33 @@ public function findByAllStats(?int $userId = null): int
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    //Filtrage
+    public function findByFilters(?string $dateOrder, ?int $categoryId)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->leftJoin('p.type', 'c') // c représente l'alias de la relation avec la catégorie
+        ->andWhere('p.status = :status')
+        ->setParameter('status', 3);
+
+        // Trier les résultats par date de création
+        if ($dateOrder === 'asc') {
+            // Tri ascendant (plus anciens en premier)
+            $qb->orderBy('p.created_at', 'ASC');
+        } else {
+            // Tri descendant (plus récents en premier)
+            $qb->orderBy('p.created_at', 'DESC');
+        }
+
+        // Filtrer par catégorie si une catégorie est sélectionnée
+        if ($categoryId) {
+            $qb->andWhere('c.id = :categoryId')
+                ->setParameter('categoryId', $categoryId);
+        }
+
+        // Trier les résultats par date de création
+        $qb->orderBy('p.created_at', ($dateOrder === 'asc') ? 'ASC' : 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
 }
