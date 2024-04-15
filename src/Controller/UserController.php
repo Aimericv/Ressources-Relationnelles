@@ -218,7 +218,7 @@ class UserController extends AbstractController
 
             $regexPassword = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]).*$/';
             $regexEmail = '/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})$/';
-
+ 
             $firstName = $request->request->get('firstname');
             $name = $request->request->get('name');
             $formAddress = $request->request->get('address');
