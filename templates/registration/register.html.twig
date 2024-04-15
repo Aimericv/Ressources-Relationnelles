@@ -9,6 +9,13 @@
     {%  endblock %}
 <main class="container">
     <h1>Register</h1>
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 
     <form method="post" action="{{ path('app_register') }}" enctype="multipart/form-data">
         <section id="avatar-section">

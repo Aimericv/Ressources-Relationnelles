@@ -201,7 +201,7 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'app_register')]
-    public function register(Request $request, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, EntityManagerInterface $entityManager): ?Response
     {
         $roleRepo = $entityManager->getRepository(Role::class);
         $user = new User();
@@ -216,6 +216,9 @@ class UserController extends AbstractController
                 $user->setAvatarImg($newFilename);
             }
 
+            $regexPassword = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]).*$/';
+            $regexEmail = '/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})$/';
+
             $firstName = $request->request->get('firstname');
             $name = $request->request->get('name');
             $formAddress = $request->request->get('address');
@@ -224,20 +227,29 @@ class UserController extends AbstractController
             $address = $formAddress . ', ' . $postalCode . ' ' . $city;
             $email = $request->request->get('email');
             $password = $request->request->get('password');
+            
+            if (preg_match($regexEmail, $email)){
+                if (preg_match($regexPassword, $password)){
+                    $user->setRoles(['ROLE_USER'], $roleRepo);
+                    $user->setEmail($email);
+                    $user->setPassword($password);
+                    $user->setFirstName($firstName);
+                    $user->setLastName($name);
+                    $user->setAddress($address);
+                    $user->setCreatedAt(new \DateTime());
+                    $user->setPolice('16');
 
-            $user->setRoles(['ROLE_USER'], $roleRepo);
-            $user->setEmail($email);
-            $user->setPassword($password);
-            $user->setFirstName($firstName);
-            $user->setLastName($name);
-            $user->setAddress($address);
-            $user->setCreatedAt(new \DateTime());
-            $user->setPolice('16');
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_login');
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('app_login');
+                }
+                else {
+                    $this->addFlash('error', 'Le mot de passe est invalide.');
+                }
+            }
+            else {
+                $this->addFlash('error', 'L\'adresse email est invalide.');
+            }
         }
 
         return $this->render('registration/register.html.twig');
