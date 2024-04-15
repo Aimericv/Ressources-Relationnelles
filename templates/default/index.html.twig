@@ -62,7 +62,9 @@
                 {% set followReposts = follow.getReposts() %}
                 {% for repostPost in followReposts %}
                     <article class="post">
-                                            <p class="category">Reposté par : <a class="link-name" href="{{ path('app_other_user', {'id': follow.getId()}) }}">{{ follow.getFirstName() }} {{ follow.getLastName() }}</a></p>
+                                            <p class="category">    <img src="{{ asset('medias/send-green.png') }}" alt="Avatar par défaut" width="20" height="20">
+
+Reposté par : <a class="link-name" href="{{ path('app_other_user', {'id': follow.getId()}) }}">{{ follow.getFirstName() }} {{ follow.getLastName() }}</a></p>
 
                         <div class="autor">
                             {% if repostPost.getUser().getAvatarImg() is not null %}

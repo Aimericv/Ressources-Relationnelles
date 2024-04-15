@@ -6,14 +6,16 @@
 
 #avatar-img img {
     border-radius: 50%;
+    height: 40px !important;
 }
+
 
 /*HEADER*/
 
 header {
     background-color: #03989e;
-    padding: 0 40px;
-    position: fixed;
+    padding: 0 50px;
+    position: absolute;
     width: 100%;
     z-index: 50;
 }
@@ -24,7 +26,7 @@ h2 {
 
 
 #header-logo {
-    width: 100px;
+    width: 90px;
 }
 
 header img {
@@ -36,6 +38,8 @@ header ul {
     list-style: none;
     margin-bottom: 0;
 }
+
+
 
 /*FOOTER*/
 
@@ -54,10 +58,14 @@ footer {
     align-items: center;
     justify-content: space-around;
     list-style: none;
+    height: 30px;
+    margin-bottom: 0;
+
 }
 
 #footer-mobile ul img {
     height: 30px;
+    margin-bottom: 0;
 }
 
 /* AIDE */
@@ -125,16 +133,40 @@ header>div {
     color: rgba(255, 255, 255, 0.757);
 }
 
+#homepage_icon:hover, #catalogue_icon:hover, #creation_posts_icon:hover, #favorite_icon:hover, #user_icon:hover, #searchLabel:hover,#searchIcon:hover{
+    transform: scale(1.1);
+}
+
+
+@media (max-width: 380px){
+
+    header {
+        background-color: #03989e;
+        padding: 0 20px;
+        position: fixed;
+        width: 100%;
+        z-index: 50;
+    }
+
+}
 @media (min-width: 768px){
+
     header ul {
+        position: absolute;
+        left: 50%; /* Positionne le début de la liste au milieu de l'en-tête */
+        transform: translateX(-50%); /* Centre la liste horizontalement */
         display: flex;
         align-items: center;
-        gap: 50px;
+        justify-content: space-between;
+        list-style: none;
+        margin-bottom: 0;
+        padding: 0;
     }
     header ul img {
         height: 30px;
         width: auto;
     }
+
     footer {
         position: static;
     }
@@ -192,3 +224,4 @@ header>div {
         width: 50%;
     }
 }
+
