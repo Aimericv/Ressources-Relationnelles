@@ -133,7 +133,7 @@ header>div {
     color: rgba(255, 255, 255, 0.757);
 }
 
-#homepage_icon:hover, #catalogue_icon:hover, #creation_posts_icon:hover, #favorite_icon:hover, #user_icon:hover, #searchLabel:hover,#searchIcon:hover{
+#homepage_icon:hover, #catalogue_icon:hover, #creation_posts_icon:hover, #favorite_icon:hover, #user_icon:hover, #searchLabel:hover,#searchIcon:hover, #avatar-img:hover{
     transform: scale(1.1);
 }
 
@@ -219,6 +219,15 @@ header>div {
 @media (min-width: 992px) {
     header ul {
         gap: 90px;
+    }
+    #footer-computer img {
+        width: 50%;
+    }
+}
+
+@media (max-width: 1000px) {
+    header ul {
+        gap: 70px;
     }
     #footer-computer img {
         width: 50%;
