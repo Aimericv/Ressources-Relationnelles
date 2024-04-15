@@ -135,9 +135,12 @@ header>div {
     transform: scale(1.1);
 }
 
+<<<<<<< HEAD
 .icon-img {
     transition: transform 0.3s ease; /* Ajoute une transition fluide */
 }
+=======
+>>>>>>> ef4767d85455574f2d3661ed283bc788866f9333
 @media (max-width: 380px){
 
     header {

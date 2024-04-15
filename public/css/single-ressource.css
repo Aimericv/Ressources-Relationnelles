@@ -78,6 +78,7 @@ p, h1, h2, h3, h4, h5, h6 {
 .actions {
     display: flex;
     justify-content: space-around;
+    margin-top: 10%;
 }
 
 .actions img {
@@ -187,10 +188,15 @@ a:hover {
     color: black;
 }
 
+.like-link:hover, .favorite-link:hover, .exploited-link:hover, .repost-link:hover{
+    transform: scale(1.1);
+}
+
 .like-link{
     background-color: transparent;
     border: 0;
 }
+
 
 .favorite-link{
     background-color: transparent;
