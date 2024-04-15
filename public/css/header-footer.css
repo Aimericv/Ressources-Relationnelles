@@ -15,7 +15,7 @@
 header {
     background-color: #03989e;
     padding: 0 50px;
-    position: fixed;
+    position: absolute;
     width: 100%;
     z-index: 50;
 }
@@ -38,6 +38,8 @@ header ul {
     list-style: none;
     margin-bottom: 0;
 }
+
+
 
 /*FOOTER*/
 
@@ -135,12 +137,7 @@ header>div {
     transform: scale(1.1);
 }
 
-<<<<<<< HEAD
-.icon-img {
-    transition: transform 0.3s ease; /* Ajoute une transition fluide */
-}
-=======
->>>>>>> ef4767d85455574f2d3661ed283bc788866f9333
+
 @media (max-width: 380px){
 
     header {
@@ -155,9 +152,15 @@ header>div {
 @media (min-width: 768px){
 
     header ul {
+        position: absolute;
+        left: 50%; /* Positionne le début de la liste au milieu de l'en-tête */
+        transform: translateX(-50%); /* Centre la liste horizontalement */
         display: flex;
         align-items: center;
-        gap: 50px;
+        justify-content: space-between;
+        list-style: none;
+        margin-bottom: 0;
+        padding: 0;
     }
     header ul img {
         height: 30px;
