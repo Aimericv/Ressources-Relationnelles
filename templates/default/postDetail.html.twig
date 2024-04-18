@@ -12,10 +12,12 @@
         </section>
         <section style="position: relative;min-height: 90vh; margin-top:40px">
             {% for img in images %}
-                <img class="contentPost" src="{{ img.src }}" alt="Rencontre" style="position: absolute; top:{{ img.y }}px; left:{{ img.x }}px; width: {{ img.width }}px; height: {{ img.height }}px; z-index:-1;">
+
+                <img class="contentPost" src="{{ img.src }}" alt="Rencontre" style="position: absolute; top:{{ img.y }}px; left:{{ img.x }}px; width: {{ img.width }}%; height: {{ img.height }}%; z-index:-1;">
             {% endfor %}
             {% for paragraph in paragraphes %}
-                <div class="contentPost" style="position: absolute; top:{{ paragraph.y }}px; left:{{ paragraph.x }}px; width: {{ paragraph.width }}px; height: {{ paragraph.height }}px; z-index:-1;">
+                <div class="contentPost" style="position: absolute; top:{{ paragraph.y }}px; left:{{ paragraph.x }}px; width: {{ paragraph.width }}%; height: {{ paragraph.height }}%; z-index:-1;">
+
                     {{ paragraph.getContent()|raw }}
                 </div>
             {% endfor %}

@@ -200,8 +200,8 @@ function mettreAJourElementData() {
                     x: x,
                     y: y,
                     src: src,
-                    width: imageElement.offsetWidth,
-                    height: imageElement.offsetHeight
+                    width: (imageElement.offsetWidth*100) / element.parentNode.offsetWidth,
+                    height: (imageElement.offsetHeight*100) / element.parentNode.offsetHeight
                 };
                 imageDataArray.push(imageElementData);
             } else {
@@ -215,8 +215,8 @@ function mettreAJourElementData() {
                         x: x,
                         y: y,
                         content: content,
-                        width: element.offsetWidth,
-                        height: element.offsetHeight
+                        width: (element.offsetWidth*100) / element.parentNode.offsetWidth,
+                        height: (element.offsetHeight*100) / element.parentNode.offsetHeight
                     };
                     paragraphDataArray.push(paragraphElementData);
                 });
