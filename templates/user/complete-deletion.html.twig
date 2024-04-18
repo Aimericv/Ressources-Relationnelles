@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <!-- balise pour inclure le script de suppression d'un utilisateur -->
+    <script src="{{ asset('js/redirection-to-home.js') }}"></script>
 
     <style>
        
@@ -11,12 +12,8 @@
 
         }
 
-         @media (min-width: 768px){
-            #deleted-user-text{
-            font-size:10px;
-
-        }
-        }
+         
+        
     </style>
     <body>
     <main class="container">
