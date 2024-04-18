@@ -43,12 +43,12 @@
     <div>
         <a href="{{ path('app_homepage') }}"><img src="{{ asset('medias/logo.png') }}" id="header-logo"></a>
         <ul>
-            <a href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
-            <a href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
-            <a href="{{ path('app_creation_posts') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
-            <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
+            <a id="homepage_icon" href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
+            <a id="catalogue_icon" href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
+            <a id="creation_posts_icon" href="{{ path('app_creation_posts') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
+            <a id="favorite_icon" href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
             {% if app.user %}
-                <a href="{{ path('app_user') }}">
+                <a id="user_icon" href="{{ path('app_user') }}">
                     <li id="avatar-img">
                         {% if utilisateur is defined and utilisateur.getAvatarImg() is not null %}
                             <img src="{{ asset('profiles/' ~ utilisateur.getAvatarImg()) }}" alt="Avatar de l'utilisateur">
@@ -68,7 +68,7 @@
 
         <form id="searchForm" action="{{ path('app_post_search') }}" method="get">
             <input style="display: none;" id="searchInput" type="text" name="term" placeholder="Rechercher par titre...">
-            <label for="searchInput"><img src={{ asset('medias/search-white.png') }}></label>
+            <label id="searchLabel" for="searchInput"><img src={{ asset('medias/search-white.png') }}></label>
             <button id="searchIcon" type="submit" style="display: none;"><img src={{ asset('medias/search-white.png') }}></button>
         </form>
 
@@ -111,12 +111,27 @@
 <footer class="footer">
     <section id="footer-mobile">
         <ul>
-            <a href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
-            <a href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
-            <a href="{{ path('app_creation_posts') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
-            <a href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
-            <a href="{{ path('app_user') }}"><li><img src="{{ asset('medias/user-white.png') }}"></li></a>
-        </ul>
+            <a id="homepage_icon" href="{{ path('app_homepage') }}"><li><img src="{{ asset('medias/home-white.png') }}"></li></a>
+            <a id="catalogue_icon" href="{{ path('app_catalogue') }}"><li><img src="{{ asset('medias/catalogue-white.png') }}"></li></a>
+            <a id="creation_posts_icon" href="{{ path('app_creation_posts') }}"><li><img src="{{ asset('medias/add-post-white.png') }}"></li></a>
+            <a id="favorite_icon" href="{{ path('app_favorite') }}"><li><img src="{{ asset('medias/favorite-white.png') }}"></li></a>
+{% if app.user %}
+                <a id="user_icon" href="{{ path('app_user') }}">
+                    <li id="avatar-img">
+                        {% if utilisateur is defined and utilisateur.getAvatarImg() is not null %}
+                            <img src="{{ asset('profiles/' ~ utilisateur.getAvatarImg()) }}" alt="Avatar de l'utilisateur">
+                        {% else %}
+                            <img src="{{ asset('medias/user-white.png') }}">
+                        {% endif %}
+                    </li>
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}">
+                    <li id="avatar-img">
+                        <img src="{{ asset('medias/user-white.png') }}">
+                    </li>
+                </a>
+            {% endif %}        </ul>
     </section>
     <section id="footer-computer">
         <div><img src="{{asset('medias/logo.png')}}"></div>
