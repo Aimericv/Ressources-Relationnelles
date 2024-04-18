@@ -5,6 +5,16 @@
     box-sizing: border-box;
 }
 
+
+#fs:hover{
+    transform: scale(1.1);
+}
+
+#filter-button:hover{
+    transform: scale(1.02);
+}
+
+
 #filter-section img{
     width: 30px;
 }
