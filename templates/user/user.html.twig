@@ -101,7 +101,7 @@
             <div id="reglementation-user">
                 <a href="#">MENTIONS LÉGALES</a>
                 <a href='{{ path('app_logout') }}'>SE DÉCONNECTER</a>
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
+                <button type="button"  data-toggle="modal" data-target="#exampleModalCenter">
                     SUPPRESSION DU COMPTE
                 </button>
             </div>
@@ -145,26 +145,27 @@
         {% endif %}
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <!--<h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>-->
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Voulez-vous vraiment supprimer votre compte ?</p>
-                        <p>(Votre compte sera supprimé définitivement)</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
-                        <button type="button" class="btn btn-danger" onclick="deleteUser()">Supprimer</button>
-                    </div>
-                </div>
+       <div class="custom-modal" id="exampleModalCenter">
+    <div class="custom-modal-dialog" role="document">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <!--<h5 class="custom-modal-title" id="exampleModalLongTitle">Modal title</h5>-->
+                <button type="button" class="custom-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="custom-modal-body">
+                <p><strong>Voulez-vous vraiment supprimer votre compte ?</strong></p>
+                <p>(Votre compte sera supprimé définitivement)</p>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="custom-btn custom-btn-primary" onclick="closeCustomModal()">Annuler</button>
+                <button type="button" class="custom-btn custom-btn-danger" onclick="deleteUser()">Supprimer</button>
             </div>
         </div>
+    </div>
+</div>
+
 </main>
 
     <script>

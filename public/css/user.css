@@ -168,6 +168,23 @@ input[type='range']::-webkit-slider-thumb {
     color: black;
 }
 
+#reglementation-user button {
+    text-decoration: none;
+    color: #e00404;
+    border:none;
+    background-color: transparent;
+}
+
+#reglementation-user button:hover {
+    cursor: pointer;
+    text-decoration: none;
+    color: #780101;
+    border:none;
+    background-color: transparent;
+}
+
+
+
 main {
     display: flex;
     flex-direction: column;

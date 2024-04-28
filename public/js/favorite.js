@@ -35,6 +35,7 @@ window.dragMoveListener = dragMoveListener;
                 },
                 end: function(event) {
                     $('.drag a').css('pointer-events', 'auto');
+                    
                 }
             }
         });
@@ -50,9 +51,25 @@ interact('.dropzone').dropzone({
     overlap: 0.25,
 
     ondropactivate: function (event) {
-        event.target.classList.add('drop-active');
+
+
+        console.log("dragging");
+
     },
+    ondragenter: function (event){
+        event.target.classList.add('hovered');
+        console.log("dragenter");
+
+    },
+    ondragleave: function (event){
+        event.target.classList.remove('hovered');
+        console.log("dragenter");
+
+    },
+
     ondrop: function (event) {
+        event.target.classList.remove('hovered');
+
         let draggableElement = event.relatedTarget;
         let element = draggableElement.getAttribute('data-id');
         let folder = event.target.getAttribute('data-id');
@@ -68,7 +85,19 @@ interact('.dropzoneFolder').dropzone({
     ondropactivate: function (event) {
         event.target.classList.add('drop-active');
     },
+    ondragenter: function (event){
+        event.target.classList.add('hovered');
+        console.log("dragenter");
+
+    },
+    ondragleave: function (event){
+        event.target.classList.remove('hovered');
+        console.log("dragenter");
+
+    },
     ondrop: function (event) {
+        event.target.classList.remove('hovered');
+
         let draggableElement = event.relatedTarget;
         let element = draggableElement.getAttribute('data-id');
         postExitFolder(element);
@@ -98,7 +127,19 @@ interact('.removeFolder').dropzone({
     ondropactivate: function (event) {
         event.target.classList.add('drop-active');
     },
+    ondragenter: function (event){
+        event.target.querySelector('p').classList.add('hovered');
+        console.log("dragenter remove");
+
+    },
+    ondragleave: function (event){
+        event.target.querySelector('p').classList.remove('hovered');
+        console.log("dragenter");
+
+    },
     ondrop: function (event) {
+        event.target.querySelector('p').classList.remove('hovered');
+
         console.log('yess!!');
         let draggableElement = event.relatedTarget;
         let folder = draggableElement.getAttribute('data-id');

@@ -4,24 +4,16 @@
     <script src="{{ asset('js/redirection-to-home.js') }}"></script>
 
     <style>
-        .footer{
-            position: fixed;
-            bottom: 0px;
-            width: 100%;
+       
+        #deleted-user-text{
+            margin-top:10%;
+            text-align:center;
+            margin-bottom:10%;
+
         }
-        body{
-            position: relative;
-            min-height: 100vh;
-        }
-        main {
-            padding-top: 90px;
-            padding-bottom: 100px;
-        }
-        @media (min-width: 768px){
-            .footer{
-                position: static;
-            }
-        }
+
+         
+        
     </style>
     <body>
     <main class="container">
@@ -32,8 +24,10 @@
             <link rel="stylesheet" href={{ asset('css/user.css') }}>
         {% endblock %}
         {% endif %}
-        <h1>DELETED USER</h1>
-        <h2>You will redirected in <span id="timer">4</span></h2>
+        <div id="deleted-user-text">
+        <h1>UTILISATEUR SUPPRIMÉ</h1>
+        <h2>Vous allez être rédirigé dans <span id="timer">4</span></h2>
+        </div>
     </main>
 
     <script>
