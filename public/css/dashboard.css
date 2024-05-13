@@ -363,6 +363,7 @@ select:focus, input:focus {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
 }
 
 #sav-value>div>div {

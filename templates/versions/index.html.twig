@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/versions.css') }}>
+    {%  endblock %}
+    <body>
+        <main class="container">
+            <section>
+                <article>
+                    <h2>1.2.3</h2>
+                    <ul>
+                        {# {% let modifs = version.getModif %} #}
+                        {# {% for modif in modifs %} #}
+                        <li>
+                            <h3>Titre de la modifs</h3>
+                            <p>Description de la modif</p>
+                        </li>
+                        {# {% endfor %} #}
+                        <li>
+                            <h3>Titre de la modifs</h3>
+                            <p>Description de la modif</p>
+                        </li>
+                        <li>
+                            <h3>Titre de la modifs</h3>
+                            <p>Description de la modif</p>
+                        </li>
+                        <li>
+                            <h3>Titre de la modifs</h3>
+                            <p>Description de la modif</p>
+                        </li>
+                    </ul>
+                </article>
+                {# {% endfor %} #}
+            </section>
+        </main>
+    </body>
+{% endblock %}
