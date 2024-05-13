@@ -9,12 +9,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
 use App\Entity\Category;
+use App\Entity\Versions;
+use App\Entity\Modifications;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
 use App\Repository\PostRepository;
 use App\Repository\CommentRepository;
 use App\Repository\CommentResponseRepository;
 use App\Repository\PostStatusRepository;
+use App\Repository\VersionsRepository;
+use App\Repository\ModificationsRepository;
 use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -27,7 +31,7 @@ class DashboardController extends AbstractController
 {
     
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(Request $request, CommentRepository $commentRepo, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
+    public function index(Request $request, VersionsRepository $versionRepo, CommentRepository $commentRepo, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -71,6 +75,10 @@ class DashboardController extends AbstractController
 
         $category = $catRepo->findAll();
 
+        $versions = $versionRepo->findAll();
+
+        $selectedVersion = $versionRepo->findOneBy(['status' => 1]);
+
         return $this->render('dashboard/index.html.twig', [
             'utilisateur' => $utilisateur,
             'roleUser' => $roleUser,
@@ -80,7 +88,73 @@ class DashboardController extends AbstractController
             'questions' => $questions,
             'categories' => $category,
             'comments' => $comment,
+            'versions' => $versions,
+            'selectedVersion' => $selectedVersion,
         ]);
+    }
+
+    #[Route('/dashboard/select/version', name: 'app_dashboard_select_version')]
+    public function selectVersion(Request $request, VersionsRepository $versionRepo): JsonResponse
+    {
+        $selectedVersionId = $request->request->get('selectedVersionId');
+        $selectedVersionData = $versionRepo->find($selectedVersionId);
+        $modifications = $selectedVersionData->getModifications();
+        $modificationsData = [];
+
+        foreach ($modifications as $modification) {
+            $modificationsData[] = [
+                'id' => $modification->getId(),
+                'titre' => $modification->getTitre(),
+                'description' => $modification->getDescription(),
+            ];
+        }
+        $versionJSON = [
+            'name' => $selectedVersionData->getName(),
+            'id' => $selectedVersionData->getId(),
+            'status' => $selectedVersionData->getStatus(),
+            'modifications' => $modificationsData,
+        ];
+    
+        return new JsonResponse($versionJSON);
+    }
+
+    #[Route('/dashboard/add/version/{action}', name: 'app_dashboard_add_version')]
+    public function addVersion($action, VersionsRepository $versionRepo): Response
+    {
+        $versions = $versionRepo->findAll();
+
+        return $this->render('dashboard/versionForm.html.twig', [
+            'action' => $action,
+            'versions' => $versions,
+        ]);
+    }
+
+    #[Route('/dashboard/add/version/{action}/add', name: 'app_dashboard_add_version_add')]
+    public function addVersionAdd($action, Request $request, VersionsRepository $versionRepo, ModificationsRepository $modifRepo, EntityManagerInterface $entityManager): Response
+    {
+        if ($action == "modification") {
+            $titre = $request->request->get('title');
+            $description = $request->request->get('description');
+            $versionId = $request->request->get('version');
+            $version = $versionRepo->find($versionId);
+
+            $modification = new Modifications;
+            $modification->setTitre($titre);
+            $modification->setDescription($description);
+            $modification->setVersions($version);
+            $entityManager->persist($modification);
+            $entityManager->flush();
+        } elseif ($action == "version") {
+            $name = $request->request->get('name');
+
+            $version = new Versions;
+            $version->setStatus(0);
+            $version->setName($name);
+            $entityManager->persist($version);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard/ajax', name: 'app_dashboard_ajax')]

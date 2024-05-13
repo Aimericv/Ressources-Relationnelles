@@ -250,46 +250,34 @@
         <section id="versions-section">
             <article class="dashboard-title">
                 <span></span>
-                <h2>VERSIONS</h2>
+                <h2>{{selectedVersion.getName()}}</h2>
                 <span></span>
             </article>
-            <article id="versions-value">
-                {# {% for versions in versions %} #}
-                    <div class="answer-container">
-                        <div class="question-container">
-                            <p data-id="{{ question.id }}" class="question">{{ question.questions }}</p>
-                            <div>
-                                <a href="#" class="open-sav-form">
-                                    {% if question.answer is not null %}
-                                        Modifier
-                                    {% else %}
-                                        Répondre
-                                    {% endif %}
-                                </a>
-                                
-                                {% if question.status == 0 or question.status == 1 %}
-                                    <a href="{{ path('app_dashboard_public_help', {'id': question.id}) }}">Publier</a>
-                                {% else %}
-                                    <a href="{{ path('app_dashboard_private_help', {'id': question.id}) }}">Privatiser</a>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% if question.answer is not null %}
-                            <p class="answer">{{ question.answer }}</p>
-                        {% endif %}
+            <article class="search">
+                <div>
+                    <select name="versions" id="versionSelect">
+                        {% for version in versions %}   
+                            <option value="{{version.getId()}}">{{version.getName()}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <a href="{{path('app_dashboard_add_version', {'action': 'version'})}}">Ajouter une version</a>
+                </div>
+            </article>
+            <article id="versionsValue">
+                {% for modification in selectedVersion.getModifications() %}
+                    <div class="versionContainer">
+                        <div class="avatarVersion"></div>
+                        <p class="titreVersion">{{modification.getTitre()}}</p>
+                    </div>
+                    <div class="versionContent">
+                        <p>{{modification.getDescription()}}
                     </div>
                 {% endfor %}
             </article>
-            <article id="sav-form">
-                <form method="post">
-                    <p>Réponse à la question :</p>
-                    <p id="existinQuestion"></p>
-                    <textarea name="answer" rows="10"></textarea>
-                    <div>
-                        <button type="submit" class="back-sav-form sav-form-btn">Répondre</button>
-                        <a href="#" class="back-sav-form sav-form-btn">Retour</a>
-                    </div>
-                </form>
+            <article class="load-more" id="addVersion">
+                <a href="{{path('app_dashboard_add_version', {'action': 'modification'})}}">Ajouter une mise à jour</a>
             </article>
         </section>
         {% endif %}
