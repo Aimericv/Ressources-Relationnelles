@@ -129,6 +129,22 @@ class DashboardController extends AbstractController
         ]);
     }
 
+    #[Route('/dashboard/publier/version/{id}', name: 'app_dashboard_publier_version')]
+    public function publierVersion($id, VersionsRepository $versionRepo, EntityManagerInterface $entityManager): Response
+    {
+        $oldVersion = $versionRepo->findOneBy(['status'=>1]);
+        $oldVersion->setStatus(0);
+        $entityManager->persist($oldVersion);
+
+        $newVersion = $versionRepo->find($id);
+        $newVersion->setStatus(1);
+        $entityManager->persist($newVersion);
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
     #[Route('/dashboard/add/version/{action}/add', name: 'app_dashboard_add_version_add')]
     public function addVersionAdd($action, Request $request, VersionsRepository $versionRepo, ModificationsRepository $modifRepo, EntityManagerInterface $entityManager): Response
     {

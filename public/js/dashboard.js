@@ -252,7 +252,7 @@ function updateDashboard(selectedVersionData) {
         if (selectedVersionData.status != 1) {
             console.log(selectedVersionData.status)
             addVersion.innerHTML = '';
-            addVersion.innerHTML += `<a href="TODO" id="publierVersion">Publier</a>`
+            addVersion.innerHTML += `<a href="/dashboard/add/version/modification">Ajouter une mise à jour</a><a href="/dashboard/publier/version/${selectedVersionData.id}" id="publierVersion">Publier</a>`
         }
     });
 }

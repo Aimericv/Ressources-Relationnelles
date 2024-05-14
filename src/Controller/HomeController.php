@@ -6,6 +6,7 @@ use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
 use App\Repository\RoleRepository;
+use App\Repository\VersionsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -14,10 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     #[Route("/base", name:"app_base")]
-    public function base(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
+    public function base(PostRepository $postRepository, VersionsRepository $versionRepo): \Symfony\Component\HttpFoundation\Response
     {
         $utilisateur = $this->getUser();
-        return $this->render('base.html.twig', ['utilisateur' => $utilisateur]);
+        $version = $versionRepo->findOneBy(['status' => 1]);
+        return $this->render('base.html.twig', [
+            'utilisateur' => $utilisateur,
+            'version' => $verison,
+        ]);
     }
 
     #[Route("/", name:"app_homepage")]

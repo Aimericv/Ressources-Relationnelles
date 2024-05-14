@@ -8,30 +8,17 @@
         <main class="container">
             <section>
                 <article>
-                    <h2>1.2.3</h2>
+                    <h2>{{version.getNom()}}</h2>
                     <ul>
-                        {# {% let modifs = version.getModif %} #}
-                        {# {% for modif in modifs %} #}
+                        {% let modifs = version.getModif %}
+                        {% for modif in modifs %}
                         <li>
-                            <h3>Titre de la modifs</h3>
-                            <p>Description de la modif</p>
+                            <h3>{{modif.getTitre()}}</h3>
+                            <p>{{modif.getDescription()}}</p>
                         </li>
-                        {# {% endfor %} #}
-                        <li>
-                            <h3>Titre de la modifs</h3>
-                            <p>Description de la modif</p>
-                        </li>
-                        <li>
-                            <h3>Titre de la modifs</h3>
-                            <p>Description de la modif</p>
-                        </li>
-                        <li>
-                            <h3>Titre de la modifs</h3>
-                            <p>Description de la modif</p>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </article>
-                {# {% endfor %} #}
             </section>
         </main>
     </body>
