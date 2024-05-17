@@ -9,6 +9,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use App\Entity\User;
 use App\Repository\HelpEntityRepository;
+use app\Repository\VersionsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\HelpEntity;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,12 +30,14 @@ class HelpController extends AbstractController
     }
 
     #[Route('/help', name: 'app_help')]
-    public function index(Request $request, HelpEntityRepository $helpEntityRepository): Response
+    public function index(Request $request, VersionsRepository $versionRepo, HelpEntityRepository $helpEntityRepository): Response
     {
         $helpEntities = $helpEntityRepository->findBy(['Status' => 2], ['id' => 'DESC']);
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('help/index.html.twig', [
             'helpEntities' => $helpEntities,
+            'version' => $version,
         ]);     
     }
 

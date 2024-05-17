@@ -89,7 +89,7 @@ class DashboardController extends AbstractController
             'categories' => $category,
             'comments' => $comment,
             'versions' => $versions,
-            'selectedVersion' => $selectedVersion,
+            'version' => $selectedVersion,
         ]);
     }
 
@@ -122,10 +122,12 @@ class DashboardController extends AbstractController
     public function addVersion($action, VersionsRepository $versionRepo): Response
     {
         $versions = $versionRepo->findAll();
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('dashboard/versionForm.html.twig', [
             'action' => $action,
             'versions' => $versions,
+            'version' => $version,
         ]);
     }
 

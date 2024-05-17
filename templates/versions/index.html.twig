@@ -8,9 +8,9 @@
         <main class="container">
             <section>
                 <article>
-                    <h2>{{version.getNom()}}</h2>
+                    <h2>{{version.getName()}}</h2>
                     <ul>
-                        {% let modifs = version.getModif %}
+                        {% set modifs = version.getModifications() %}
                         {% for modif in modifs %}
                         <li>
                             <h3>{{modif.getTitre()}}</h3>
