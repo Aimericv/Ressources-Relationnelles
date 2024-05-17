@@ -24,8 +24,9 @@ class UserRepository extends ServiceEntityRepository
     public function findAdminEmails(): array
     {
         return $this->createQueryBuilder('u')
-            ->andWhere('u.roles LIKE :roles')
-            ->setParameter('roles', '["ROLE_ADMIN"]')
+            ->leftJoin('u.role', 'r')
+            ->andWhere('r.id = :roleId')
+            ->setParameter('roleId', 1)
             ->select('u.email')
             ->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
