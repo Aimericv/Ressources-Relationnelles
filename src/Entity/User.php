@@ -93,6 +93,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Folder::class)]
     private Collection $folders;
 
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    private $confirmationToken;
+
+    #[ORM\Column]
+    private ?bool $isConfirmed = false;
+
 
     public function __construct()
     {
@@ -577,6 +583,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $folder->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken(?string $confirmationToken): self
+    {
+        $this->confirmationToken = $confirmationToken;
+
+        return $this;
+    }
+
+    public function getIsConfirmed(): bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function setIsConfirmed(bool $isConfirmed): self
+    {
+        $this->isConfirmed = $isConfirmed;
 
         return $this;
     }

@@ -84,6 +84,17 @@ class UserRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function findUnconfirmedUsersCreatedBefore(\DateTime $dateTime): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isConfirmed = :isConfirmed')
+            ->andWhere('u.created_at < :created_at')
+            ->setParameter('isConfirmed', false)
+            ->setParameter('created_at', $dateTime)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Entity\User;
@@ -24,6 +26,7 @@ use App\Entity\Folder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 
@@ -207,7 +210,7 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'app_register')]
-    public function register(VersionsRepository $versionRepo, Request $request, EntityManagerInterface $entityManager): ?Response
+    public function register(VersionsRepository $versionRepo, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator): ?Response
     {
         $roleRepo = $entityManager->getRepository(Role::class);
         $user = new User();
@@ -244,9 +247,28 @@ class UserController extends AbstractController
                     $user->setAddress($address);
                     $user->setCreatedAt(new \DateTime());
                     $user->setPolice('16');
+                    // Generate a confirmation token
+                    $user->setConfirmationToken($tokenGenerator->generateToken());
 
                     $entityManager->persist($user);
                     $entityManager->flush();
+
+                    // Send confirmation email
+                    $email = (new Email())
+                    ->from('no-reply@ressourcerelationnelles.com')
+                    ->to($user->getEmail())
+                    ->subject('Please Confirm your Email')
+                    ->html(
+                        $this->renderView(
+                            'emails/confirmation.html.twig',
+                            ['confirmationToken' => $user->getConfirmationToken()]
+                        )
+                    );
+
+                    $mailer->send($email);
+
+                    $this->addFlash('success', 'Un mail de confirmation a été envoyé à votre adresse mail.');
+
                     return $this->redirectToRoute('app_login');
                 }
                 else {
