@@ -49,18 +49,17 @@
 <script>
     function enableSubmit() {
         document.getElementById("submitButton").classList.remove("disabled");
+        document.getElementById("captchaError").innerText = "";
+
     }
 
     document.getElementById("submitButton").addEventListener("click", function(event) {
-        if (!grecaptcha.getResponse()) {
-            document.getElementById("captchaError").innerText = "Veuillez cocher la case 'Je ne suis pas un robot'.";
-            event.preventDefault();
-        } else {
-            document.getElementById("captchaError").innerText = "";
-        }
+        document.getElementById("captchaError").innerText = "Veuillez cocher la case 'Je ne suis pas un robot'.";
+        
     });
 </script>
 </main>
 
-
+{# Rajouter nom de domaine quand on aura déployer le projet
+https://console.cloud.google.com/security/recaptcha/6Le_IekpAAAAANOIu3hgGQFFd8rc1yKAHrCVF8Lz/edit?project=my-project-50056-1716796277432 #}
 {% endblock %}
