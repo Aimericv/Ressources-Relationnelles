@@ -148,7 +148,8 @@ class PostController extends AbstractController
         foreach ($jsonData as $key => $element) {
             if ($element['type'] == 'paragraph') {
                 $paragraph = new Paragraphes();
-                $paragraph->setContent($element['content']);
+                $contenu = str_ireplace('<script', '<%!script', $element['content']);
+                $paragraph->setContent($contenu);
                 $paragraph->setWidth($element['width']);
                 $paragraph->setHeight($element['height']);
                 $paragraph->setX($element['x']);
@@ -253,7 +254,8 @@ class PostController extends AbstractController
                 if($element['content'] == "" || $element['content'] == null) {
                     $paragraph->setContent("");
                 }else{
-                    $paragraph->setContent($element['content']);
+                    $contenu = str_ireplace('<script', '<%!script', $element['content']);
+                    $paragraph->setContent($contenu);
                 }
                 $paragraph->setWidth($element['width']);
                 $paragraph->setHeight($element['height']);
@@ -272,8 +274,8 @@ class PostController extends AbstractController
     #[Route('/modification-post/upload', name: 'app_modification_posts_upload')]
     public function upload(Request $request)
     {
-        $uploadedFile = $request->files->get('file'); // Récupérer le fichier
-        $imageName = $request->request->get('image-name'); // Récupérer le nom de l'image
+        $uploadedFile = $request->files->get('file');
+        $imageName = $request->request->get('image-name');
 
         if ($imageName !== null && $uploadedFile !== null) {
             $directory = $this->getParameter('kernel.project_dir') . '/public/images/post/';
