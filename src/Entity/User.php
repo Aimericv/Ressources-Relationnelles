@@ -99,6 +99,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isConfirmed = false;
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private $resetToken;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $tokenExpiryDate;
+
 
     public function __construct()
     {
@@ -608,6 +614,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isConfirmed = $isConfirmed;
 
+        return $this;
+    }
+
+        public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+    public function getTokenExpiryDate(): ?\DateTimeInterface
+    {
+        return $this->tokenExpiryDate;
+    }
+
+    public function setTokenExpiryDate(?\DateTimeInterface $tokenExpiryDate): self
+    {
+        $this->tokenExpiryDate = $tokenExpiryDate;
         return $this;
     }
 }
