@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block stylesheets %}{%  endblock %}
+    <body>
+        <main style="min-height: 100vh">
+            <p class="apiBtn">Tester l'Api</p>
+            <p class="response"></p>
+        </main>
+        <script src="{{ asset('JS/api.js') }}"></script>
+    </body>
+{% endblock %}
