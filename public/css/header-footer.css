@@ -137,6 +137,20 @@ header>div {
     transform: scale(1.1);
 }
 
+#footerVersion {
+    text-align: center;
+    color: white;
+}
+
+#footerVersion a {
+    color: white;
+    text-decoration: none;
+}
+
+#footerVersion a:hover {
+    color: #ffbe58;
+}
+
 
 @media (max-width: 380px){
 

@@ -13,6 +13,10 @@ button, input {
     margin: auto;
 }
 
+#submitButton:hover{
+    cursor: pointer;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -22,11 +26,9 @@ form {
 
 main {
     display: flex;
-    flex-direction: column;
     text-align: center;
     justify-content: center;
     flex-wrap: wrap;
-    height: 100vh;
     gap: 30px;
 }
 
@@ -67,6 +69,12 @@ main section {
 #options-account a:hover{
     color: black;
 }
+
+#captchaError{
+    color: #e00404;
+}   
+
+
 
 @media (min-width: 768px) {
     .container {

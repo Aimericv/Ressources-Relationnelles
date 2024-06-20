@@ -1,0 +1,27 @@
+h2 {
+    padding: 10px;
+    font-size: 2.5rem;
+    border: 2px solid #03989e;
+    text-align: center;
+    background-color: #03989e;
+    color: white;
+    border-radius: 30px;
+    margin: 20px 0;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+ul {
+    list-style: none;
+    padding: 20px;
+}
+
+p {
+    font-size: 1rem;
+    font-style: italic;
+    padding: 0 50px;
+}

@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset Your Password{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        /* Container Styles */
+        .reset-password-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form Title Styles */
+        .reset-password-container h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Form Group Styles */
+        .reset-password-container .form-group {
+            margin-bottom: 15px;
+        }
+
+        .reset-password-container .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .reset-password-container .form-group input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .reset-password-container .form-group input[type="password"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+        }
+
+        /* Submit Button Styles */
+        .reset-password-container button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4a90e2;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .reset-password-container button[type="submit"]:hover {
+            background-color: #357abd;
+        }
+
+        /* Error Message Styles */
+        .reset-password-container .error-message {
+            color: #d9534f;
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .reset-password-container .error-message ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .reset-password-container .error-message li {
+            margin: 0;
+        }
+
+        /* Success Message Styles */
+        .reset-password-container .success-message {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .reset-password-container .success-message ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .reset-password-container .success-message li {
+            margin: 0;
+        }
+
+        /* General Text Alignment */
+        .reset-password-container .text-center {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .reset-password-container {
+                padding: 15px;
+                border: none;
+                box-shadow: none;
+            }
+            
+            .reset-password-container h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="reset-password-container">
+        <h1>Reset Your Password</h1>
+        {{ form_start(resetForm) }}
+            {{ form_row(resetForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+            <button type="submit" class="btn">Reset password</button>
+        {{ form_end(resetForm) }}
+    </div>
+{% endblock %}

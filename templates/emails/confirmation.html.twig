@@ -1,0 +1,89 @@
+{# templates/emails/confirmation.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de votre adresse e-mail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            max-width: 600px;
+        }
+
+        .header {
+            background-color: #03989e;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content p {
+            margin: 20px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #03989e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: white;
+            color: #03989e;
+            border: 2px solid #03989e;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                width: 720px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                width: 960px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmez votre adresse e-mail</h1>
+        </div>
+        <div class="content">
+            <p>Merci de vous être inscrit ! Veuillez confirmer votre adresse e-mail en cliquant sur le bouton ci-dessous.</p>
+            <a href="{{ url('app_confirm_email', { 'token': confirmationToken }) }}" class="button">Confirmer l'e-mail</a>
+        </div>
+        <div class="footer">
+            <p>Si vous n'avez pas créé ce compte, veuillez ignorer cet e-mail.</p>
+        </div>
+    </div>
+</body>
+</html>

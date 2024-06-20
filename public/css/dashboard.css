@@ -363,6 +363,7 @@ select:focus, input:focus {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
 }
 
 #sav-value>div>div {
@@ -431,6 +432,60 @@ select:focus, input:focus {
 
 .sav-form-btn:hover {
     color: #03989e;
+}
+
+#versions-section .search a {
+    color: black;
+    text-decoration: none;
+}
+
+#versions-section .search a:hover {
+    color: #03989e;
+    text-decoration: none;
+}
+
+#versionsValue {
+    margin: 30px 0;
+}
+
+#versionsValue .titreVersion {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.avatarVersion {
+    background-color: #03989e;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.versionContainer {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.versionContent p {
+    padding: 10px 40px;
+}
+
+#addVersion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+#publierVersion {
+    padding: 7px 20px;
+    border: 2px solid #03989e;
+    border-radius: 20px;
+}
+
+#publierVersion:hover {
+    background-color: #03989e;
+    color: white;
 }
 
 @media (min-width: 768px) {

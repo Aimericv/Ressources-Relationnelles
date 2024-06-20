@@ -12,6 +12,7 @@ use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
 use App\Repository\CommentResponseRepository;
+use App\Repository\VersionsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     #[Route("/post/actions/{id}", name: "app_post_actions", methods: ['POST'])]
-    public function postActions($id, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function postActions($id, VersionsRepository $versionRepo, Request $request, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $post = $postRepository->find($id);
         $images = $imagesRepository->findBy(['post' => $id]);
@@ -98,23 +99,28 @@ class PostController extends AbstractController
             }
         }
 
-        // ... existing logic
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
-        return $this->redirectToRoute('app_post_detail', ['id' => $id]);
+        return $this->redirectToRoute('app_post_detail', [
+            'id' => $id,
+            'version' => $version,
+        ]);
     }
 
     #[Route('/creation-posts', name: 'app_creation_posts')]
-    public function creationPosts(CategoryRepository $catRepo): Response
+    public function creationPosts(VersionsRepository $versionRepo, CategoryRepository $catRepo): Response
     {
         $utilisateur = $this->getUser();
         if (!$utilisateur) {
             return $this->redirectToRoute('app_login');
         }
         $categories = $catRepo->findAll();
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('creation_posts/index.html.twig', [
             'categories' => $categories,
             'utilisateur' => $utilisateur,
+            'version' => $version,
         ]);
     }
 
@@ -168,7 +174,7 @@ class PostController extends AbstractController
 
 
     #[Route('/modification-posts/{id}', name: 'app_modification_posts')]
-    public function modify(Request $request, $id, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
+    public function modify(Request $request, $id, VersionsRepository $versionRepo, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
     {
         $userId = $this->getUser()->getId();
 
@@ -180,11 +186,15 @@ class PostController extends AbstractController
         if (!$post) {
             throw new \Exception('Post non trouvé');
         }
+
+        $version = $versionRepo->findOneBy(['status' => 1]);
+
         return $this->render('creation_posts/index.html.twig', [
             'categories' => $categorie,
             'post' => $post,
             'images' => $images,
-            'paragraphes' => $paragraphs
+            'paragraphes' => $paragraphs,
+            'version' => $version,
         ]);
     }
 
@@ -337,7 +347,7 @@ class PostController extends AbstractController
 
     #[Route("/post/{id}", name: "app_post_detail")]
 
-    public function postDetail($id, CommentResponseRepository $commentRespRepo, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function postDetail($id, VersionsRepository $versionRepo, CommentResponseRepository $commentRespRepo, PostRepository $postRepository, ImagesRepository $imagesRepository, ParagraphesRepository $paragraphesRepository, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $user = $this->getUser();
 
@@ -360,7 +370,21 @@ class PostController extends AbstractController
 
         $existingExploited = $user->getPostsParticipation()->contains($post);
 
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
-        return $this->render('default/postDetail.html.twig', ['utilisateur' => $user, 'existingLike' => $existingLike, 'existingFavorite' => $existingFavorite, 'existingRepost' => $existingRepost,'post' => $post, 'images' => $images, 'paragraphes' => $paragraphes, 'existingExploited' => $existingExploited, 'comments' => $comments, 'commentResponse' => $commentResponse]);
+
+        return $this->render('default/postDetail.html.twig', [
+            'utilisateur' => $user, 
+            'existingLike' => $existingLike, 
+            'existingFavorite' => $existingFavorite, 
+            'existingRepost' => $existingRepost,
+            'post' => $post, 
+            'images' => $images, 
+            'paragraphes' => $paragraphes, 
+            'existingExploited' => $existingExploited, 
+            'comments' => $comments, 
+            'commentResponse' => $commentResponse,
+            'version' => $version,
+        ]);
     }
 }

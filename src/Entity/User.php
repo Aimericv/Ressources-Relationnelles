@@ -93,6 +93,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Folder::class)]
     private Collection $folders;
 
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    private $confirmationToken;
+
+    #[ORM\Column]
+    private ?bool $isConfirmed = false;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private $resetToken;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $tokenExpiryDate;
+
 
     public function __construct()
     {
@@ -578,6 +590,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken(?string $confirmationToken): self
+    {
+        $this->confirmationToken = $confirmationToken;
+
+        return $this;
+    }
+
+    public function getIsConfirmed(): bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function setIsConfirmed(bool $isConfirmed): self
+    {
+        $this->isConfirmed = $isConfirmed;
+
+        return $this;
+    }
+
+        public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+    public function getTokenExpiryDate(): ?\DateTimeInterface
+    {
+        return $this->tokenExpiryDate;
+    }
+
+    public function setTokenExpiryDate(?\DateTimeInterface $tokenExpiryDate): self
+    {
+        $this->tokenExpiryDate = $tokenExpiryDate;
         return $this;
     }
 }

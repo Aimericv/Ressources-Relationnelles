@@ -6,12 +6,13 @@ use App\Entity\Role;
 use App\Form\UserAddType;
 use Doctrine\ORM\EntityManager;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-// use http\Client\Request;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Entity\User;
@@ -20,19 +21,19 @@ use App\Repository\PostRepository;
 use App\Repository\FolderRepository;
 use App\Repository\PostStatusRepository;
 use App\Repository\ImagesRepository;
+use App\Repository\VersionsRepository;
 use App\Entity\Folder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 
 class UserController extends AbstractController
 {
-
-    // Méthode pour personnaliser l'action de suppression d'un utilisateur
     #[Route('/delete-user', name: 'app_delete_user')]
-    public function delete(EntityManagerInterface $entityManager, Security $security): Response
+    public function delete(VersionsRepository $versionRepo, EntityManagerInterface $entityManager, Security $security): Response
     {
         $utilisateur = $this->getUser();
 
@@ -46,13 +47,15 @@ class UserController extends AbstractController
             $this->addFlash('error', 'Vous devez être connecté pour supprimer votre compte.');
         }
 
-        // Ajoutez ici des actions supplémentaires après la suppression de l'utilisateur si nécessaire
+        $version = $versionRepo->findOneBy(['status' => 1]);
+
         return $this->render('user/complete-deletion.html.twig', [
+            'version' => $version,
         ]);
     }
 
     #[Route('/favorite', name: 'app_favorite')]
-    public function favorite(PostRepository $postRepo): Response
+    public function favorite(VersionsRepository $versionRepo, PostRepository $postRepo): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -66,25 +69,29 @@ class UserController extends AbstractController
             }
         }
         $folders = $user->getFolders();
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('favorite/index.html.twig', [
             'utilisateur' => $user,
             'favoritePosts' => $posts,
             'folders' => $folders,
+            'version' => $version,
         ]);
     }
 
     #[Route('/favorite/folder/{id}', name: 'app_favorite_folder_detail')]
-    public function folderDetail($id, PostRepository $postRepo, FolderRepository $folderRepo)
+    public function folderDetail($id, VersionsRepository $versionRepo, PostRepository $postRepo, FolderRepository $folderRepo)
     {
         $user = $this->getUser();
         $folder = $folderRepo->find($id);
         $posts = $postRepo->findBy(['folder' => $folder]);
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('favorite/index.html.twig', [
             'utilisateur' => $user,
             'favoritePosts' => $posts,
             'folderDetail' => $folder,
+            'version' => $version,
         ]);
     }
 
@@ -173,7 +180,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/user', name: 'app_user')]
-    public function monCompte(UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
+    public function monCompte(VersionsRepository $versionRepo, UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
     {
         $utilisateur = $this->getUser();
         if (!isset($utilisateur)) {
@@ -192,16 +199,18 @@ class UserController extends AbstractController
                 $imageSrc[$postId] = null;
             }
         }
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('user/user.html.twig', [
             'utilisateur' => $utilisateur,
             'posts' => $posts,
             'imageSrc' => $imageSrc,
+            'version' => $version,
         ]);
     }
 
     #[Route(path: '/register', name: 'app_register')]
-    public function register(Request $request, EntityManagerInterface $entityManager): ?Response
+    public function register(VersionsRepository $versionRepo, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator): ?Response
     {
         $roleRepo = $entityManager->getRepository(Role::class);
         $user = new User();
@@ -238,9 +247,28 @@ class UserController extends AbstractController
                     $user->setAddress($address);
                     $user->setCreatedAt(new \DateTime());
                     $user->setPolice('16');
+                    // Generate a confirmation token
+                    $user->setConfirmationToken($tokenGenerator->generateToken());
 
                     $entityManager->persist($user);
                     $entityManager->flush();
+
+                    // Send confirmation email
+                    $email = (new Email())
+                    ->from('no-reply@ressourcerelationnelles.com')
+                    ->to($user->getEmail())
+                    ->subject('Please Confirm your Email')
+                    ->html(
+                        $this->renderView(
+                            'emails/confirmation.html.twig',
+                            ['confirmationToken' => $user->getConfirmationToken()]
+                        )
+                    );
+
+                    $mailer->send($email);
+
+                    $this->addFlash('success', 'Un mail de confirmation a été envoyé à votre adresse mail.');
+
                     return $this->redirectToRoute('app_login');
                 }
                 else {
@@ -251,12 +279,15 @@ class UserController extends AbstractController
                 $this->addFlash('error', 'L\'adresse email est invalide.');
             }
         }
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
-        return $this->render('registration/register.html.twig');
+        return $this->render('registration/register.html.twig', [
+            'version' => $version,
+        ]);
     }
 
     #[Route('/user/{id}', name: 'app_other_user')]
-    public function otherUser($id, UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
+    public function otherUser($id, VersionsRepository $versionRepo, UserRepository $userRepo, ImagesRepository $imageRepo, PostRepository $postRepo): Response
     {
         $utilisateur = $this->getUser();   
         $user = $userRepo->find($id);
@@ -279,6 +310,7 @@ class UserController extends AbstractController
                 $imageSrc[$postId] = null;
             }
         }
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('user/otherUser.html.twig', [
             'utilisateur' => $utilisateur,
@@ -286,6 +318,7 @@ class UserController extends AbstractController
             'posts' => $posts,
             'imageSrc' => $imageSrc,
             'follow' => $follow,
+            'version' => $version,
         ]);
     }
 
@@ -302,7 +335,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/{id}/subscribe', name: 'app_user_subscribe')]
-public function subscribe($id, UserRepository $userRepo, EntityManagerInterface $entityManager): Response
+public function subscribe($id, VersionsRepository $versionRepo, UserRepository $userRepo, EntityManagerInterface $entityManager): Response
 {
     $follower = $this->getUser();
     $following = $userRepo->find($id);
@@ -323,6 +356,11 @@ public function subscribe($id, UserRepository $userRepo, EntityManagerInterface 
 
     $entityManager->flush();
 
-    return $this->redirectToRoute('app_other_user', ['id' => $following->getId()]);
+    $version = $versionRepo->findOneBy(['status' => 1]);
+
+    return $this->redirectToRoute('app_other_user', [
+        'id' => $following->getId(),
+        'version' => $version,
+    ]);
 }
 }
