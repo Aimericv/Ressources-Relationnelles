@@ -1,4 +1,4 @@
-version: '3.7'
+#version: '3.7'
 
 services:
     database:
@@ -8,11 +8,16 @@ services:
             MYSQL_DATABASE: ressource
         ports:
             - '3306'
+        networks:
+            monitoring:
+                ipv4_address: 172.168.208.200
+            app-network:
+                ipv4_address: 172.168.207.200
 
     nodeapp:
         build:
             context: .
-            dockerfile: DockerfileAPI
+            #dockerfile: DockerfileAPI
         ports:
             - "56345:3000"
         environment:
@@ -22,7 +27,112 @@ services:
     jenkins:
         build:
             context: .
-            dockerfile: DockerfileJenkins
+            dockerfile: Dockerfile
         ports:
             - "2376:2376"
             - "54305:8080"
+
+    prometheus:
+        image: prom/prometheus:latest
+        volumes:
+            - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+            - prometheus_data:/prometheus
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yaml'
+        ports:
+            - '9090:9090'
+        networks:
+            monitoring:
+                aliases:
+                    - prometheus
+
+    node-exporter:
+        image: prom/node-exporter:latest
+        ports:
+            - '9100:9100'
+        networks:
+            - monitoring
+
+    grafana:
+        image: grafana/grafana:latest
+        ports:
+            - '3001:3000'
+        environment:
+            - GF_SECURITY_ADMIN_USER=admin
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+        depends_on:
+            - prometheus
+        volumes:
+            - ./datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+        networks:
+            monitoring:
+                aliases:
+                    - grafana
+
+    cadvisor:
+        image: gcr.io/cadvisor/cadvisor:latest
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:ro
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+        ports:
+            - '8081:8081'
+        networks:
+            - monitoring
+
+    web:
+        build: .
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/www/html:rw
+        depends_on:
+            - database
+#        entrypoint: [ "./wait-for-db.sh", "db", "apache2-foreground" ]
+        networks:
+            - app-network
+
+    mysqld-exporter:
+        image: prom/mysqld-exporter:latest
+        command:
+            - --config.my-cnf=/cfg/.my.cnf
+            - --mysqld.address=172.168.208.200:3306
+        volumes:
+            - ./.my.cnf:/cfg/.my.cnf
+        environment:
+            DATA_SOURCE_NAME: root:password@(database:3306)
+        ports:
+            - "9104:9104"
+        networks:
+            - monitoring
+        depends_on:
+            - database
+
+    phpmyadmin:
+        image: phpmyadmin:latest
+        environment:
+            PMA_HOST: database
+            PMA_PORT: 3306
+        ports:
+            - '8082:80'
+        depends_on:
+            - database
+        networks:
+            - app-network
+
+
+networks:
+    monitoring:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.168.208.0/24
+    app-network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.168.207.0/24
+
+volumes:
+    prometheus_data:
