@@ -1,28 +1,28 @@
 version: '3.7'
 
 services:
-#    database:
-#        image: 'mariadb:latest'
-#        environment:
-#            MYSQL_ROOT_PASSWORD: password
-#            MYSQL_DATABASE: ressource
-#        ports:
-#            - '3306'
-#
-#    nodeapp:
-#        build:
-#            context: .
-#            dockerfile: Dockerfile
-#        ports:
-#            - "56345:3000"
-#        environment:
-#            - NODE_ENV=production
-#        restart: always
+    database:
+        image: 'mariadb:latest'
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: ressource
+        ports:
+            - '3306'
+
+    nodeapp:
+        build:
+            context: .
+            dockerfile: DockerfileAPI
+        ports:
+            - "56345:3000"
+        environment:
+            - NODE_ENV=production
+        restart: always
 
     jenkins:
         build:
             context: .
-            dockerfile: Dockerfile
+            dockerfile: DockerfileJenkins
         ports:
             - "2376:2376"
             - "54305:8080"
