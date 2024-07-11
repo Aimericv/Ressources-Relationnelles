@@ -47,6 +47,13 @@ Ressources Relationnelles is a student project for an Application Designer and D
 
 ## MIGRATE DATA TO THE DOCKER'S CONTAINER
 
+* Migrate Table
+  ```sh
+  symfony console make:migration
+  ```
+  ```sh
+  symfony console doctrine:migrations:migrate
+  ```
 * Copy `data.sql` file to Docker container :
   ```sh
   docker cp data.sql ressources-relationnelles-database-1:/data.sql
