@@ -55,6 +55,13 @@ Ressources Relationnelles is a student project for an Application Designer and D
   ```sh
   docker exec -it ressources-relationnelles-database-1 bash
   ```
+* Install `MySQL` command
+  ```sh
+  apt-get update
+  ```
+  ```sh
+  apt-get install mysql-client -y
+  ```
 * Import MySQL database from `data.sql` file :
   ```sh
   mysql -u root -p ressource < /data.sql
