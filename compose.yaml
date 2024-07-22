@@ -7,22 +7,19 @@ services:
             MYSQL_ROOT_PASSWORD: password
             MYSQL_DATABASE: ressource
         ports:
-            - '3306'
+            - '55110:3306'
         networks:
-            monitoring:
-                ipv4_address: 172.168.208.200
-            app-network:
-                ipv4_address: 172.168.207.200
+            - app-network
 
-    nodeapp:
-        build:
-            context: .
-            #dockerfile: DockerfileAPI
-        ports:
-            - "56345:3000"
-        environment:
-            - NODE_ENV=production
-        restart: always
+#    nodeapp:
+#        build:
+#            context: .
+#            #dockerfile: DockerfileAPI
+#        ports:
+#            - "56345:3000"
+#        environment:
+#            - NODE_ENV=production
+#        restart: always
 
     jenkins:
         build:
@@ -81,15 +78,29 @@ services:
         networks:
             - monitoring
 
-    web:
-        build: .
+#    web:
+#        build: .
+#        ports:
+#            - "8080:80"
+#        volumes:
+#            - .:/var/www/html:rw
+#        depends_on:
+#            - database
+#        networks:
+#            - app-network
+
+    symfony:
+        build:
+            context: .
+            dockerfile: DockerfileSymfony
         ports:
-            - "8080:80"
+            - "2626:8000"
+        environment:
+            DATABASE_URL: "mysql://root:password@database:3306/ressource"
         volumes:
             - .:/var/www/html:rw
         depends_on:
             - database
-#        entrypoint: [ "./wait-for-db.sh", "db", "apache2-foreground" ]
         networks:
             - app-network
 
@@ -130,9 +141,9 @@ networks:
                 - subnet: 172.168.208.0/24
     app-network:
         driver: bridge
-        ipam:
-            config:
-                - subnet: 172.168.207.0/24
+#        ipam:
+#            config:
+#                - subnet: 172.168.207.0/24
 
 volumes:
     prometheus_data:

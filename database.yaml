@@ -1,0 +1,6 @@
+database:
+  database_host: database
+  database_port: 3306
+  database_name: ressource
+  database_user: root
+  database_password: password
