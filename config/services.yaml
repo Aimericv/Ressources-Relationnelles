@@ -7,6 +7,7 @@
 parameters:
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     google_recaptcha_secret_key: '%env(GOOGLE_RECAPTCHA_SECRET_KEY)%'
+    avatars_directory: '%kernel.project_dir%/public/profiles' #chemin faire les avatars des utilisateurs
 
 
 services:

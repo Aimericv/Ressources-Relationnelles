@@ -105,6 +105,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $tokenExpiryDate;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $previousEmail = null;
+
 
     public function __construct()
     {
@@ -638,4 +641,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tokenExpiryDate = $tokenExpiryDate;
         return $this;
     }
+
+    public function getPreviousEmail(): ?string
+{
+    return $this->previousEmail;
+}
+
+public function setPreviousEmail(?string $previousEmail): static
+{
+    $this->previousEmail = $previousEmail;
+
+    return $this;
+}
 }
