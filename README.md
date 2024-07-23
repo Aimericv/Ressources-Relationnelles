@@ -78,6 +78,30 @@ Ressources Relationnelles is a student project for an Application Designer and D
   DATABASE_URL="mysql://root:password@localhost:60574/ressource"
   ```
 
+## IMPORT GRAFANA'S DATA
+
+You will need to log in to [Grafana](http://localhost:3001/) with the following identifiers : 
+* `Identifier`
+  ```sh
+  admin
+  ```
+* `Password`
+  ```sh
+  admin
+  ```
+
+You can create another user or skip this step.
+Go to the `Dashboard`, `Create dashboard` and `Import dashboard` page. There are three graphics to import:
+```sh
+893
+```
+```sh
+10431
+```
+```sh
+14031
+```
+
 ## TESTS
 
 * For run the test with PhpUnit :
