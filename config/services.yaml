@@ -3,7 +3,12 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+# config/services.yaml
 parameters:
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+    google_recaptcha_secret_key: '%env(GOOGLE_RECAPTCHA_SECRET_KEY)%'
+    avatars_directory: '%kernel.project_dir%/public/profiles' #chemin faire les avatars des utilisateurs
+
 
 services:
     # default configuration for services in *this* file
@@ -19,6 +24,13 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    
+    # Register the CleanupUnconfirmedUsersCommand
+    App\Command\CleanupUnconfirmedUsersCommand:
+        tags: ['console.command']
+
+    App\Service\UriSafeTokenGenerator: ~
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

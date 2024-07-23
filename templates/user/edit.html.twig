@@ -1,0 +1,41 @@
+{# templates/user/edit.html.twig #}
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/update-profil.css') }}">
+{% endblock %}
+    <div class="container">
+        <h1>Modifier vos informations : </h1>
+
+        {{ form_start(form) }}
+        <main>
+            <section id="avatar-section">
+                <div id="avatar">
+                    <img id="preview" src="{{ asset('path/to/avatar.jpg') }}" alt="Avatar">
+                </div>
+                {{ form_row(form.avatar_img) }}
+            </section>
+
+            <section id="info-account-section">
+                {{ form_row(form.email) }}
+                {{ form_row(form.first_name) }}
+                {{ form_row(form.last_name) }}
+                {{ form_row(form.address) }}
+                {{ form_row(form.password) }}
+            </section>
+        </main>
+        <div id="submit-button">
+            <button type="submit">Sauvegarder les modifications</button>
+        </div>
+        {{ form_end(form) }}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

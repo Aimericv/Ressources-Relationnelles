@@ -212,3 +212,47 @@ function searchBar(input, listContainer, idContainer) {
         }
     });
 }
+
+// 
+// VERSIONS
+// 
+document.getElementById('versionSelect').addEventListener('change', function() {
+    let selectedVersionId = this.value;
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/dashboard/select/version', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            let selectedVersionData = JSON.parse(xhr.responseText);
+            updateDashboard(selectedVersionData);
+        }
+    };
+    xhr.send('selectedVersionId=' + encodeURIComponent(selectedVersionId));
+});
+
+function updateDashboard(selectedVersionData) {
+    let title = document.querySelector('#versions-section .dashboard-title h2');
+    title.textContent = selectedVersionData.name;
+
+    let versionValue = document.getElementById('versionsValue');
+    versionValue.innerHTML = '';
+
+    selectedVersionData.modifications.forEach(function(modification) {
+        versionValue.innerHTML += `
+            <div class="versionContainer">
+                <div class="avatarVersion"></div>
+                <p class="titreVersion">${modification.titre}</p>
+            </div>
+            <div class="versionContent">
+                <p>${modification.description}</p>
+            </div>
+        `;
+
+        let addVersion = document.getElementById('addVersion');
+        if (selectedVersionData.status != 1) {
+            console.log(selectedVersionData.status)
+            addVersion.innerHTML = '';
+            addVersion.innerHTML += `<a href="/dashboard/add/version/modification">Ajouter une mise à jour</a><a href="/dashboard/publier/version/${selectedVersionData.id}" id="publierVersion">Publier</a>`
+        }
+    });
+}

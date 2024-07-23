@@ -245,6 +245,42 @@
             </article>
         </section>
         {% endif %}
+
+        {% if roleUser == 'ROLE_ADMIN' or roleUser == 'ROLE_SUPERADMIN' %}
+        <section id="versions-section">
+            <article class="dashboard-title">
+                <span></span>
+                <h2>{{version.getName()}}</h2>
+                <span></span>
+            </article>
+            <article class="search">
+                <div>
+                    <select name="versions" id="versionSelect">
+                        {% for allVersion in versions %}   
+                            <option value="{{allVersion.getId()}}">{{allVersion.getName()}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <a href="{{path('app_dashboard_add_version', {'action': 'version'})}}">Ajouter une version</a>
+                </div>
+            </article>
+            <article id="versionsValue">
+                {% for modification in version.getModifications() %}
+                    <div class="versionContainer">
+                        <div class="avatarVersion"></div>
+                        <p class="titreVersion">{{modification.getTitre()}}</p>
+                    </div>
+                    <div class="versionContent">
+                        <p>{{modification.getDescription()}}
+                    </div>
+                {% endfor %}
+            </article>
+            <article class="load-more" id="addVersion">
+                <a href="{{path('app_dashboard_add_version', {'action': 'modification'})}}">Ajouter une mise à jour</a>
+            </article>
+        </section>
+        {% endif %}
     </main> 
     <script src="{{ asset('js/dashboard.js') }}"></script>
     
