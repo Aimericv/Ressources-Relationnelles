@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\User;
 use App\Entity\Category;
 use App\Entity\Versions;
 use App\Entity\Modifications;
@@ -23,14 +22,14 @@ use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\HelpEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 class DashboardController extends AbstractController
 {
     
     #[Route('/dashboard', name: 'app_dashboard')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function index(Request $request, VersionsRepository $versionRepo, CommentRepository $commentRepo, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session, HelpEntityRepository $helpRepository, CategoryRepository $catRepo): Response
     {
         if (!$this->getUser()) {
@@ -94,6 +93,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/select/version', name: 'app_dashboard_select_version')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function selectVersion(Request $request, VersionsRepository $versionRepo): JsonResponse
     {
         $selectedVersionId = $request->request->get('selectedVersionId');
@@ -119,6 +119,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/add/version/{action}', name: 'app_dashboard_add_version')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function addVersion($action, VersionsRepository $versionRepo): Response
     {
         $versions = $versionRepo->findAll();
@@ -132,6 +133,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/publier/version/{id}', name: 'app_dashboard_publier_version')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function publierVersion($id, VersionsRepository $versionRepo, EntityManagerInterface $entityManager): Response
     {
         $oldVersion = $versionRepo->findOneBy(['status'=>1]);
@@ -148,6 +150,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/add/version/{action}/add', name: 'app_dashboard_add_version_add')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function addVersionAdd($action, Request $request, VersionsRepository $versionRepo, ModificationsRepository $modifRepo, EntityManagerInterface $entityManager): Response
     {
         if ($action == "modification") {
@@ -176,6 +179,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/ajax', name: 'app_dashboard_ajax')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function statistiques(Request $request, UserRepository $userRepository, PostRepository $postRepository, SessionInterface $session): JsonResponse
     {
         // Statistiques utilisateurs
@@ -262,6 +266,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/valid-post/{id}/{status}', name: 'app_dashboard_valid_ressource')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function validRessource($id, $status, Request $request, PostRepository $postRepo, PostStatusRepository $postStatusRepo, EntityManagerInterface $entityManager): Response
     {
         $post = $postRepo->find($id);
@@ -281,6 +286,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/role-user/{id}/{role}', name: 'app_dashboard_role_user')]
+    #[IsGranted('ROLE_SUPERADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function roleUser($id, $role, UserRepository $userRepo, RoleRepository $roleRepo, EntityManagerInterface $entityManager): Response
     {
         $user = $userRepo->find($id);
@@ -292,6 +298,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/category/edit/{id}', name: 'app_dashboard_edit_category')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function editCategory($id, CategoryRepository $catRepo, Request $request, EntityManagerInterface $entityManager): Response
     {
         $formData = $request->request->get('name-cat');
@@ -305,6 +312,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/category/add', name: 'app_dashboard_add_category')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function addCategory(Request $request, EntityManagerInterface $entityManager): Response
     {
         $formData = $request->request->get('name-cat');
@@ -319,6 +327,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/category/delete/{id}', name: 'app_dashboard_delete_category')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function deleteCategory($id, CategoryRepository $catRepo, EntityManagerInterface $entityManager): Response
     {
         $category = $catRepo->find($id);
@@ -330,6 +339,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/help/answer/{id}', name: 'app_dashboard_answer_help')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function answerHelp($id, HelpEntityRepository $helpRepo, Request $request, EntityManagerInterface $entityManager): Response
     {
         $formData = $request->request->get('answer');
@@ -344,6 +354,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/help/private/{id}', name: 'app_dashboard_private_help')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function privateHelp($id, HelpEntityRepository $helpRepo, EntityManagerInterface $entityManager): Response
     {
         $question = $helpRepo->find($id);
@@ -368,6 +379,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/comment/delete/{id}', name: 'app_dashboard_delete_comment')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas accès à cette page.')]
     public function deleteComment($id, CommentRepository $commentRepo, EntityManagerInterface $entityManager, CommentResponseRepository $commentRespRepo): Response
     {
         $comment = $commentRepo->find($id);
