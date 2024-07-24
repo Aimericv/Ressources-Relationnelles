@@ -6,6 +6,7 @@ use App\Repository\ImagesRepository;
 use App\Repository\ParagraphesRepository;
 use App\Repository\PostRepository;
 use App\Repository\RoleRepository;
+use App\Repository\VersionsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -17,17 +18,20 @@ class HomeController extends AbstractController
     public function base(PostRepository $postRepository): \Symfony\Component\HttpFoundation\Response
     {
         $utilisateur = $this->getUser();
-        return $this->render('base.html.twig', ['utilisateur' => $utilisateur]);
+        return $this->render('base.html.twig', [
+            'utilisateur' => $utilisateur,
+        ]);
     }
 
     #[Route("/", name:"app_homepage")]
-    public function post(PostRepository $postRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
+    public function post(VersionsRepository $versionRepo, PostRepository $postRepository, SessionInterface $session): \Symfony\Component\HttpFoundation\Response
     {
 
         $visitDate = new \DateTime();
         $visitDates = $session->get('visitDates', []);
         $visitDates[] = $visitDate->format('Y-m-d H:i:s');
         $session->set('visitDates', $visitDates);
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         $utilisateur = $this->getUser();
 
@@ -39,6 +43,7 @@ class HomeController extends AbstractController
         return $this->render('default/index.html.twig', [
             'utilisateur' => $utilisateur,
             'posts'=>$allposts,
+            'version' => $version,
         ]);
     }
 }

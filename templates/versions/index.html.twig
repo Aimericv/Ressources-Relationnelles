@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href={{ asset('css/versions.css') }}>
+    {%  endblock %}
+    <body>
+        <main class="container">
+            <section>
+                <article>
+                    <h2>{{version.getName()}}</h2>
+                    <ul>
+                        {% set modifs = version.getModifications() %}
+                        {% for modif in modifs %}
+                        <li>
+                            <h3>{{modif.getTitre()}}</h3>
+                            <p>{{modif.getDescription()}}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            </section>
+        </main>
+    </body>
+{% endblock %}

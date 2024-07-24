@@ -9,6 +9,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use App\Entity\User;
 use App\Repository\HelpEntityRepository;
+use App\Repository\VersionsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\HelpEntity;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,12 +30,14 @@ class HelpController extends AbstractController
     }
 
     #[Route('/help', name: 'app_help')]
-    public function index(Request $request, HelpEntityRepository $helpEntityRepository): Response
+    public function index(Request $request, VersionsRepository $versionRepo, HelpEntityRepository $helpEntityRepository): Response
     {
         $helpEntities = $helpEntityRepository->findBy(['Status' => 2], ['id' => 'DESC']);
+        $version = $versionRepo->findOneBy(['status' => 1]);
 
         return $this->render('help/index.html.twig', [
             'helpEntities' => $helpEntities,
+            'version' => $version,
         ]);     
     }
 
@@ -46,26 +49,36 @@ class HelpController extends AbstractController
         $email = $request->request->get('email');
         $subject = $request->request->get('subject');
         $question = $request->request->get('question');
-
-        $helpEntity = new HelpEntity();
-        $helpEntity->setEmail($email);
-        $helpEntity->setCatégorie($subject);
-        $helpEntity->setQuestions($question);
-        $helpEntity->setStatus(0);
-
-        try {
-            $entityManager->persist($helpEntity);
-            $entityManager->flush();
-            $this->sendEmail($email, 'Ressources Relationnelles', 'Votre question a bien été envoyée');
+        if ($subject == "bug") {
             $adminEmails = $entityManager->getRepository(User::class)->findAdminEmails();
+            $corpsMail = "Vous avez reçu une detection de bug de " .$email ." : <br>" . $question;
             foreach ($adminEmails as $admin) {
-                $email = $admin['email'];
-                $this->sendEmail($email, 'Admin Notification', 'Vous avez reçu une question.');
+                $adminEmail = $admin['email'];
+                $this->sendEmail($adminEmail, 'Ressource Relationnelle Bug', $corpsMail);
             }
-            $this->addFlash('success', 'Votre question a bien été envoyée.');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Erreur lors de l\'envoi de votre question.');
+        } else {
+
+            $helpEntity = new HelpEntity();
+            $helpEntity->setEmail($email);
+            $helpEntity->setCatégorie($subject);
+            $helpEntity->setQuestions($question);
+            $helpEntity->setStatus(0);
+    
+            try {
+                $entityManager->persist($helpEntity);
+                $entityManager->flush();
+                $this->sendEmail($email, 'Ressources Relationnelles', 'Votre question a bien été envoyée');
+                $adminEmails = $entityManager->getRepository(User::class)->findAdminEmails();
+                foreach ($adminEmails as $admin) {
+                    $email = $admin['email'];
+                    $this->sendEmail($email, 'Admin Notification', 'Vous avez reçu une question.');
+                }
+                $this->addFlash('success', 'Votre question a bien été envoyée.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de l\'envoi de votre question.');
+            }
         }
+
         return $this->redirectToRoute('app_help');    
     }
 
