@@ -13,14 +13,19 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Cloner le dépôt GitHub et surveiller toutes les branches
-                checkout scm
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/main']],
+                        userRemoteConfigs: [[url: 'https://github.com/Aimericv/Ressources-Relationnelles.git']]
+                    ])
+                }
             }
         }
+        // Les autres étapes restent les mêmes
         stage('Install Composer') {
             steps {
                 script {
-                    // Télécharger Composer si non présent
                     if (!fileExists('composer.phar')) {
                         sh 'php -r "copy(\'https://getcomposer.org/installer\', \'composer-setup.php\');"'
                         sh 'php composer-setup.php'
@@ -32,7 +37,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 // Installer les dépendances sans les packages de développement
-
                 sh 'php composer.phar install --no-dev --optimize-autoloader'
             }
         }
@@ -45,13 +49,10 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                // Exécuter les tests
                 sh 'docker-compose run php bin/phpunit --log-junit tests/report.xml'
-
             }
             post {
                 always {
-                    // Publier les résultats des tests
                     junit 'tests/report.xml'
                 }
             }
@@ -71,10 +72,8 @@ pipeline {
         always {
             // Notification par e-mail
             mail to: 'mohamedaminehaddoualla@gmail.com',
-
                  subject: "Build ${currentBuild.fullDisplayName}",
                  body: "Build ${currentBuild.fullDisplayName} completed. Check console output at ${env.BUILD_URL}"
         }
     }
-    ///p
 }
