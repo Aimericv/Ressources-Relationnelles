@@ -32,6 +32,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 // Installer les dépendances sans les packages de développement
+
                 sh 'php composer.phar install --no-dev --optimize-autoloader'
             }
         }
@@ -46,6 +47,7 @@ pipeline {
             steps {
                 // Exécuter les tests
                 sh 'docker-compose run php bin/phpunit --log-junit tests/report.xml'
+
             }
             post {
                 always {
@@ -69,6 +71,7 @@ pipeline {
         always {
             // Notification par e-mail
             mail to: 'mohamedaminehaddoualla@gmail.com',
+
                  subject: "Build ${currentBuild.fullDisplayName}",
                  body: "Build ${currentBuild.fullDisplayName} completed. Check console output at ${env.BUILD_URL}"
         }
