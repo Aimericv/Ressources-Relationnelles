@@ -36,6 +36,7 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
+                // Installer les dépendances sans les packages de développement
                 sh 'php composer.phar install --no-dev --optimize-autoloader'
             }
         }
@@ -69,10 +70,10 @@ pipeline {
     }
     post {
         always {
+            // Notification par e-mail
             mail to: 'mohamedaminehaddoualla@gmail.com',
                  subject: "Build ${currentBuild.fullDisplayName}",
                  body: "Build ${currentBuild.fullDisplayName} completed. Check console output at ${env.BUILD_URL}"
         }
     }
-    //
 }
