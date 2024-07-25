@@ -6,6 +6,10 @@ pipeline {
         COMPOSER_CACHE_DIR = '/tmp'
     }
 
+    triggers {
+        githubPush()  // Déclencher le pipeline sur un push GitHub
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -18,9 +22,9 @@ pipeline {
                 script {
                     // Télécharger Composer si non présent
                     if (!fileExists('composer.phar')) {
-                        bat 'php -r "copy(\'https://getcomposer.org/installer\', \'composer-setup.php\');"'
-                        bat 'php composer-setup.php'
-                        bat 'php -r "unlink(\'composer-setup.php\');"'
+                        sh 'php -r "copy(\'https://getcomposer.org/installer\', \'composer-setup.php\');"'
+                        sh 'php composer-setup.php'
+                        sh 'php -r "unlink(\'composer-setup.php\');"'
                     }
                 }
             }
@@ -28,13 +32,22 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 // Installer les dépendances sans les packages de développement
-                bat 'php composer.phar install --no-dev --optimize-autoloader'
+
+                sh 'php composer.phar install --no-dev --optimize-autoloader'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("symfony-app:${env.BUILD_ID}")
+                }
             }
         }
         stage('Run Tests') {
             steps {
                 // Exécuter les tests
-                bat 'php bin/phpunit --log-junit tests/report.xml'
+                sh 'docker-compose run php bin/phpunit --log-junit tests/report.xml'
+
             }
             post {
                 always {
@@ -43,13 +56,25 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to remote') {
+            steps {
+                script {
+                    sh '''
+                        docker-compose down
+                        docker-compose up -d
+                    '''
+                }
+            }
+        }
     }
     post {
         always {
             // Notification par e-mail
-            mail to: 'team@example.com',
+            mail to: 'mohamedaminehaddoualla@gmail.com',
+
                  subject: "Build ${currentBuild.fullDisplayName}",
                  body: "Build ${currentBuild.fullDisplayName} completed. Check console output at ${env.BUILD_URL}"
         }
     }
+    ///p
 }
