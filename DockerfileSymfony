@@ -1,0 +1,24 @@
+FROM debian:latest
+RUN apt-get update && apt-get install -y lsb-release
+RUN apt install -y php8.2
+RUN apt install -y php8.2-curl
+RUN apt install -y php8.2-xml
+RUN apt install -y php8.2-mbstring
+RUN apt install -y php8.2-zip
+RUN apt install -y php8.2-mysql
+RUN apt install -y wget
+RUN apt install -y zip unzip
+RUN apt install curl
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN php -r "unlink('composer-setup.php');"
+
+WORKDIR /var/www/html
+
+RUN curl -sS https://get.symfony.com/cli/installer | bash \
+    && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+
+COPY . .
+EXPOSE 8000
+CMD ["symfony", "server:start", "--no-tls"]

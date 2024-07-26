@@ -34,7 +34,7 @@
         >
 
         <div class="g-recaptcha" data-sitekey="6Le_IekpAAAAANOIu3hgGQFFd8rc1yKAHrCVF8Lz" data-callback="enableSubmit"></div>
-        <p id="captchaError" class="error-message"></p>
+        <p id="captchaError" class="error-message" style="display: none;">Veuillez cocher la case 'Je ne suis pas un robot'.</p>
 
         <button type="submit" id="submitButton" class="disabled">
             Connectez vous
@@ -49,17 +49,16 @@
 <script>
     function enableSubmit() {
         document.getElementById("submitButton").classList.remove("disabled");
-        document.getElementById("captchaError").innerText = "";
-
+        document.getElementById("captchaError").style.display = "none";
     }
 
     document.getElementById("submitButton").addEventListener("click", function(event) {
-        document.getElementById("captchaError").innerText = "Veuillez cocher la case 'Je ne suis pas un robot'.";
-        
+        if (!grecaptcha.getResponse()) {
+            document.getElementById("captchaError").style.display = "block";
+            event.preventDefault();
+        }
     });
 </script>
 </main>
 
-{# Rajouter nom de domaine quand on aura déployer le projet
-https://console.cloud.google.com/security/recaptcha/6Le_IekpAAAAANOIu3hgGQFFd8rc1yKAHrCVF8Lz/edit?project=my-project-50056-1716796277432 #}
 {% endblock %}

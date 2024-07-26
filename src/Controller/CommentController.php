@@ -27,7 +27,8 @@ class CommentController extends AbstractController
         $comment->setUser($user);
         $post = $postRepo->find($id);
         $comment->setPost($post);
-        $comment->setContent($formData);
+        $contenu = str_ireplace('<script', '<%!script', $formData);
+        $comment->setContent($contenu);
         $comment->setDate(new \DateTime());
         $entityManager->persist($comment);
         $entityManager->flush();
@@ -52,7 +53,8 @@ class CommentController extends AbstractController
         $comment = $commentRepository->find($id);
         $commentResponse->setComment($comment);
         $commentResponse->setDate(new \DateTime());
-        $commentResponse->setContent($formData);
+        $contenu = str_ireplace('<script', '<%!script', $formData);
+        $commentResponse->setContent($contenu);
         $user = $this->getUser();
         $commentResponse->setUser($user);
         $entityManager->persist($commentResponse);

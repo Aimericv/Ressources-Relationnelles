@@ -1,6 +1,7 @@
 /var
 /vendor
 /.idea
+/.idea/*.*
 /migrations/*.php
 /public/bundles/
 composer.lock
