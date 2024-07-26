@@ -22,8 +22,7 @@ pipeline {
                 }
             }
         }
-        // Les autres étapes restent les mêmes
-        stage('Install Composer') {
+        stage('### install composer...') {
             steps {
                 script {
                     if (!fileExists('composer.phar')) {
@@ -34,9 +33,8 @@ pipeline {
                 }
             }
         }
-        stage('Install Dependencies') {
+        stage('### Installation des dépendances...') {
             steps {
-                // Installer les dépendances sans les packages de développement
                 sh 'php composer.phar install --no-dev --optimize-autoloader'
             }
         }
@@ -47,7 +45,7 @@ pipeline {
                 }
             }
         }
-        stage('Run Tests') {
+        stage('R### Exécution des tests...') {
             steps {
                 sh 'docker-compose run php bin/phpunit --log-junit tests/report.xml'
             }
