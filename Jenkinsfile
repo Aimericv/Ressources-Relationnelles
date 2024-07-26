@@ -22,7 +22,6 @@ pipeline {
                 }
             }
         }
-        // Les autres étapes restent les mêmes
         stage('### install composer...') {
             steps {
                 script {
@@ -69,10 +68,10 @@ pipeline {
     }
     post {
         always {
+            // Notification par e-mail
             mail to: 'mohamedaminehaddoualla@gmail.com',
                  subject: "Build ${currentBuild.fullDisplayName}",
                  body: "Build ${currentBuild.fullDisplayName} completed. Check console output at ${env.BUILD_URL}"
         }
     }
-    //
 }
